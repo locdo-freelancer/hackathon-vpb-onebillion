@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script> window.FontAwesomeConfig = { autoReplaceSvg: 'nest'};</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>::-webkit-scrollbar { display: none;}</style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        cyber: {
+                            dark: '#0a0e1a',
+                            darker: '#060911',
+                            card: '#0f1420',
+                            border: '#1a2332',
+                            accent: '#00d9ff',
+                            purple: '#a855f7',
+                            pink: '#ec4899',
+                        }
+                    },
+                    boxShadow: {
+                        'glow-cyan': '0 0 20px rgba(0, 217, 255, 0.3)',
+                        'glow-purple': '0 0 20px rgba(168, 85, 247, 0.3)',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-cyber-darker font-sans antialiased">
+    
+    <div id="auth-container" class="min-h-screen flex items-center justify-center p-8 relative overflow-hidden">
+        
+        <div class="absolute inset-0 bg-gradient-to-br from-cyber-accent/5 via-transparent to-cyber-purple/5"></div>
+        <div class="absolute top-20 left-20 w-96 h-96 bg-cyber-accent/10 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-20 right-20 w-96 h-96 bg-cyber-purple/10 rounded-full blur-3xl"></div>
+        
+        <div id="login-screen" class="relative z-10 w-full max-w-md">
+            
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-cyber-accent to-cyber-purple rounded-xl mb-4 shadow-glow-cyan">
+                    <i class="fas fa-shield-halved text-2xl text-white"></i>
+                </div>
+                <h1 class="text-3xl font-bold text-white mb-2">SecureVault</h1>
+                <p class="text-gray-400 text-sm">Enterprise Cybersecurity Platform</p>
+            </div>
+
+            <div class="bg-cyber-card border border-cyber-border rounded-2xl p-8 shadow-2xl backdrop-blur-xl">
+                
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-white mb-2">Welcome back</h2>
+                    <p class="text-gray-400 text-sm">Sign in to your account to continue</p>
+                </div>
+
+                <div class="space-y-4 mb-6">
+                    <button class="w-full flex items-center justify-center gap-3 bg-white hover:bg-gray-100 text-gray-900 font-medium py-3 px-4 rounded-lg transition-all duration-200">
+                        <i class="fab fa-google text-lg"></i>
+                        <span>Continue with Google</span>
+                    </button>
+                    
+                    <button class="w-full flex items-center justify-center gap-3 bg-[#24292e] hover:bg-[#2f363d] text-white font-medium py-3 px-4 rounded-lg transition-all duration-200">
+                        <i class="fab fa-github text-lg"></i>
+                        <span>Continue with GitHub</span>
+                    </button>
+
+                    <button class="w-full flex items-center justify-center gap-3 bg-[#0078d4] hover:bg-[#106ebe] text-white font-medium py-3 px-4 rounded-lg transition-all duration-200">
+                        <i class="fab fa-microsoft text-lg"></i>
+                        <span>Continue with Microsoft</span>
+                    </button>
+                </div>
+
+                <div class="relative mb-6">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-t border-cyber-border"></div>
+                    </div>
+                    <div class="relative flex justify-center text-sm">
+                        <span class="px-4 bg-cyber-card text-gray-500">Or continue with email</span>
+                    </div>
+                </div>
+
+                <form id="login-form" class="space-y-4">
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-300 mb-2">Email address</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-envelope text-gray-500"></i>
+                            </div>
+                            <input type="email" id="email" class="w-full bg-cyber-dark border border-cyber-border text-white rounded-lg pl-10 pr-4 py-3 focus:outline-none focus:ring-2 focus:ring-cyber-accent focus:border-transparent transition-all duration-200" placeholder="you@company.com" required>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-300 mb-2">Password</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-lock text-gray-500"></i>
+                            </div>
+                            <input type="password" id="password" class="w-full bg-cyber-dark border border-cyber-border text-white rounded-lg pl-10 pr-12 py-3 focus:outline-none focus:ring-2 focus:ring-cyber-accent focus:border-transparent transition-all duration-200" placeholder="••••••••" required>
+                            <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-300">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        
+                        <div id="password-strength" class="mt-2 hidden">
+                            <div class="flex gap-1 mb-1">
+                                <div class="h-1 flex-1 bg-cyber-border rounded-full overflow-hidden">
+                                    <div id="strength-bar-1" class="h-full bg-gray-600 transition-all duration-300"></div>
+                                </div>
+                                <div class="h-1 flex-1 bg-cyber-border rounded-full overflow-hidden">
+                                    <div id="strength-bar-2" class="h-full bg-gray-600 transition-all duration-300"></div>
+                                </div>
+                                <div class="h-1 flex-1 bg-cyber-border rounded-full overflow-hidden">
+                                    <div id="strength-bar-3" class="h-full bg-gray-600 transition-all duration-300"></div>
+                                </div>
+                                <div class="h-1 flex-1 bg-cyber-border rounded-full overflow-hidden">
+                                    <div id="strength-bar-4" class="h-full bg-gray-600 transition-all duration-300"></div>
+                                </div>
+                            </div>
+                            <p id="strength-text" class="text-xs text-gray-500">Password strength: Weak</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <label class="flex items-center">
+                            <input type="checkbox" class="w-4 h-4 bg-cyber-dark border border-cyber-border rounded text-cyber-accent focus:ring-2 focus:ring-cyber-accent">
+                            <span class="ml-2 text-sm text-gray-400">Remember me</span>
+                        </label>
+                        <a href="#" class="text-sm text-cyber-accent hover:text-cyan-400 transition-colors">Forgot password?</a>
+                    </div>
+
+                    <button type="submit" class="w-full bg-gradient-to-r from-cyber-accent to-cyan-500 hover:from-cyan-500 hover:to-cyber-accent text-cyber-darker font-semibold py-3 px-4 rounded-lg transition-all duration-200 shadow-glow-cyan">
+                        Sign in
+                    </button>
+                </form>
+
+                <p class="text-center text-sm text-gray-400 mt-6">
+                    Don't have an account? 
+                    <a href="#" id="show-signup" class="text-cyber-accent hover:text-cyan-400 font-medium transition-colors">Sign up</a>
+                </p>
+            </div>
+
+            <div class="mt-6 text-center">
+                <p class="text-xs text-gray-500">
+                    Protected by enterprise-grade encryption
+                    <i class="fas fa-shield-check text-cyber-accent ml-1"></i>
+                </p>
+            </div>
+        </div>
+
+        <div id="mfa-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+            <div class="bg-cyber-card border border-cyber-border rounded-2xl p-8 max-w-md w-full shadow-2xl relative">
+                <button id="close-mfa" class="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+                
+                <div class="text-center mb-6">
+                    <div class="inline-flex items-center justify-center w-16 h-16 bg-cyber-purple/20 rounded-full mb-4">
+                        <i class="fas fa-mobile-screen-button text-3xl text-cyber-purple"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-2">Two-Factor Authentication</h3>
+                    <p class="text-gray-400 text-sm">Enter the 6-digit code from your authenticator app</p>
+                </div>
+
+                <form id="mfa-form" class="space-y-6">
+                    <div class="flex gap-2 justify-center">
+                        <input type="text" maxlength="1" class="w-12 h-14 bg-cyber-dark border border-cyber-border text-white text-center text-2xl font-bold rounded-lg focus:outline-none focus:ring-2 focus:ring-cyber-purple focus:border-transparent transition-all duration-200" pattern="[0-9]">
+                        <input type="text" maxlength="1" class="w-12 h-14 bg-cyber-dark border border-cyber-border text-white text-center text-2xl font-bold rounded-lg focus:outline-none focus:ring-2 focus:ring-cyber-purple focus:border-transparent transition-all duration-200" pattern="[0-9]">
+                        <input type="text" maxlength="1" class="w-12 h-14 bg-cyber-dark border border-cyber-border text-white text-center text-2xl font-bold rounded-lg focus:outline-none focus:ring-2 focus:ring-cyber-purple focus:border-transparent transition-all duration-200" pattern="[0-9]">
+                        <div class="w-4"></div>
+                        <input type="text" maxlength="1" class="w-12 h-14 bg-cyber-dark border border-cyber-border text-white text-center text-2xl font-bold rounded-lg focus:outline-none focus:ring-2 focus:ring-cyber-purple focus:border-transparent transition-all duration-200" pattern="[0-9]">
+                        <input type="text" maxlength="1" class="w-12 h-14 bg-cyber-dark border border-cyber-border text-white text-center text-2xl font-bold rounded-lg focus:outline-none focus:ring-2 focus:ring-cyber-purple focus:border-transparent transition-all duration-200" pattern="[0-9]">
+                        <input type="text" maxlength="1" class="w-12 h-14 bg-cyber-dark border border-cyber-border text-white text-center text-2xl font-bold rounded-lg focus:outline-none focus:ring-2 focus:ring-cyber-purple focus:border-transparent transition-all duration-200" pattern="[0-9]">
+                    </div>
+
+                    <button type="submit" class="w-full bg-gradient-to-r from-cyber-purple to-purple-600 hover:from-purple-600 hover:to-cyber-purple text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 shadow-glow-purple">
+                        Verify Code
+                    </button>
+                </form>
+
+                <div class="mt-6 text-center">
+                    <p class="text-sm text-gray-400">
+                        Didn't receive a code? 
+                        <a href="#" class="text-cyber-purple hover:text-purple-400 font-medium transition-colors">Resend</a>
+                    </p>
+                    <p class="text-xs text-gray-500 mt-2">
+                        <i class="fas fa-clock mr-1"></i>
+                        Code expires in 5:00
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div id="email-verification" class="hidden relative z-10 w-full max-w-md">
+            <div class="bg-cyber-card border border-cyber-border rounded-2xl p-8 shadow-2xl backdrop-blur-xl text-center">
+                <div class="inline-flex items-center justify-center w-20 h-20 bg-cyber-accent/20 rounded-full mb-6">
+                    <i class="fas fa-envelope-open-text text-4xl text-cyber-accent"></i>
+                </div>
+                
+                <h2 class="text-2xl font-bold text-white mb-3">Check your email</h2>
+                <p class="text-gray-400 mb-6">We've sent a verification link to<br><span class="text-white font-medium">user@company.com</span></p>
+
+                <div class="bg-cyber-dark border border-cyber-border rounded-lg p-4 mb-6">
+                    <div class="flex items-start gap-3 text-left">
+                        <i class="fas fa-info-circle text-cyber-accent mt-1"></i>
+                        <div>
+                            <p class="text-sm text-gray-300 mb-2">Click the link in the email to verify your account</p>
+                            <p class="text-xs text-gray-500">The link will expire in 24 hours</p>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="w-full bg-cyber-dark hover:bg-cyber-darker border border-cyber-border text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 mb-4">
+                    <i class="fas fa-rotate-right mr-2"></i>
+                    Resend verification email
+                </button>
+
+                <a href="#" class="text-sm text-gray-400 hover:text-white transition-colors">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    Back to login
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        window.addEventListener('load', function() {
+            const loginForm = document.getElementById('login-form');
+            const mfaModal = document.getElementById('mfa-modal');
+            const closeMfaBtn = document.getElementById('close-mfa');
+            const mfaInputs = document.querySelectorAll('#mfa-form input');
+            const passwordInput = document.getElementById('password');
+            const passwordStrength = document.getElementById('password-strength');
+            
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                mfaModal.classList.remove('hidden');
+                mfaInputs[0].focus();
+            });
+
+            closeMfaBtn.addEventListener('click', function() {
+                mfaModal.classList.add('hidden');
+            });
+
+            mfaInputs.forEach((input, index) => {
+                input.addEventListener('input', function(e) {
+                    if (e.target.value.length === 1 && index < mfaInputs.length - 1) {
+                        mfaInputs[index + 1].focus();
+                    }
+                });
+
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Backspace' && e.target.value === '' && index > 0) {
+                        mfaInputs[index - 1].focus();
+                    }
+                });
+            });
+
+            passwordInput.addEventListener('input', function(e) {
+                const password = e.target.value;
+                if (password.length > 0) {
+                    passwordStrength.classList.remove('hidden');
+                    let strength = 0;
+                    
+                    if (password.length >= 8) strength++;
+                    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+                    if (/[0-9]/.test(password)) strength++;
+                    if (/[^a-zA-Z0-9]/.test(password)) strength++;
+
+                    const bars = [
+                        document.getElementById('strength-bar-1'),
+                        document.getElementById('strength-bar-2'),
+                        document.getElementById('strength-bar-3'),
+                        document.getElementById('strength-bar-4')
+                    ];
+
+                    const strengthText = document.getElementById('strength-text');
+                    const colors = ['#ef4444', '#f59e0b', '#10b981', '#00d9ff'];
+                    const labels = ['Weak', 'Fair', 'Good', 'Strong'];
+
+                    bars.forEach((bar, idx) => {
+                        if (idx < strength) {
+                            bar.style.width = '100%';
+                            bar.style.backgroundColor = colors[strength - 1];
+                        } else {
+                            bar.style.width = '0%';
+                        }
+                    });
+
+                    strengthText.textContent = `Password strength: ${labels[strength - 1] || 'Weak'}`;
+                    strengthText.style.color = colors[strength - 1] || '#6b7280';
+                } else {
+                    passwordStrength.classList.add('hidden');
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

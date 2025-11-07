@@ -1,0 +1,80 @@
+@import "tailwindcss";
+
+@layer base {
+  /* Hide scrollbar */
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  body {
+    font-family: "Inter", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+@layer utilities {
+  .bg-cyber-darker {
+    background-color: #060911;
+  }
+  
+  .bg-cyber-dark {
+    background-color: #0a0e1a;
+  }
+  
+  .bg-cyber-card {
+    background-color: #0f1420;
+  }
+  
+  .border-cyber-border {
+    border-color: #1a2332;
+  }
+  
+  .text-cyber-accent {
+    color: #00d9ff;
+  }
+  
+  .bg-cyber-accent {
+    background-color: #00d9ff;
+  }
+  
+  .text-cyber-purple {
+    color: #a855f7;
+  }
+  
+  .bg-cyber-purple {
+    background-color: #a855f7;
+  }
+  
+  .text-cyber-pink {
+    color: #ec4899;
+  }
+  
+  .from-cyber-accent {
+    --tw-gradient-from: #00d9ff;
+  }
+  
+  .to-cyber-purple {
+    --tw-gradient-to: #a855f7;
+  }
+  
+  .from-cyber-purple {
+    --tw-gradient-from: #a855f7;
+  }
+  
+  .shadow-glow-cyan {
+    box-shadow: 0 0 20px rgba(0, 217, 255, 0.3);
+  }
+  
+  .shadow-glow-purple {
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.3);
+  }
+  
+  .focus\:ring-cyber-accent:focus {
+    --tw-ring-color: #00d9ff;
+  }
+  
+  .focus\:ring-cyber-purple:focus {
+    --tw-ring-color: #a855f7;
+  }
+}
