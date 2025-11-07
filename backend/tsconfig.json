@@ -32,6 +32,42 @@
       ],
       "@lib/shared/*": [
         "libs/shared/src/*"
+      ],
+      "@lib/entities": [
+        "libs/entities"
+      ],
+      "@lib/entities/*": [
+        "libs/entities/*"
+      ],
+      "@lib/decorators": [
+        "libs/decorators/src"
+      ],
+      "@lib/decorators/*": [
+        "libs/decorators/src/*"
+      ],
+      "@lib/middlewares": [
+        "libs/middlewares/src"
+      ],
+      "@lib/middlewares/*": [
+        "libs/middlewares/src/*"
+      ],
+      "@lib/interceptors": [
+        "libs/interceptors/src"
+      ],
+      "@lib/interceptors/*": [
+        "libs/interceptors/src/*"
+      ],
+      "@lib/constant": [
+        "libs/constant/src"
+      ],
+      "@lib/constant/*": [
+        "libs/constant/src/*"
+      ],
+      "@lib/helper": [
+        "libs/helper/src"
+      ],
+      "@lib/helper/*": [
+        "libs/helper/src/*"
       ]
     }
   }

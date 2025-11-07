@@ -1,15 +1,17 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { ConfigModule, ConfigService } from "@nestjs/config";
-import { AgentEntity } from "libs/entities/src/agent.entity";
-import { RemediationAction } from "libs/entities/src/remediation-action.entity";
-import { SecurityMetric } from "libs/entities/src/security-metric.entity";
-import { SiteVulnerability } from "libs/entities/src/site-vulnerability.entity";
-import { Site } from "libs/entities/src/site.entity";
-import { Threat } from "libs/entities/src/threat.entity";
-import { User } from "libs/entities/src/user.entity";
-import { Vulnerability } from "libs/entities/src/vulnerability.entity";
-import { Notification } from "libs/entities";
+import {
+  User,
+  Site,
+  AgentEntity,
+  Vulnerability,
+  SiteVulnerability,
+  Threat,
+  RemediationAction,
+  SecurityMetric,
+  Notification,
+} from "@lib/entities";
 
 @Module({
   imports: [
@@ -34,7 +36,7 @@ import { Notification } from "libs/entities";
           SecurityMetric,
           Notification,
         ],
-        synchronize: true,
+        synchronize: false,
         logging: configService.get<string>("NODE_ENV") === "development",
         ssl: {
           rejectUnauthorized: false,
