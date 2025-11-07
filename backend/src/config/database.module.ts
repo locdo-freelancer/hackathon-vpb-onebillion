@@ -11,6 +11,8 @@ import {
   RemediationAction,
   SecurityMetric,
   Notification,
+  Incident,
+  ThreatIndicator,
 } from "@lib/entities";
 
 @Module({
@@ -35,6 +37,8 @@ import {
           RemediationAction,
           SecurityMetric,
           Notification,
+          Incident,
+          ThreatIndicator,
         ],
         synchronize: false,
         logging: configService.get<string>("NODE_ENV") === "development",

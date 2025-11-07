@@ -40,6 +40,9 @@ async function bootstrap() {
     .addTag("agent", "Agent communication")
     .addTag("agent-install", "Agent installation")
     .addTag("onboarding", "User onboarding")
+    .addTag("incidents", "Security incident management")
+    .addTag("threats", "Threat intelligence indicators")
+    .addTag("vulnerabilities", "Vulnerability management")
     .addBearerAuth(
       {
         type: "http",

@@ -12,6 +12,7 @@ import { RemediationAction } from "./remediation-action.entity";
 import { SiteVulnerability } from "./site-vulnerability.entity";
 import { Threat } from "./threat.entity";
 import { AgentEntity } from "./agent.entity";
+import { Incident } from "./incident.entity";
 
 @Entity("sites")
 export class Site extends BaseEntity {
@@ -51,4 +52,7 @@ export class Site extends BaseEntity {
 
   @OneToMany(() => RemediationAction, (action) => action.site)
   remediationActions: RemediationAction[];
+
+  @OneToMany(() => Incident, (incident) => incident.site)
+  incidents: Incident[];
 }

@@ -12,6 +12,9 @@ import { AgentCommModule } from "./modules/agent-comm/agent-comm.module";
 import { AgentInstallModule } from "./modules/agent-install/agent-install.module";
 import { OnboardingModule } from "./modules/onboarding/onboarding.module";
 import { TasksModule } from "./modules/tasks/tasks.module";
+import { IncidentsModule } from "./modules/incidents/incidents.module";
+import { ThreatsModule } from "./modules/threats/threats.module";
+import { VulnerabilitiesModule } from "./modules/vulnerabilities/vulnerabilities.module";
 import { APP_PROVIDERS } from "./app.provider";
 import { LoggingMiddleware } from "@lib/middlewares";
 
@@ -31,6 +34,9 @@ import { LoggingMiddleware } from "@lib/middlewares";
     AgentInstallModule,
     OnboardingModule,
     TasksModule,
+    IncidentsModule,
+    ThreatsModule,
+    VulnerabilitiesModule,
   ],
   controllers: [AppController],
   providers: [AppService, ...APP_PROVIDERS],

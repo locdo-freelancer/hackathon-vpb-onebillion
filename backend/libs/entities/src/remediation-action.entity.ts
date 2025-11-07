@@ -1,6 +1,7 @@
 import { Entity, Column, ManyToOne, JoinColumn } from "typeorm";
 import { BaseEntity } from "libs/shared/src";
 import { Site } from "./site.entity";
+import { Incident } from "./incident.entity";
 
 @Entity("remediation_actions")
 export class RemediationAction extends BaseEntity {
@@ -28,9 +29,18 @@ export class RemediationAction extends BaseEntity {
   @Column({ type: "text", nullable: true })
   result: string;
 
+  @Column({ type: "text", nullable: true })
+  incident_id: string;
+
   @ManyToOne(() => Site, (site) => site.remediationActions, {
     onDelete: "CASCADE",
   })
   @JoinColumn({ name: "site_id" })
   site: Site;
+
+  @ManyToOne(() => Incident, (incident) => incident.remediationActions, {
+    onDelete: "CASCADE",
+  })
+  @JoinColumn({ name: "incident_id" })
+  incident: Incident;
 }

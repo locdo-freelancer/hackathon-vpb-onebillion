@@ -21,6 +21,9 @@ backend/
 │   │   ├── agent-comm/      # Agent communication module
 │   │   ├── agent-install/   # Agent installation module (NEW)
 │   │   ├── onboarding/      # User onboarding module (NEW)
+│   │   ├── incidents/       # Security incident management (NEW)
+│   │   ├── threats/         # Threat intelligence indicators (NEW)
+│   │   ├── vulnerabilities/ # Vulnerability management (NEW)
 │   │   └── tasks/           # Background tasks module
 │   ├── app.module.ts        # Root module
 │   ├── app.provider.ts      # Global providers
@@ -203,6 +206,211 @@ docker run -d --name securevault-agent \
   securevault/agent:latest
 ```
 
+#### Incidents Module (NEW)
+**Endpoints:**
+- `POST /api/incidents` - Create new security incident
+- `GET /api/incidents` - List all incidents with filtering
+- `GET /api/incidents/stats` - Get incident statistics by status/severity
+- `GET /api/incidents/:id` - Get incident details with timeline and analysis
+- `GET /api/incidents/incident/:incidentId` - Get incident by display ID (INC-001)
+- `PATCH /api/incidents/:id` - Update incident information
+- `DELETE /api/incidents/:id` - Delete incident
+- `POST /api/incidents/bulk-action` - Bulk operations (close, assign, export)
+- `POST /api/incidents/:id/resolve` - Mark incident as resolved
+- `POST /api/incidents/:id/close` - Mark incident as closed
+- `POST /api/incidents/:id/assign` - Assign incident to user
+
+**Features:**
+- Auto-generated incident IDs (INC-001, INC-002, etc.)
+- MITRE ATT&CK framework integration
+- Timeline tracking with detailed events
+- AI recommendations and analysis
+- File hash and IP reputation analysis
+- Related incidents correlation
+- Evidence management
+- Bulk operations for efficiency
+
+**Incident Types:**
+- Malware detection
+- Phishing campaigns
+- DDoS attacks
+- Data breaches
+- Policy violations
+- Vulnerability exploitation
+- Ransomware attempts
+- Intrusion attempts
+
+**Response Format:**
+```json
+{
+  "incidents": [
+    {
+      "id": "uuid",
+      "incidentId": "INC-001",
+      "title": "Advanced Persistent Threat Detected",
+      "severity": "critical",
+      "status": "investigating",
+      "type": "malware",
+      "dateCreated": "2024-01-15 14:32",
+      "assignee": {
+        "id": "user-id",
+        "name": "Alex Chen",
+        "avatar": "avatar-url"
+      },
+      "affectedSystems": ["web-prod-01", "db-mysql-01"],
+      "tags": ["apt", "state-sponsored", "critical"]
+    }
+  ],
+  "stats": {
+    "total": 8,
+    "open": 2,
+    "investigating": 3,
+    "resolved": 2,
+    "closed": 1,
+    "critical": 3,
+    "high": 2,
+    "medium": 2,
+    "low": 1
+  }
+}
+```
+
+#### Threats Module (NEW)
+**Endpoints:**
+- `POST /api/threats` - Create new threat indicator
+- `GET /api/threats` - List all threat indicators with filtering
+- `GET /api/threats/stats` - Get threat statistics by severity/status
+- `GET /api/threats/:id` - Get threat indicator details with enrichment
+- `PATCH /api/threats/:id` - Update threat indicator
+- `DELETE /api/threats/:id` - Delete threat indicator
+- `POST /api/threats/:id/block` - Block threat indicator
+- `POST /api/threats/:id/unblock` - Unblock threat indicator
+- `POST /api/threats/bulk/block` - Bulk block multiple indicators
+- `POST /api/threats/bulk/delete` - Bulk delete multiple indicators
+- `GET /api/threats/export/csv` - Export threats to CSV
+- `GET /api/threats/enrichment/:indicator` - Get enrichment data
+
+**Features:**
+- Multi-type indicator support (IP, Domain, URL, Hash)
+- Confidence scoring (0-100)
+- Geolocation and ASN information
+- Malware family classification
+- Intelligence correlation
+- Time-based filtering
+- Bulk operations
+- CSV export functionality
+
+**Threat Types:**
+- IP addresses (malicious IPs, C2 servers)
+- Domains (phishing, malware distribution)
+- URLs (phishing links, exploit kits)
+- File hashes (malware samples)
+
+**Response Format:**
+```json
+{
+  "indicators": [
+    {
+      "id": "uuid",
+      "indicator": "185.220.102.8",
+      "description": "Known malware C&C server",
+      "type": "ip",
+      "severity": "critical",
+      "confidence": 95,
+      "country": "Russia",
+      "countryCode": "RU",
+      "countryFlag": "🇷🇺",
+      "firstSeen": "2 hours ago",
+      "lastSeen": "1 minute ago",
+      "status": "active",
+      "icon": "fas fa-exclamation-triangle",
+      "iconColor": "text-red-400"
+    }
+  ],
+  "stats": {
+    "total": 156,
+    "critical": 23,
+    "high": 45,
+    "medium": 67,
+    "low": 21,
+    "blocked": 89,
+    "active": 67
+  }
+}
+```
+
+#### Vulnerabilities Module (NEW)
+**Endpoints:**
+- `POST /api/vulnerabilities` - Create new vulnerability (CVE)
+- `GET /api/vulnerabilities` - List all vulnerabilities with filtering
+- `GET /api/vulnerabilities/stats` - Get vulnerability statistics
+- `GET /api/vulnerabilities/:id` - Get vulnerability details
+- `PATCH /api/vulnerabilities/:id` - Update vulnerability
+- `DELETE /api/vulnerabilities/:id` - Delete vulnerability
+- `POST /api/vulnerabilities/assign` - Assign vulnerability to site
+- `GET /api/vulnerabilities/sites/:siteId` - Get site-specific vulnerabilities
+- `PATCH /api/vulnerabilities/sites/:siteId/:vulnId` - Update site vulnerability status
+- `DELETE /api/vulnerabilities/sites/:siteId/:vulnId` - Remove vulnerability from site
+- `GET /api/vulnerabilities/top` - Get top vulnerabilities by impact
+- `POST /api/vulnerabilities/scan/:siteId` - Scan site for vulnerabilities
+
+**Features:**
+- CVE database management
+- Site-specific vulnerability tracking
+- CVSS score filtering
+- Severity-based categorization
+- Remediation information
+- Vulnerability scanning simulation
+- Top vulnerabilities by affected sites
+- Resolution tracking
+
+**CVE Integration:**
+- CVE identifier support (CVE-2023-12345)
+- CVSS score integration
+- Severity mapping (Critical, High, Medium, Low)
+- Published date tracking
+- Remediation guidance
+
+**Response Format:**
+```json
+{
+  "vulnerabilities": [
+    {
+      "id": "uuid",
+      "cveId": "CVE-2023-12345",
+      "title": "Remote Code Execution in Apache Log4j",
+      "severity": "Critical",
+      "cvssScore": "9.8",
+      "publishedDate": "2023-12-01T00:00:00Z",
+      "affectedSites": 3,
+      "sites": [
+        {
+          "id": "site-uuid",
+          "name": "Production Web Server",
+          "status": "Active",
+          "detectedAt": "2023-12-02T10:30:00Z",
+          "lastScanned": "2023-12-03T14:15:00Z"
+        }
+      ]
+    }
+  ],
+  "stats": {
+    "total": 1247,
+    "bySeverity": {
+      "critical": 89,
+      "high": 234,
+      "medium": 567,
+      "low": 357
+    },
+    "byStatus": {
+      "active": 456,
+      "resolved": 678,
+      "mitigated": 113
+    }
+  }
+}
+```
+
 #### Users Module
 **Endpoints:**
 - `GET /api/users` - Get all users
@@ -338,6 +546,8 @@ All entities extend BaseEntity which provides:
 7. **RemediationAction** - Actions taken to remediate issues
 8. **SecurityMetric** - Security metrics over time
 9. **Notification** - User notifications
+10. **Incident** - Security incident management with MITRE ATT&CK
+11. **ThreatIndicator** - Threat intelligence indicators (IP/Domain/URL/Hash)
 
 ## 🔐 Authentication Flow
 
@@ -359,7 +569,7 @@ Features:
 - Interactive API testing
 - Request/response schemas
 - Authentication support (JWT Bearer token)
-- Grouped by tags (auth, users, sites, agents, agent, agent-install, onboarding)
+- Grouped by tags (auth, users, sites, agents, agent, agent-install, onboarding, incidents, threats, vulnerabilities)
 
 ## 🚀 Running the Application
 
@@ -457,6 +667,14 @@ TypeScript path aliases for clean imports:
 ✅ **NEW**: Site statistics and metrics aggregation
 ✅ **NEW**: Agent heartbeat monitoring with formatting
 ✅ **NEW**: Icon gradient mapping for UI consistency
+✅ **NEW**: Security incident management with MITRE ATT&CK
+✅ **NEW**: Threat intelligence with multi-type indicators
+✅ **NEW**: CVE vulnerability management and tracking
+✅ **NEW**: Site-specific vulnerability assignments
+✅ **NEW**: Incident timeline and evidence management
+✅ **NEW**: Threat indicator blocking and enrichment
+✅ **NEW**: Bulk operations for efficiency
+✅ **NEW**: Advanced filtering and statistics
 
 ## � Frontend Integration
 
@@ -511,6 +729,51 @@ interface Agent {
 // GET /api/agent-install/status returns connection status
 ```
 
+#### Incidents Integration (`useIncidentsData` hook)
+
+```typescript
+// GET /api/incidents returns format compatible with:
+interface IncidentsData {
+  incidents: Incident[];
+  stats: IncidentsStats;
+}
+
+interface Incident {
+  id: string;
+  incidentId: string; // INC-001
+  title: string;
+  severity: "critical" | "high" | "medium" | "low";
+  status: "open" | "investigating" | "resolved" | "closed";
+  type: "malware" | "phishing" | "ddos" | "intrusion" | "data-breach";
+  dateCreated: string;
+  assignee: { id: string; name: string; avatar: string } | null;
+  affectedSystems: string[];
+  tags: string[];
+}
+```
+
+#### Threats Integration (`useThreatsData` hook)
+
+```typescript
+// GET /api/threats returns format compatible with:
+interface ThreatsData {
+  indicators: ThreatIndicator[];
+  stats: ThreatsStats;
+}
+
+interface ThreatIndicator {
+  id: string;
+  indicator: string; // IP, domain, URL, hash
+  type: "ip" | "domain" | "url" | "hash";
+  severity: "critical" | "high" | "medium" | "low";
+  status: "active" | "blocked" | "flagged" | "monitoring";
+  confidence: number; // 0-100
+  country: string;
+  firstSeen: string;
+  lastSeen: string;
+}
+```
+
 ### Response Format Standardization
 
 All API responses follow this format (via ResponseLoggingInterceptor):
@@ -550,13 +813,18 @@ All global configurations are centralized in:
 ```
 User (1) ─────── (n) Site (1) ─────── (1) AgentEntity
 │                      │
-│                      └─── (n) SiteVulnerability
-│                      └─── (n) Threat
+│                      ├─── (n) SiteVulnerability
+│                      ├─── (n) Threat
+│                      ├─── (n) Incident (NEW)
 │                      └─── (n) RemediationAction
 │
-└─── (n) Notification
+├─── (n) Notification
+└─── (n) Incident (assignee)
 
 Vulnerability (1) ─────── (n) SiteVulnerability
+ThreatIndicator (NEW) ─── (n) Site (optional)
+Incident (1) ─────── (n) RemediationAction
+Incident (1) ─────── (n) Notification
 ```
 
 ### BaseEntity Integration
@@ -575,9 +843,73 @@ All entities now extend BaseEntity which provides:
 1. All entities now use UUID instead of text-based IDs
 2. Timestamps changed from bigint to proper timestamp columns
 3. BaseEntity fields added to all entities
+4. **NEW**: Incident entity with MITRE ATT&CK framework support
+5. **NEW**: ThreatIndicator entity with multi-type indicator support
+6. **NEW**: Enhanced SiteVulnerability with last_scanned and context fields
 
 ### Backwards Compatibility
 
 - API endpoints remain the same
 - Response formats enhanced but compatible
 - Authentication flow unchanged
+- **NEW**: Incident-Vulnerability-Management modules fully integrated
+- **NEW**: Frontend hooks compatibility maintained
+- **NEW**: MITRE ATT&CK and threat intelligence capabilities added
+
+## 🛡️ Security & Compliance Features
+
+### Incident Response Capabilities
+
+- **MITRE ATT&CK Integration**: Map incidents to attack techniques and tactics
+- **Timeline Tracking**: Detailed event timeline for forensic analysis
+- **Evidence Management**: Structured evidence collection and storage
+- **AI Recommendations**: Machine learning-powered response suggestions
+- **Bulk Operations**: Efficient handling of multiple incidents
+
+### Threat Intelligence Platform
+
+- **Multi-Source Indicators**: IP addresses, domains, URLs, file hashes
+- **Confidence Scoring**: 0-100 confidence levels for threat indicators
+- **Geolocation Data**: ASN and country information for threat attribution
+- **Enrichment APIs**: External threat intelligence integration ready
+- **Blocking Capabilities**: Automated threat indicator blocking
+
+### Vulnerability Management
+
+- **CVE Integration**: Complete CVE database with CVSS scoring
+- **Site-Specific Tracking**: Track vulnerabilities per monitored site
+- **Remediation Workflow**: Status tracking from detection to resolution
+- **Scanning Simulation**: Mock vulnerability scanning capabilities
+- **Impact Analysis**: Top vulnerabilities by affected sites
+
+## 📈 Performance & Scalability
+
+### Database Optimization
+
+- **Indexed Queries**: Optimized database queries for large datasets
+- **Pagination Support**: Efficient data loading for large result sets
+- **Bulk Operations**: Batch processing for multiple records
+- **Relationship Optimization**: Proper JOIN strategies for complex queries
+
+### API Performance
+
+- **Response Caching**: Cached responses for frequently accessed data
+- **Filtering Optimization**: Advanced filtering without performance impact
+- **Background Processing**: Async operations for time-consuming tasks
+- **Connection Pooling**: Efficient database connection management
+
+## 🔍 Advanced Features
+
+### Analytics & Reporting
+
+- **Statistical Analysis**: Comprehensive stats by severity, status, type
+- **Trend Analysis**: Time-based analysis of security metrics
+- **Export Capabilities**: CSV export for external analysis
+- **Dashboard Metrics**: Real-time metrics for security dashboards
+
+### Integration Ready
+
+- **External TI Feeds**: Ready for VirusTotal, AlienVault OTX integration
+- **SIEM Integration**: Structured logging for SIEM platforms
+- **Webhook Support**: Event-driven notifications and integrations
+- **API-First Design**: RESTful APIs for third-party integrations
