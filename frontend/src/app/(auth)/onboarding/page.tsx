@@ -82,7 +82,7 @@ export default function OnboardingPage() {
       if (success) {
         markStepComplete(4);
         markOnboardingComplete();
-        router.push("/dashboard");
+        router.push("/agent-install");
       }
       return;
     }
