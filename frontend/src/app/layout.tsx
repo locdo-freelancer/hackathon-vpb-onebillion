@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
+import { DevTools } from "@/components/DevTools";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -10,8 +11,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "One Billion",
-  description: "A modern full-stack application",
+  title: "One Billion - Smart Banking Solutions",
+  description: "VPBank Hackathon - Smart Banking for Everyone",
 };
 
 export default function RootLayout({
@@ -20,9 +21,26 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.FontAwesomeConfig = { 
+                autoReplaceSvg: false,
+                observeMutations: false 
+              };
+            `,
+          }}
+        />
+        <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        />
+      </head>
+      <body className={inter.className} suppressHydrationWarning>
         <Providers>{children}</Providers>
+        <DevTools />
       </body>
     </html>
   );

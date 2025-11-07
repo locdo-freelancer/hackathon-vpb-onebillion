@@ -15,12 +15,19 @@ export interface MFAVerification {
   userId: string;
 }
 
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+}
+
 export interface AuthResponse {
   success: boolean;
   message?: string;
   requiresMFA?: boolean;
   userId?: string;
   token?: string;
+  user?: User;
 }
 
 export enum PasswordStrength {

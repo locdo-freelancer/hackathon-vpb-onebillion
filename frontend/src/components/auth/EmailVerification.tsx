@@ -7,11 +7,13 @@ import { AuthService } from "@/lib/services/auth.service";
 interface EmailVerificationProps {
   email: string;
   onBack: () => void;
+  onComplete?: () => void; // Optional callback when verification is complete
 }
 
 export const EmailVerification: React.FC<EmailVerificationProps> = ({
   email,
   onBack,
+  onComplete,
 }) => {
   const [isResending, setIsResending] = useState(false);
   const [message, setMessage] = useState("");
@@ -56,6 +58,16 @@ export const EmailVerification: React.FC<EmailVerificationProps> = ({
           </div>
         </div>
       </div>
+
+      {onComplete && (
+        <button
+          onClick={onComplete}
+          className="w-full bg-linear-to-r from-cyber-accent to-cyan-500 hover:from-cyan-500 hover:to-cyber-accent text-cyber-darker font-semibold py-3 px-4 rounded-lg transition-all duration-200 shadow-glow-cyan mb-4"
+        >
+          <i className="fas fa-check-circle mr-2" />
+          Email Verified - Continue to Setup
+        </button>
+      )}
 
       {message && (
         <div className="bg-cyber-accent/10 border border-cyber-accent/50 text-cyber-accent px-4 py-3 rounded-lg text-sm mb-4">

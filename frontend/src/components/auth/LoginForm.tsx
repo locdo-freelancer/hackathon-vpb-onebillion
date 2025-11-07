@@ -93,7 +93,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full bg-gradient-to-r from-cyber-accent to-cyan-500 hover:from-cyan-500 hover:to-cyber-accent text-cyber-darker font-semibold py-3 px-4 rounded-lg transition-all duration-200 shadow-glow-cyan disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full bg-linear-to-r from-cyber-accent to-cyan-500 hover:from-cyan-500 hover:to-cyber-accent text-cyber-darker font-semibold py-3 px-4 rounded-lg transition-all duration-200 shadow-glow-cyan disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isLoading ? "Signing in..." : "Sign in"}
         </button>
