@@ -1,6 +1,8 @@
 import { Entity, Column, ManyToOne, JoinColumn, OneToMany } from "typeorm";
 import { BaseEntity } from "libs/shared/src";
 import { Site } from "./site.entity";
+import { RemediationAction } from "./remediation-action.entity";
+import { Notification } from "./notification.entity";
 
 export enum ThreatSeverity {
   CRITICAL = "critical",
@@ -104,4 +106,13 @@ export class ThreatIndicator extends BaseEntity {
   @ManyToOne(() => Site, { onDelete: "SET NULL" })
   @JoinColumn({ name: "site_id" })
   site: Site;
+
+  @OneToMany(
+    () => RemediationAction,
+    (remediation) => remediation.threatIndicator
+  )
+  remediationActions: RemediationAction[];
+
+  @OneToMany(() => Notification, (notification) => notification.threatIndicator)
+  notifications: Notification[];
 }

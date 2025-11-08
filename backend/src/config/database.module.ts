@@ -40,7 +40,7 @@ import {
           Incident,
           ThreatIndicator,
         ],
-        synchronize: false,
+        synchronize: true,
         logging: configService.get<string>("NODE_ENV") === "development",
         ssl: {
           rejectUnauthorized: false,

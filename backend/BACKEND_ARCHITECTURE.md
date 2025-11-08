@@ -21,10 +21,13 @@ backend/
 │   │   ├── agent-comm/      # Agent communication module
 │   │   ├── agent-install/   # Agent installation module (NEW)
 │   │   ├── onboarding/      # User onboarding module (NEW)
-│   │   ├── incidents/       # Security incident management (NEW)
-│   │   ├── threats/         # Threat intelligence indicators (NEW)
-│   │   ├── vulnerabilities/ # Vulnerability management (NEW)
-│   │   └── tasks/           # Background tasks module
+│   │   ├── incidents/         # Security incident management (NEW)
+│   │   ├── threats/           # Threat intelligence indicators (NEW)
+│   │   ├── vulnerabilities/   # Vulnerability management (NEW)
+│   │   ├── remediation-actions/ # Remediation action tracking (NEW)
+│   │   ├── security-metrics/ # Security metrics and reporting (NEW)
+│   │   ├── notifications/    # Notification and alert management (NEW)
+│   │   └── tasks/            # Background tasks module
 │   ├── app.module.ts        # Root module
 │   ├── app.provider.ts      # Global providers
 │   └── main.ts              # Application entry point
@@ -411,6 +414,230 @@ docker run -d --name securevault-agent \
 }
 ```
 
+#### Remediation Actions Module (NEW)
+**Endpoints:**
+- `POST /api/remediation-actions` - Create new remediation action
+- `GET /api/remediation-actions` - List all remediation actions with filtering
+- `GET /api/remediation-actions/statistics` - Get remediation statistics
+- `GET /api/remediation-actions/by-source/:sourceType/:sourceId` - Get actions by source
+- `GET /api/remediation-actions/:id` - Get remediation action details
+- `PATCH /api/remediation-actions/:id` - Update remediation action
+- `DELETE /api/remediation-actions/:id` - Delete remediation action
+- `PATCH /api/remediation-actions/bulk/status` - Bulk update status
+
+**Features:**
+- Cross-reference tracking for incidents, threats, and vulnerabilities
+- Progress tracking with percentage completion
+- Effectiveness scoring (0-100)
+- Cost estimation and tracking
+- Due date management with overdue alerts
+- Priority-based assignment
+- Automated vs manual remediation types
+- Bulk status updates for efficiency
+
+**Remediation Types:**
+- Manual remediation actions
+- Automated security responses
+- Semi-automated workflows
+- Policy enforcement actions
+- Patch management activities
+- Configuration changes
+- Access control updates
+
+**Response Format:**
+```json
+{
+  "data": [
+    {
+      "id": "uuid",
+      "actionType": "Patch Critical Vulnerability",
+      "description": "Apply security patch for CVE-2023-12345",
+      "priority": "critical",
+      "status": "in_progress",
+      "remediationType": "manual",
+      "progressPercentage": 75,
+      "assignedTo": "admin-user-id",
+      "dueDate": 1699545600000,
+      "costEstimate": 500.00,
+      "effectivenessScore": 85,
+      "site": {
+        "id": "site-uuid",
+        "name": "Production Web Server"
+      },
+      "incident": {
+        "id": "incident-uuid",
+        "incidentId": "INC-001",
+        "title": "Critical Vulnerability Detected"
+      }
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 10,
+    "total": 45,
+    "totalPages": 5
+  }
+}
+```
+
+#### Security Metrics Module (NEW)
+**Endpoints:**
+- `POST /api/security-metrics` - Create new security metric
+- `POST /api/security-metrics/bulk` - Create multiple metrics
+- `GET /api/security-metrics` - List all metrics with filtering
+- `GET /api/security-metrics/statistics` - Get comprehensive statistics
+- `GET /api/security-metrics/alerts` - Get alert count by severity
+- `GET /api/security-metrics/latest` - Get latest metrics for each type
+- `GET /api/security-metrics/historical/:siteId/:metricType` - Get time-series data
+- `GET /api/security-metrics/site/:siteId` - Get metrics by site
+- `GET /api/security-metrics/:id` - Get metric details
+- `PATCH /api/security-metrics/:id` - Update metric
+- `DELETE /api/security-metrics/:id` - Delete metric
+
+**Features:**
+- Real-time and historical metrics storage
+- Automatic alert level calculation based on thresholds
+- Trend analysis with percentage change tracking
+- Multi-category metrics (Security, Performance, Compliance, Operational)
+- Time-series data for dashboard visualization
+- Threshold-based alerting system
+- Bulk metric ingestion for high-volume data
+
+**Metric Types:**
+- Attack count monitoring
+- Vulnerability count tracking
+- Threat level assessment
+- Security score calculation
+- Incident count analysis
+- Remediation rate tracking
+- System uptime monitoring
+- Compliance score evaluation
+
+**Alert Thresholds:**
+- Low: Initial warning level
+- Medium: Elevated concern level
+- High: Urgent attention required
+- Critical: Immediate action needed
+
+**Response Format:**
+```json
+{
+  "data": [
+    {
+      "id": "uuid",
+      "siteName": "Production Web Server",
+      "metricName": "Security Score",
+      "metricType": "security_score",
+      "category": "security",
+      "metricValue": 87.5,
+      "unit": "percentage",
+      "recordedAt": 1699545600000,
+      "currentAlertLevel": "medium",
+      "changePercentage": -2.3,
+      "previousValue": 89.6,
+      "thresholds": {
+        "low": 80,
+        "medium": 70,
+        "high": 60,
+        "critical": 50
+      }
+    }
+  ],
+  "statistics": {
+    "total": 1247,
+    "active": 1156,
+    "byType": {
+      "security_score": 234,
+      "attack_count": 456,
+      "vulnerability_count": 557
+    },
+    "trends": {
+      "improving": 567,
+      "degrading": 234,
+      "stable": 446
+    }
+  }
+}
+```
+
+#### Notifications Module (NEW)
+**Endpoints:**
+- `POST /api/notifications` - Create new notification
+- `POST /api/notifications/bulk` - Create multiple notifications
+- `GET /api/notifications` - List all notifications with filtering
+- `GET /api/notifications/statistics` - Get notification statistics
+- `GET /api/notifications/high-priority` - Get high priority notifications
+- `GET /api/notifications/user/:userId` - Get user-specific notifications
+- `GET /api/notifications/by-source/:sourceType/:sourceId` - Get notifications by source
+- `GET /api/notifications/:id` - Get notification details
+- `PATCH /api/notifications/:id` - Update notification
+- `PATCH /api/notifications/:id/read` - Mark as read
+- `PATCH /api/notifications/user/:userId/read-all` - Mark all as read for user
+- `PATCH /api/notifications/bulk/read` - Bulk mark as read
+- `DELETE /api/notifications/cleanup-expired` - Clean up expired notifications
+- `DELETE /api/notifications/:id` - Delete notification
+
+**Features:**
+- Multi-source notification support (incidents, threats, metrics, sites)
+- Priority-based notification routing
+- Multiple delivery channels (in-app, email, SMS, webhook, Slack)
+- Expiration management with automatic cleanup
+- Read/unread status tracking
+- Bulk operations for efficiency
+- Tag-based categorization and filtering
+- High-priority notification separation
+
+**Notification Types:**
+- Incident alerts and updates
+- Threat detection warnings
+- Vulnerability notifications
+- Security metric alerts
+- Remediation action updates
+- System status notifications
+- Compliance warnings
+- General information messages
+
+**Delivery Channels:**
+- In-app notifications (default)
+- Email notifications
+- SMS alerts for critical issues
+- Webhook integrations
+- Slack channel notifications
+
+**Response Format:**
+```json
+{
+  "data": [
+    {
+      "id": "uuid",
+      "title": "Critical Security Alert",
+      "message": "High-severity incident INC-001 requires immediate attention",
+      "notificationType": "incident",
+      "priority": "critical",
+      "channel": "in_app",
+      "isRead": false,
+      "createdAt": "2023-11-07T10:30:00Z",
+      "expiresAt": 1699632000000,
+      "actionUrl": "/incidents/INC-001",
+      "actionText": "View Incident",
+      "tags": ["security", "critical", "incident"],
+      "source": {
+        "type": "incident",
+        "id": "incident-uuid",
+        "name": "Advanced Persistent Threat Detected"
+      }
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 10,
+    "total": 89,
+    "totalPages": 9,
+    "unreadCount": 23
+  }
+}
+```
+
 #### Users Module
 **Endpoints:**
 - `GET /api/users` - Get all users
@@ -543,9 +770,9 @@ All entities extend BaseEntity which provides:
 4. **Vulnerability** - CVE database
 5. **SiteVulnerability** - Junction table (composite PK)
 6. **Threat** - Security threats detected
-7. **RemediationAction** - Actions taken to remediate issues
-8. **SecurityMetric** - Security metrics over time
-9. **Notification** - User notifications
+7. **RemediationAction** - Enhanced remediation action tracking with progress, effectiveness, and multi-source relationships
+8. **SecurityMetric** - Real-time and historical security metrics with threshold-based alerting
+9. **Notification** - Multi-source notification system with priority routing and delivery channels
 10. **Incident** - Security incident management with MITRE ATT&CK
 11. **ThreatIndicator** - Threat intelligence indicators (IP/Domain/URL/Hash)
 
@@ -569,7 +796,7 @@ Features:
 - Interactive API testing
 - Request/response schemas
 - Authentication support (JWT Bearer token)
-- Grouped by tags (auth, users, sites, agents, agent, agent-install, onboarding, incidents, threats, vulnerabilities)
+- Grouped by tags (auth, users, sites, agents, agent, agent-install, onboarding, incidents, threats, vulnerabilities, remediation-actions, security-metrics, notifications)
 
 ## 🚀 Running the Application
 
@@ -675,6 +902,16 @@ TypeScript path aliases for clean imports:
 ✅ **NEW**: Threat indicator blocking and enrichment
 ✅ **NEW**: Bulk operations for efficiency
 ✅ **NEW**: Advanced filtering and statistics
+✅ **NEW**: Enhanced remediation action tracking with progress and effectiveness
+✅ **NEW**: Real-time security metrics with threshold-based alerting
+✅ **NEW**: Multi-source notification system with priority routing
+✅ **NEW**: Cross-reference tracking between incidents, threats, and vulnerabilities
+✅ **NEW**: Cost estimation and ROI tracking for remediation actions
+✅ **NEW**: Time-series data collection for trend analysis
+✅ **NEW**: Automated alert level calculation based on configurable thresholds
+✅ **NEW**: Multi-channel notification delivery (in-app, email, SMS, webhook, Slack)
+✅ **NEW**: Expiration management with automatic cleanup
+✅ **NEW**: Comprehensive analytics and reporting capabilities
 
 ## � Frontend Integration
 
@@ -774,6 +1011,92 @@ interface ThreatIndicator {
 }
 ```
 
+#### Remediation Actions Integration (`useRemediationData` hook)
+
+```typescript
+// GET /api/remediation-actions returns format compatible with:
+interface RemediationData {
+  data: RemediationAction[];
+  pagination: PaginationInfo;
+}
+
+interface RemediationAction {
+  id: string;
+  actionType: string;
+  description: string;
+  priority: "low" | "medium" | "high" | "critical";
+  status: "pending" | "in_progress" | "completed" | "failed" | "cancelled";
+  remediationType: "manual" | "automated" | "semi_automated";
+  progressPercentage: number; // 0-100
+  assignedTo: string;
+  dueDate: number;
+  costEstimate: number;
+  effectivenessScore: number; // 0-100
+  site: { id: string; name: string };
+  incident?: { id: string; incidentId: string; title: string };
+  threatIndicator?: { id: string; indicator: string; type: string };
+  siteVulnerability?: { id: string; cveId: string };
+}
+```
+
+#### Security Metrics Integration (`useSecurityMetrics` hook)
+
+```typescript
+// GET /api/security-metrics returns format compatible with:
+interface SecurityMetricsData {
+  data: SecurityMetric[];
+  statistics: MetricsStatistics;
+}
+
+interface SecurityMetric {
+  id: string;
+  siteName: string;
+  metricName: string;
+  metricType:
+    | "attack_count"
+    | "vulnerability_count"
+    | "threat_level"
+    | "security_score";
+  category: "security" | "performance" | "compliance" | "operational";
+  metricValue: number;
+  unit: string;
+  recordedAt: number;
+  currentAlertLevel: "low" | "medium" | "high" | "critical";
+  changePercentage: number;
+  previousValue: number;
+}
+```
+
+#### Notifications Integration (`useNotifications` hook)
+
+```typescript
+// GET /api/notifications returns format compatible with:
+interface NotificationsData {
+  data: Notification[];
+  pagination: PaginationInfo & { unreadCount: number };
+}
+
+interface Notification {
+  id: string;
+  title: string;
+  message: string;
+  notificationType: "incident" | "threat" | "vulnerability" | "security_metric";
+  priority: "low" | "medium" | "high" | "critical";
+  channel: "in_app" | "email" | "sms" | "webhook" | "slack";
+  isRead: boolean;
+  createdAt: string;
+  expiresAt: number;
+  actionUrl: string;
+  actionText: string;
+  tags: string[];
+  source: {
+    type: string;
+    id: string;
+    name: string;
+  };
+}
+```
+
 ### Response Format Standardization
 
 All API responses follow this format (via ResponseLoggingInterceptor):
@@ -816,15 +1139,38 @@ User (1) ─────── (n) Site (1) ─────── (1) AgentEntit
 │                      ├─── (n) SiteVulnerability
 │                      ├─── (n) Threat
 │                      ├─── (n) Incident (NEW)
-│                      └─── (n) RemediationAction
+│                      ├─── (n) RemediationAction (Enhanced)
+│                      ├─── (n) SecurityMetric (NEW)
+│                      └─── (n) Notification (Enhanced)
 │
-├─── (n) Notification
+├─── (n) Notification (Enhanced)
 └─── (n) Incident (assignee)
 
 Vulnerability (1) ─────── (n) SiteVulnerability
 ThreatIndicator (NEW) ─── (n) Site (optional)
-Incident (1) ─────── (n) RemediationAction
-Incident (1) ─────── (n) Notification
+                      └─── (n) RemediationAction (NEW)
+                      └─── (n) Notification (NEW)
+
+SiteVulnerability (1) ─── (n) RemediationAction (NEW)
+
+Incident (1) ─────── (n) RemediationAction (Enhanced)
+Incident (1) ─────── (n) Notification (Enhanced)
+
+SecurityMetric (1) ──── (n) Notification (NEW)
+SecurityMetric (n) ──── (1) Site
+
+RemediationAction relationships:
+├─── (n) Incident
+├─── (n) ThreatIndicator
+├─── (n) SiteVulnerability
+└─── (1) Site
+
+Notification relationships:
+├─── (1) User
+├─── (n) Incident
+├─── (n) Site
+├─── (n) ThreatIndicator
+└─── (n) SecurityMetric
 ```
 
 ### BaseEntity Integration
@@ -846,6 +1192,9 @@ All entities now extend BaseEntity which provides:
 4. **NEW**: Incident entity with MITRE ATT&CK framework support
 5. **NEW**: ThreatIndicator entity with multi-type indicator support
 6. **NEW**: Enhanced SiteVulnerability with last_scanned and context fields
+7. **NEW**: Enhanced RemediationAction entity with progress tracking and multi-source relationships
+8. **NEW**: Enhanced SecurityMetric entity with threshold-based alerting and trend analysis
+9. **NEW**: Enhanced Notification entity with multi-source support and priority routing
 
 ### Backwards Compatibility
 
@@ -853,8 +1202,12 @@ All entities now extend BaseEntity which provides:
 - Response formats enhanced but compatible
 - Authentication flow unchanged
 - **NEW**: Incident-Vulnerability-Management modules fully integrated
+- **NEW**: Remediation-Reporting modules fully integrated
 - **NEW**: Frontend hooks compatibility maintained
 - **NEW**: MITRE ATT&CK and threat intelligence capabilities added
+- **NEW**: Comprehensive remediation action tracking capabilities
+- **NEW**: Real-time security metrics and alerting system
+- **NEW**: Advanced notification and alert management system
 
 ## 🛡️ Security & Compliance Features
 
@@ -881,6 +1234,34 @@ All entities now extend BaseEntity which provides:
 - **Remediation Workflow**: Status tracking from detection to resolution
 - **Scanning Simulation**: Mock vulnerability scanning capabilities
 - **Impact Analysis**: Top vulnerabilities by affected sites
+
+### Remediation & Reporting Platform
+
+- **Action Tracking**: Comprehensive remediation action management across all security domains
+- **Progress Monitoring**: Real-time progress tracking with percentage completion
+- **Effectiveness Scoring**: 0-100 effectiveness rating for completed actions
+- **Cost Management**: Estimation and actual cost tracking for ROI analysis
+- **Cross-Reference Support**: Link actions to incidents, threats, and vulnerabilities
+- **Priority Management**: Critical, High, Medium, Low priority assignment
+- **Automation Support**: Manual, automated, and semi-automated action types
+
+### Security Metrics & Analytics
+
+- **Real-Time Monitoring**: Live security metric collection and analysis
+- **Historical Tracking**: Time-series data for trend analysis and reporting
+- **Threshold Alerting**: Configurable thresholds with automatic alert generation
+- **Multi-Category Support**: Security, Performance, Compliance, Operational metrics
+- **Change Analysis**: Percentage change tracking with previous value comparison
+- **Bulk Data Ingestion**: High-volume metric ingestion for scalability
+
+### Notification & Alert System
+
+- **Multi-Source Integration**: Notifications from incidents, threats, metrics, and sites
+- **Priority Routing**: Critical, High, Medium, Low priority-based routing
+- **Multi-Channel Delivery**: In-app, Email, SMS, Webhook, Slack integration
+- **Expiration Management**: Automatic cleanup of expired notifications
+- **Bulk Operations**: Efficient handling of multiple notifications
+- **Read/Unread Tracking**: Status management with timestamp recording
 
 ## 📈 Performance & Scalability
 
@@ -913,3 +1294,8 @@ All entities now extend BaseEntity which provides:
 - **SIEM Integration**: Structured logging for SIEM platforms
 - **Webhook Support**: Event-driven notifications and integrations
 - **API-First Design**: RESTful APIs for third-party integrations
+- **Remediation Orchestration**: API endpoints for external remediation tools
+- **Metrics Collection**: Bulk metric ingestion for monitoring platforms
+- **Notification Channels**: Multi-channel delivery system (Email, SMS, Slack, Webhook)
+- **Cost Management**: Integration with financial systems for ROI tracking
+- **Compliance Reporting**: Structured data for compliance dashboard integration

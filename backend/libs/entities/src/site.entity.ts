@@ -13,6 +13,8 @@ import { SiteVulnerability } from "./site-vulnerability.entity";
 import { Threat } from "./threat.entity";
 import { AgentEntity } from "./agent.entity";
 import { Incident } from "./incident.entity";
+import { SecurityMetric } from "./security-metric.entity";
+import { Notification } from "./notification.entity";
 
 @Entity("sites")
 export class Site extends BaseEntity {
@@ -55,4 +57,10 @@ export class Site extends BaseEntity {
 
   @OneToMany(() => Incident, (incident) => incident.site)
   incidents: Incident[];
+
+  @OneToMany(() => SecurityMetric, (metric) => metric.site)
+  securityMetrics: SecurityMetric[];
+
+  @OneToMany(() => Notification, (notification) => notification.site)
+  notifications: Notification[];
 }
