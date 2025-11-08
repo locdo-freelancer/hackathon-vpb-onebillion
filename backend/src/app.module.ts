@@ -1,37 +1,54 @@
-import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { AuthModule } from './modules/auth/auth.module';
-import { UsersModule } from './modules/users/users.module';
+import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
+import { ConfigModule } from "@nestjs/config";
+import { ScheduleModule } from "@nestjs/schedule";
+import { AppController } from "./app.controller";
+import { AppService } from "./app.service";
+import { DatabaseModule } from "./config/database.module";
+import { AuthModule } from "./modules/auth/auth.module";
+import { UsersModule } from "./modules/users/users.module";
+import { SitesModule } from "./modules/sites/sites.module";
+import { AgentsModule } from "./modules/agents/agents.module";
+import { AgentCommModule } from "./modules/agent-comm/agent-comm.module";
+import { AgentInstallModule } from "./modules/agent-install/agent-install.module";
+import { OnboardingModule } from "./modules/onboarding/onboarding.module";
+import { TasksModule } from "./modules/tasks/tasks.module";
+import { IncidentsModule } from "./modules/incidents/incidents.module";
+import { ThreatsModule } from "./modules/threats/threats.module";
+import { VulnerabilitiesModule } from "./modules/vulnerabilities/vulnerabilities.module";
+import { RemediationActionsModule } from "./modules/remediation-actions/remediation-actions.module";
+import { SecurityMetricsModule } from "./modules/security-metrics/security-metrics.module";
+import { NotificationsModule } from "./modules/notifications/notifications.module";
+import { APP_PROVIDERS } from "./app.provider";
+import { LoggingMiddleware } from "@lib/middlewares";
 
 @Module({
   imports: [
-    // Environment variables
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '.env',
+      envFilePath: ".env",
     }),
-
-    // Database connection
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: process.env.DB_HOST || 'localhost',
-      port: parseInt(process.env.DB_PORT) || 3306,
-      username: process.env.DB_USERNAME || 'root',
-      password: process.env.DB_PASSWORD || '',
-      database: process.env.DB_NAME || 'one_billion',
-      entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      synchronize: process.env.NODE_ENV === 'development',
-      logging: process.env.NODE_ENV === 'development',
-    }),
-
-    // Feature modules
+    DatabaseModule,
+    ScheduleModule.forRoot(),
     AuthModule,
     UsersModule,
+    SitesModule,
+    AgentsModule,
+    AgentCommModule,
+    AgentInstallModule,
+    OnboardingModule,
+    TasksModule,
+    IncidentsModule,
+    ThreatsModule,
+    VulnerabilitiesModule,
+    RemediationActionsModule,
+    SecurityMetricsModule,
+    NotificationsModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, ...APP_PROVIDERS],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggingMiddleware).forRoutes("*");
+  }
+}
