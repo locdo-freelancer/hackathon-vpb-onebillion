@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import type { ThreatDetail } from "@/types/threats.types";
-import { SeverityBadge } from "./SeverityBadge";
-import { TypeBadge } from "./TypeBadge";
+import { SeverityBadge, Badge } from "@/components/shared";
 
 interface ThreatDetailDrawerProps {
   threat: ThreatDetail | null;
@@ -63,7 +62,7 @@ export const ThreatDetailDrawer: React.FC<ThreatDetailDrawerProps> = ({
             {/* Main Info Card */}
             <div className="bg-slate-950/50 border border-slate-800 rounded-lg p-4">
               <div className="flex items-center justify-between mb-4">
-                <SeverityBadge severity={threat.severity} />
+                <SeverityBadge severity={threat.severity.toUpperCase() as "CRITICAL" | "HIGH" | "MEDIUM" | "LOW"} />
                 <div className="flex items-center gap-2 text-sm text-gray-400">
                   <i className="fas fa-clock" />
                   <span>{threat.firstSeen}</span>
@@ -83,7 +82,20 @@ export const ThreatDetailDrawer: React.FC<ThreatDetailDrawerProps> = ({
               <div className="space-y-3">
                 <div className="flex justify-between py-2 border-b border-slate-800">
                   <span className="text-sm text-gray-400">Type</span>
-                  <TypeBadge type={threat.type} />
+                  <Badge 
+                    label={
+                      threat.type === "ip" ? "IP Address" :
+                      threat.type === "domain" ? "Domain" :
+                      threat.type === "url" ? "URL" :
+                      threat.type === "hash" ? "File Hash" : threat.type
+                    }
+                    variant={
+                      threat.type === "ip" ? "info" :
+                      threat.type === "domain" ? "success" :
+                      threat.type === "url" ? "info" :
+                      threat.type === "hash" ? "default" : "default"
+                    }
+                  />
                 </div>
                 <div className="flex justify-between py-2 border-b border-slate-800">
                   <span className="text-sm text-gray-400">Country</span>
@@ -195,7 +207,21 @@ export const ThreatDetailDrawer: React.FC<ThreatDetailDrawerProps> = ({
                         <span className="text-sm text-white font-medium truncate">
                           {indicator.indicator}
                         </span>
-                        <TypeBadge type={indicator.type} />
+                        <Badge 
+                          label={
+                            indicator.type === "ip" ? "IP Address" :
+                            indicator.type === "domain" ? "Domain" :
+                            indicator.type === "url" ? "URL" :
+                            indicator.type === "hash" ? "File Hash" : indicator.type
+                          }
+                          variant={
+                            indicator.type === "ip" ? "info" :
+                            indicator.type === "domain" ? "success" :
+                            indicator.type === "url" ? "info" :
+                            indicator.type === "hash" ? "default" : "default"
+                          }
+                          size="sm"
+                        />
                       </div>
                     </div>
                   ))}

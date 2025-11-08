@@ -1,9 +1,18 @@
-// Login Form Component - Single Responsibility: Login form logic
+/**
+ * Login Form Component
+ * Single Responsibility: Login form logic and state management
+ * Open/Closed: Uses atomic components for extensibility
+ * Dependency Inversion: Depends on component and config abstractions
+ */
 "use client";
 
 import React, { useState } from "react";
 import { EmailInput } from "./EmailInput";
 import { PasswordInput } from "./PasswordInput";
+import { FormButton } from "./FormButton";
+import { FormCheckbox } from "./FormCheckbox";
+import { FormError } from "./FormError";
+import { validateEmail } from "@/config/auth-validation.config";
 import { AuthService } from "@/lib/services/auth.service";
 import { LoginCredentials } from "@/types/auth.types";
 
@@ -25,6 +34,14 @@ export const LoginForm: React.FC<LoginFormProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
+    // Client-side validation
+    const emailError = validateEmail(email);
+    if (emailError) {
+      setError(emailError);
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -56,11 +73,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        {error && (
-          <div className="bg-red-500/10 border border-red-500/50 text-red-500 px-4 py-3 rounded-lg text-sm">
-            {error}
-          </div>
-        )}
+        <FormError message={error} />
 
         <EmailInput id="email" value={email} onChange={setEmail} required />
 
@@ -73,15 +86,12 @@ export const LoginForm: React.FC<LoginFormProps> = ({
         />
 
         <div className="flex items-center justify-between">
-          <label className="flex items-center">
-            <input
-              type="checkbox"
-              checked={rememberMe}
-              onChange={(e) => setRememberMe(e.target.checked)}
-              className="w-4 h-4 bg-cyber-dark border border-cyber-border rounded text-cyber-accent focus:ring-2 focus:ring-cyber-accent"
-            />
-            <span className="ml-2 text-sm text-gray-400">Remember me</span>
-          </label>
+          <FormCheckbox
+            id="remember-me"
+            checked={rememberMe}
+            onChange={setRememberMe}
+            label="Remember me"
+          />
           <a
             href="#"
             className="text-sm text-cyber-accent hover:text-cyan-400 transition-colors"
@@ -90,13 +100,9 @@ export const LoginForm: React.FC<LoginFormProps> = ({
           </a>
         </div>
 
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="w-full bg-linear-to-r from-cyber-accent to-cyan-500 hover:from-cyan-500 hover:to-cyber-accent text-cyber-darker font-semibold py-3 px-4 rounded-lg transition-all duration-200 shadow-glow-cyan disabled:opacity-50 disabled:cursor-not-allowed"
-        >
+        <FormButton type="submit" isLoading={isLoading} variant="primary">
           {isLoading ? "Signing in..." : "Sign in"}
-        </button>
+        </FormButton>
       </form>
 
       <p className="text-center text-sm text-gray-400 mt-6">

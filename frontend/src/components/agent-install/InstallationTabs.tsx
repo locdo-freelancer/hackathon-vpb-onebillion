@@ -1,4 +1,6 @@
 import React from "react";
+import { TabButton } from "@/components/shared";
+import { getTabsConfig } from "@/config/tabs.config";
 
 export type TabType = "linux" | "windows" | "mac";
 
@@ -11,27 +13,18 @@ export const InstallationTabs: React.FC<InstallationTabsProps> = ({
   currentTab,
   onTabChange,
 }) => {
-  const tabs = [
-    { id: "linux" as TabType, icon: "fab fa-linux", label: "Linux" },
-    { id: "windows" as TabType, icon: "fab fa-windows", label: "Windows" },
-    { id: "mac" as TabType, icon: "fab fa-apple", label: "macOS" },
-  ];
+  const tabs = getTabsConfig();
 
   return (
     <div className="flex gap-1 bg-slate-900/50 p-1 rounded-lg border border-slate-800">
       {tabs.map((tab) => (
-        <button
+        <TabButton
           key={tab.id}
+          label={tab.label}
+          icon={tab.icon}
+          isActive={currentTab === tab.id}
           onClick={() => onTabChange(tab.id)}
-          className={`px-6 py-3 rounded-md text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
-            currentTab === tab.id
-              ? "bg-cyan-500 text-slate-900"
-              : "text-gray-400 hover:text-white"
-          }`}
-        >
-          <i className={tab.icon} />
-          {tab.label}
-        </button>
+        />
       ))}
     </div>
   );

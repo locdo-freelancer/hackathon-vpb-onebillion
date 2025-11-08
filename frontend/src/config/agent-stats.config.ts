@@ -1,0 +1,55 @@
+export interface StatCardConfig {
+  label: string;
+  key: "total" | "online" | "offline" | "updating";
+  icon: string;
+  bgColor: string;
+  iconColor: string;
+  valueColor: string;
+}
+
+/**
+ * Configuration for agent statistics cards
+ * Single Responsibility: Only defines stat card configurations
+ * Open/Closed: New stat types can be added without modifying existing
+ */
+export const STAT_CARDS_CONFIG: StatCardConfig[] = [
+  {
+    label: "Total Agents",
+    key: "total",
+    icon: "fas fa-desktop",
+    bgColor: "bg-cyan-500/20",
+    iconColor: "text-cyan-400",
+    valueColor: "text-white",
+  },
+  {
+    label: "Online",
+    key: "online",
+    icon: "fas fa-circle",
+    bgColor: "bg-green-500/20",
+    iconColor: "text-green-400",
+    valueColor: "text-green-400",
+  },
+  {
+    label: "Offline",
+    key: "offline",
+    icon: "fas fa-circle",
+    bgColor: "bg-red-500/20",
+    iconColor: "text-red-400",
+    valueColor: "text-red-400",
+  },
+  {
+    label: "Updating",
+    key: "updating",
+    icon: "fas fa-sync-alt",
+    bgColor: "bg-yellow-500/20",
+    iconColor: "text-yellow-400",
+    valueColor: "text-yellow-400",
+  },
+];
+
+/**
+ * Get stat cards configuration
+ */
+export const getStatCardsConfig = (): StatCardConfig[] => {
+  return STAT_CARDS_CONFIG;
+};

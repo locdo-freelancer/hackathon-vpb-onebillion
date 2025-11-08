@@ -1,48 +1,41 @@
 import React from "react";
 import type { Agent } from "@/types/agents.types";
+import { getBorderColor } from "@/config/agent-status.config";
+import { StatusIndicator } from "./StatusIndicator";
+import { AgentInfoRow } from "./AgentInfoRow";
+import { CPUUsageBar } from "./CPUUsageBar";
+import { UpdateProgressBar } from "./UpdateProgressBar";
 
 interface AgentCardProps {
   agent: Agent;
   onClick: (agent: Agent) => void;
 }
 
+/**
+ * Agent Card Component
+ * 
+ * SOLID Principles Applied:
+ * - Single Responsibility: Only manages card layout and composition
+ * - Open/Closed: New info rows or status types added via config
+ * - Dependency Inversion: Depends on abstract config, not concrete colors
+ * - Liskov Substitution: Atomic components are interchangeable
+ * - Interface Segregation: Each atomic component has minimal focused props
+ */
 export const AgentCard: React.FC<AgentCardProps> = ({ agent, onClick }) => {
-  const getStatusColor = () => {
-    switch (agent.status) {
-      case "online":
-        return "bg-green-400 shadow-lg shadow-green-400/20";
-      case "offline":
-        return "bg-red-400";
-      case "updating":
-        return "bg-yellow-400 animate-pulse";
-      default:
-        return "bg-gray-400";
-    }
-  };
-
-  const getBorderColor = () => {
-    switch (agent.status) {
-      case "offline":
-        return "border-red-500/30 hover:border-red-500/50";
-      case "updating":
-        return "border-yellow-500/30 hover:border-yellow-500/50";
-      default:
-        return "border-slate-800 hover:border-cyan-500/50";
-    }
-  };
-
-  const getCPUColor = (usage: number) => {
-    if (usage < 30) return "bg-green-400";
-    if (usage < 70) return "bg-yellow-400";
-    return "bg-red-400";
-  };
+  // Get heartbeat label and value based on status
+  const getHeartbeatLabel = () =>
+    agent.status === "updating" ? "Progress" : "Heartbeat";
+  const getHeartbeatValue = () =>
+    agent.status === "updating"
+      ? `${agent.updateProgress}%`
+      : agent.lastHeartbeat;
 
   return (
     <div
       onClick={() => onClick(agent)}
-      className={`bg-slate-900 border ${getBorderColor()} rounded-xl p-4 transition-colors cursor-pointer`}
+      className={`bg-slate-900 border ${getBorderColor(agent.status)} rounded-xl p-4 transition-colors cursor-pointer`}
     >
-      {/* Header */}
+      {/* Header: Icon, Hostname, IP, Status (SRP - Layout only) */}
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-3">
           <div
@@ -57,72 +50,38 @@ export const AgentCard: React.FC<AgentCardProps> = ({ agent, onClick }) => {
             <p className="text-xs text-gray-400">{agent.ipAddress}</p>
           </div>
         </div>
-        <span className={`w-3 h-3 ${getStatusColor()} rounded-full`} />
+        <StatusIndicator status={agent.status} />
       </div>
 
-      {/* Agent Info */}
+      {/* Agent Info Section (LSP - AgentInfoRow components) */}
       <div className="space-y-2">
-        <div className="flex justify-between text-xs">
-          <span className="text-gray-400">OS</span>
-          <span className="text-gray-300">{agent.os}</span>
-        </div>
-        <div className="flex justify-between text-xs">
-          <span className="text-gray-400">Version</span>
-          <span
-            className={
-              agent.status === "updating" ? "text-yellow-400" : "text-gray-300"
-            }
-          >
-            {agent.version}
-          </span>
-        </div>
-        <div className="flex justify-between text-xs">
-          <span className="text-gray-400">
-            {agent.status === "updating" ? "Progress" : "Heartbeat"}
-          </span>
-          <span
-            className={
-              agent.status === "offline"
-                ? "text-red-400"
-                : agent.status === "updating"
-                  ? "text-yellow-400"
-                  : "text-green-400"
-            }
-          >
-            {agent.status === "updating"
-              ? `${agent.updateProgress}%`
-              : agent.lastHeartbeat}
-          </span>
-        </div>
+        <AgentInfoRow label="OS" value={agent.os} />
+        <AgentInfoRow
+          label="Version"
+          value={agent.version}
+          status={agent.status}
+        />
+        <AgentInfoRow
+          label={getHeartbeatLabel()}
+          value={getHeartbeatValue()}
+          status={agent.status}
+          highlightStatus
+        />
       </div>
 
-      {/* CPU Usage or Update Progress */}
+      {/* Footer: CPU or Update Progress (OCP - Different render based on status) */}
       <div className="mt-3 pt-3 border-t border-slate-800">
         {agent.status === "updating" ? (
-          <div className="w-full bg-slate-950 rounded-full h-1">
-            <div
-              className="bg-yellow-400 h-1 rounded-full transition-all duration-300"
-              style={{ width: `${agent.updateProgress}%` }}
-            />
-          </div>
+          <UpdateProgressBar progress={agent.updateProgress} />
         ) : agent.status === "offline" ? (
-          <div className="flex justify-between items-center text-xs">
-            <span className="text-gray-400">Status</span>
-            <span className="text-red-400">Offline</span>
-          </div>
+          <AgentInfoRow
+            label="Status"
+            value="Offline"
+            status={agent.status}
+            highlightStatus
+          />
         ) : (
-          <>
-            <div className="flex justify-between items-center text-xs">
-              <span className="text-gray-400">CPU</span>
-              <span className="text-gray-300">{agent.cpuUsage}%</span>
-            </div>
-            <div className="w-full bg-slate-950 rounded-full h-1 mt-1">
-              <div
-                className={`${getCPUColor(agent.cpuUsage || 0)} h-1 rounded-full`}
-                style={{ width: `${agent.cpuUsage}%` }}
-              />
-            </div>
-          </>
+          <CPUUsageBar cpuUsage={agent.cpuUsage} />
         )}
       </div>
     </div>

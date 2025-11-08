@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 import type { NavItem, User } from "@/types/dashboard.types";
 
 interface DashboardSidebarProps {
@@ -29,7 +30,7 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
         {/* Navigation */}
         <nav className="space-y-1">
           {navItems.map((item, index) => (
-            <a
+            <Link
               key={index}
               href={item.href}
               onClick={(e) => {
@@ -55,7 +56,7 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
                   {item.badge}
                 </span>
               )}
-            </a>
+            </Link>
           ))}
         </nav>
       </div>

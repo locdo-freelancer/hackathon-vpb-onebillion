@@ -1,9 +1,20 @@
-// Signup Form Component - Single Responsibility: Signup form logic
+/**
+ * Signup Form Component
+ * Single Responsibility: Signup form logic and state management
+ * Open/Closed: Uses atomic components for extensibility
+ * Dependency Inversion: Depends on component and config abstractions
+ */
 "use client";
 
 import React, { useState } from "react";
 import { EmailInput } from "./EmailInput";
 import { PasswordInput } from "./PasswordInput";
+import { FormButton } from "./FormButton";
+import { FormError } from "./FormError";
+import {
+  validateEmail,
+  validatePassword,
+} from "@/config/auth-validation.config";
 import { AuthService } from "@/lib/services/auth.service";
 import { SignupCredentials } from "@/types/auth.types";
 
@@ -25,6 +36,19 @@ export const SignupForm: React.FC<SignupFormProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
+    // Client-side validation
+    const emailError = validateEmail(email);
+    if (emailError) {
+      setError(emailError);
+      return;
+    }
+
+    const passwordError = validatePassword(password);
+    if (passwordError) {
+      setError(passwordError);
+      return;
+    }
 
     if (password !== confirmPassword) {
       setError("Passwords do not match");
@@ -66,11 +90,7 @@ export const SignupForm: React.FC<SignupFormProps> = ({
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        {error && (
-          <div className="bg-red-500/10 border border-red-500/50 text-red-500 px-4 py-3 rounded-lg text-sm">
-            {error}
-          </div>
-        )}
+        <FormError message={error} />
 
         <EmailInput
           id="signup-email"
@@ -91,18 +111,15 @@ export const SignupForm: React.FC<SignupFormProps> = ({
           id="confirm-password"
           value={confirmPassword}
           onChange={setConfirmPassword}
+          label="Confirm Password"
           placeholder="Confirm password"
           required
           showStrengthIndicator={false}
         />
 
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="w-full bg-linear-to-r from-cyber-accent to-cyan-500 hover:from-cyan-500 hover:to-cyber-accent text-cyber-darker font-semibold py-3 px-4 rounded-lg transition-all duration-200 shadow-glow-cyan disabled:opacity-50 disabled:cursor-not-allowed"
-        >
+        <FormButton type="submit" isLoading={isLoading} variant="primary">
           {isLoading ? "Creating account..." : "Create account"}
-        </button>
+        </FormButton>
       </form>
 
       <p className="text-center text-sm text-gray-400 mt-6">

@@ -1,52 +1,22 @@
-// Login Page - Dependency Inversion: Depends on abstractions
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { AuthLayout } from "@/components/auth/AuthLayout";
 import { AuthHeader } from "@/components/auth/AuthHeader";
 import { OAuthButtons } from "@/components/auth/OAuthButtons";
 import { LoginForm } from "@/components/auth/LoginForm";
 import { MFAModal } from "@/components/auth/MFAModal";
-import { AuthService } from "@/lib/services/auth.service";
-import { useRouter } from "next/navigation";
+import { useLogin } from "@/hooks/useLogin";
 
 export default function LoginPage() {
-  const router = useRouter();
-  const [showMFAModal, setShowMFAModal] = useState(false);
-  const [userId, setUserId] = useState<string>();
-
-  const handleLoginSuccess = (requiresMFA: boolean, userId?: string) => {
-    if (requiresMFA && userId) {
-      setUserId(userId);
-      setShowMFAModal(true);
-    } else {
-      // Redirect to dashboard
-      router.push("/dashboard");
-    }
-  };
-
-  const handleMFAVerify = async (code: string) => {
-    if (!userId) return;
-
-    const response = await AuthService.verifyMFA({ code, userId });
-
-    if (response.success) {
-      setShowMFAModal(false);
-      router.push("/dashboard");
-    } else {
-      alert(response.message || "Invalid code");
-    }
-  };
-
-  const handleToggleSignup = () => {
-    router.push("/signup");
-  };
-
-  // Quick demo: skip login and go directly to onboarding
-  const handleQuickDemo = () => {
-    console.log("🚀 Quick Demo: Skipping to onboarding...");
-    router.push("/onboarding");
-  };
+  const {
+    showMFAModal,
+    setShowMFAModal,
+    handleLoginSuccess,
+    handleMFAVerify,
+    handleToggleSignup,
+    handleQuickDemo,
+  } = useLogin();
 
   return (
     <AuthLayout>

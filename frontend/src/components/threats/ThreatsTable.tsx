@@ -1,6 +1,8 @@
 import React from "react";
 import type { ThreatIndicator } from "@/types/threats.types";
 import { ThreatRow } from "./ThreatRow";
+import { ThreatCheckbox } from "./ThreatCheckbox";
+import { ThreatsEmptyState } from "./ThreatsEmptyState";
 
 interface ThreatsTableProps {
   threats: ThreatIndicator[];
@@ -11,6 +13,14 @@ interface ThreatsTableProps {
   totalCount: number;
 }
 
+/**
+ * Threats Table Component
+ * Single Responsibility: Render table structure and iterate over threats
+ * Open/Closed: Uses composition for extensibility
+ * Liskov Substitution: Can be replaced with any compatible table component
+ * Interface Segregation: Clean props interface - data and handlers
+ * Dependency Inversion: Depends on ThreatIndicator abstraction
+ */
 export const ThreatsTable: React.FC<ThreatsTableProps> = ({
   threats,
   selectedIds,
@@ -51,11 +61,10 @@ export const ThreatsTable: React.FC<ThreatsTableProps> = ({
           <thead className="bg-slate-950/50">
             <tr className="text-left">
               <th className="px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">
-                <input
-                  type="checkbox"
+                <ThreatCheckbox
                   checked={allSelected}
                   onChange={onSelectAll}
-                  className="rounded border-slate-800 bg-slate-950"
+                  ariaLabel="Select all threats"
                 />
               </th>
               <th className="px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">
@@ -83,14 +92,7 @@ export const ThreatsTable: React.FC<ThreatsTableProps> = ({
           </thead>
           <tbody className="divide-y divide-slate-800">
             {threats.length === 0 ? (
-              <tr>
-                <td colSpan={8} className="px-6 py-12 text-center">
-                  <div className="text-gray-400">
-                    <i className="fas fa-shield-virus text-4xl mb-4 opacity-50" />
-                    <p className="text-sm">No threat indicators found</p>
-                  </div>
-                </td>
-              </tr>
+              <ThreatsEmptyState />
             ) : (
               threats.map((threat) => (
                 <ThreatRow

@@ -1,8 +1,10 @@
 import React from "react";
 import type { ThreatIndicator } from "@/types/threats.types";
-import { SeverityBadge } from "./SeverityBadge";
-import { TypeBadge } from "./TypeBadge";
+import { SeverityBadge, Badge } from "@/components/shared";
 import { ConfidenceBar } from "./ConfidenceBar";
+import { ThreatCheckbox } from "./ThreatCheckbox";
+import { CountryFlag } from "./CountryFlag";
+import { getSeverityConfig } from "@/config/threat-severity.config";
 
 interface ThreatRowProps {
   threat: ThreatIndicator;
@@ -11,21 +13,28 @@ interface ThreatRowProps {
   onClick: (id: string) => void;
 }
 
+/**
+ * Threat Row Component
+ * Single Responsibility: Render a single threat indicator row
+ * Open/Closed: Uses configuration for severity highlighting
+ * Liskov Substitution: Can be replaced with any compatible row component
+ * Interface Segregation: Minimal props - threat data and handlers
+ * Dependency Inversion: Depends on ThreatIndicator abstraction
+ */
 export const ThreatRow: React.FC<ThreatRowProps> = ({
   threat,
   isSelected,
   onSelect,
   onClick,
 }) => {
+  const severityConfig = getSeverityConfig(threat.severity);
+
   const getRowHighlight = () => {
-    if (threat.severity === "critical") {
-      return "bg-red-500/10 border-l-4 border-red-500";
-    }
-    if (threat.severity === "high") {
-      return "bg-orange-500/10 border-l-4 border-orange-500";
+    if (threat.severity === "critical" || threat.severity === "high") {
+      return `${severityConfig.bgColor} border-l-4 ${severityConfig.borderColor}`;
     }
     if (threat.severity === "medium") {
-      return "bg-yellow-500/10 border-l-4 border-yellow-500";
+      return `${severityConfig.bgColor} border-l-4 ${severityConfig.borderColor}`;
     }
     return "";
   };
@@ -37,16 +46,23 @@ export const ThreatRow: React.FC<ThreatRowProps> = ({
     >
       {/* Checkbox */}
       <td className="px-6 py-4">
-        <input
-          type="checkbox"
-          checked={isSelected}
-          onChange={(e) => {
-            e.stopPropagation();
-            onSelect(threat.id);
-          }}
+        <div
           onClick={(e) => e.stopPropagation()}
-          className="rounded border-slate-800 bg-slate-950"
-        />
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.stopPropagation();
+              onSelect(threat.id);
+            }
+          }}
+          role="button"
+          tabIndex={0}
+        >
+          <ThreatCheckbox
+            checked={isSelected}
+            onChange={() => onSelect(threat.id)}
+            ariaLabel={`Select ${threat.indicator}`}
+          />
+        </div>
       </td>
 
       {/* Indicator */}
@@ -64,12 +80,25 @@ export const ThreatRow: React.FC<ThreatRowProps> = ({
 
       {/* Type */}
       <td className="px-6 py-4">
-        <TypeBadge type={threat.type} />
+        <Badge 
+          label={
+            threat.type === "ip" ? "IP Address" :
+            threat.type === "domain" ? "Domain" :
+            threat.type === "url" ? "URL" :
+            threat.type === "hash" ? "File Hash" : threat.type
+          }
+          variant={
+            threat.type === "ip" ? "info" :
+            threat.type === "domain" ? "success" :
+            threat.type === "url" ? "info" :
+            threat.type === "hash" ? "default" : "default"
+          }
+        />
       </td>
 
       {/* Severity */}
       <td className="px-6 py-4">
-        <SeverityBadge severity={threat.severity} />
+        <SeverityBadge severity={threat.severity.toUpperCase() as "CRITICAL" | "HIGH" | "MEDIUM" | "LOW"} />
       </td>
 
       {/* Confidence */}
@@ -79,10 +108,11 @@ export const ThreatRow: React.FC<ThreatRowProps> = ({
 
       {/* Country */}
       <td className="px-6 py-4">
-        <div className="flex items-center gap-2">
-          <span className="text-lg">{threat.countryFlag}</span>
-          <span className="text-sm text-gray-300">{threat.country}</span>
-        </div>
+        <CountryFlag
+          countryCode={threat.countryCode}
+          countryName={threat.country}
+          flag={threat.countryFlag}
+        />
       </td>
 
       {/* First Seen */}
