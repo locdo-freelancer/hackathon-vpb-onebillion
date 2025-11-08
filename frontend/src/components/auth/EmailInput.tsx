@@ -1,5 +1,10 @@
-// Email Input Component - Single Responsibility: Email input field
+/**
+ * Email Input Component
+ * Single Responsibility: Email input field with consistent styling
+ * Interface Segregation: Clean props interface for email input needs
+ */
 import React from "react";
+import { InputLabel } from "./InputLabel";
 
 interface EmailInputProps {
   id: string;
@@ -7,6 +12,7 @@ interface EmailInputProps {
   onChange: (value: string) => void;
   placeholder?: string;
   required?: boolean;
+  label?: string;
 }
 
 export const EmailInput: React.FC<EmailInputProps> = ({
@@ -15,15 +21,13 @@ export const EmailInput: React.FC<EmailInputProps> = ({
   onChange,
   placeholder = "you@company.com",
   required = false,
+  label = "Email address",
 }) => {
   return (
     <div>
-      <label
-        htmlFor={id}
-        className="block text-sm font-medium text-gray-300 mb-2"
-      >
-        Email address
-      </label>
+      <InputLabel htmlFor={id} required={required}>
+        {label}
+      </InputLabel>
       <div className="relative">
         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
           <i className="fas fa-envelope text-gray-500" />

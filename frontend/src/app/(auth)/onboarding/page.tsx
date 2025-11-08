@@ -1,117 +1,43 @@
-// Onboarding Page - Dependency Inversion: Depends on abstractions
 "use client";
 
 import React from "react";
 import { useRouter } from "next/navigation";
 import { OnboardingLayout } from "@/components/onboarding/OnboardingLayout";
 import { ProgressIndicator } from "@/components/onboarding/ProgressIndicator";
-import { Step1PersonalInfo } from "@/components/onboarding/Step1PersonalInfo";
-import { Step2AccountType } from "@/components/onboarding/Step2AccountType";
-import { Step3Verification } from "@/components/onboarding/Step3Verification";
-import { Step4Security } from "@/components/onboarding/Step4Security";
 import { HelpPanel } from "@/components/onboarding/HelpPanel";
 import { useOnboarding } from "@/hooks/useOnboarding";
 import { useOnboardingStore } from "@/stores/onboardingStore";
-
-const STEP_TITLES = [
-  "Site Details",
-  "Server Type",
-  "Install Agent",
-  "Validation",
-];
+import { validateStep } from "@/lib/validation/onboardingValidation";
+import {
+  ONBOARDING_STEPS,
+  STEP_TITLES,
+  TOTAL_STEPS,
+} from "@/config/onboarding.config";
+import { useOnboardingFlow } from "@/hooks/useOnboardingFlow";
 
 export default function OnboardingPage() {
-  const router = useRouter();
-  const { markStepComplete, completeOnboarding: markOnboardingComplete } =
-    useOnboardingStore();
   const {
     currentStep,
     formData,
     isLoading,
     error,
     updateFormData,
-    nextStep,
     prevStep,
-    completeOnboarding,
-    setError,
-  } = useOnboarding();
-
-  const handleNext = async () => {
-    // Validation per step
-    if (currentStep === 1) {
-      if (!formData.siteName || !formData.ipAddress || !formData.port) {
-        setError("Please fill in all required fields");
-        return;
-      }
-
-      // Validate IP format
-      const ipPattern =
-        /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
-      if (!ipPattern.test(formData.ipAddress)) {
-        setError("Please enter a valid IP address");
-        return;
-      }
-
-      // Validate port
-      const portNum = parseInt(formData.port);
-      if (isNaN(portNum) || portNum < 1 || portNum > 65535) {
-        setError("Please enter a valid port number (1-65535)");
-        return;
-      }
-    }
-
-    if (currentStep === 2) {
-      if (!formData.serverType) {
-        setError("Please select a server type");
-        return;
-      }
-    }
-
-    if (currentStep === 4) {
-      if (
-        formData.networkConnectivity !== "success" ||
-        formData.agentAuthentication !== "success" ||
-        formData.initialDataSync !== "success"
-      ) {
-        setError("Please wait for all validation checks to complete");
-        return;
-      }
-
-      // Complete onboarding
-      const success = await completeOnboarding();
-      if (success) {
-        markStepComplete(4);
-        markOnboardingComplete();
-        router.push("/agent-install");
-      }
-      return;
-    }
-
-    // Mark current step as complete and move to next
-    markStepComplete(currentStep);
-    await nextStep();
-  };
+    handleNext,
+  } = useOnboardingFlow();
 
   const renderStep = () => {
-    switch (currentStep) {
-      case 1:
-        return <Step1PersonalInfo data={formData} onChange={updateFormData} />;
-      case 2:
-        return <Step2AccountType data={formData} onChange={updateFormData} />;
-      case 3:
-        return <Step3Verification data={formData} onChange={updateFormData} />;
-      case 4:
-        return <Step4Security data={formData} onChange={updateFormData} />;
-      default:
-        return null;
-    }
+    const StepComponent = ONBOARDING_STEPS[currentStep - 1]?.component;
+    return StepComponent ? (
+      <StepComponent data={formData} onChange={updateFormData} />
+    ) : null;
   };
 
   return (
     <OnboardingLayout helpPanel={<HelpPanel currentStep={currentStep} />}>
       <ProgressIndicator
         currentStep={currentStep}
-        totalSteps={4}
+        totalSteps={TOTAL_STEPS}
         stepTitles={STEP_TITLES}
       />
 

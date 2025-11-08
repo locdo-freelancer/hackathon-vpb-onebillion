@@ -8,36 +8,18 @@ import { OAuthButtons } from "@/components/auth/OAuthButtons";
 import { SignupForm } from "@/components/auth/SignupForm";
 import { EmailVerification } from "@/components/auth/EmailVerification";
 import { useRouter } from "next/navigation";
+import { useSignup } from "@/hooks/useSigup";
 
 export default function SignupPage() {
-  const router = useRouter();
-  const [showVerification, setShowVerification] = useState(false);
-  const [email, setEmail] = useState("");
-
-  const handleSignupSuccess = (userEmail: string) => {
-    setEmail(userEmail);
-    setShowVerification(true);
-  };
-
-  const handleToggleLogin = () => {
-    router.push("/login");
-  };
-
-  const handleVerificationComplete = () => {
-    // After email verification, redirect to onboarding
-    router.push("/onboarding");
-  };
-
-  const handleBack = () => {
-    setShowVerification(false);
-    router.push("/login");
-  };
-
-  // Quick demo: skip signup and go directly to onboarding
-  const handleQuickDemo = () => {
-    console.log("🚀 Quick Demo: Skipping to onboarding...");
-    router.push("/onboarding");
-  };
+  const {
+    showVerification,
+    email,
+    handleSignupSuccess,
+    handleToggleLogin,
+    handleVerificationComplete,
+    handleBack,
+    handleQuickDemo,
+  } = useSignup();
 
   return (
     <AuthLayout>

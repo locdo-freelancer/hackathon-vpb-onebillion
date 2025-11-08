@@ -1,7 +1,10 @@
 import React from "react";
 import type { Site } from "@/types/sites.types";
-import { SiteStatusBadge } from "./SiteStatusBadge";
+import { StatusBadge } from "@/components/shared";
 import { SiteActions } from "./SiteActions";
+import { SiteCheckbox } from "./SiteCheckbox";
+import { SiteIcon } from "./SiteIcon";
+import { AgentCountBadge } from "./AgentCountBadge";
 
 interface SiteRowProps {
   site: Site;
@@ -12,6 +15,14 @@ interface SiteRowProps {
   onDelete: (site: Site) => void;
 }
 
+/**
+ * Site Row Component
+ * Single Responsibility: Renders a single site table row
+ * Open/Closed: Open for extension (new columns), uses composition
+ * Liskov Substitution: Can be replaced with any compatible row component
+ * Interface Segregation: Minimal props - site data and action handlers
+ * Dependency Inversion: Depends on abstract Site type and action handlers
+ */
 export const SiteRow: React.FC<SiteRowProps> = ({
   site,
   isSelected,
@@ -24,22 +35,21 @@ export const SiteRow: React.FC<SiteRowProps> = ({
     <tr className="hover:bg-slate-800/30 transition-colors">
       {/* Checkbox */}
       <td className="px-6 py-4">
-        <input
-          type="checkbox"
+        <SiteCheckbox
           checked={isSelected}
           onChange={() => onToggleSelect(site.id)}
-          className="w-4 h-4 bg-slate-950 border border-slate-800 rounded accent-cyan-500"
+          ariaLabel={`Select ${site.name}`}
         />
       </td>
 
       {/* Site Name */}
       <td className="px-6 py-4">
         <div className="flex items-center gap-3">
-          <div
-            className={`w-10 h-10 bg-linear-to-br ${site.iconGradient} rounded-lg flex items-center justify-center`}
-          >
-            <i className={`${site.icon} text-white`} />
-          </div>
+          <SiteIcon
+            icon={site.icon}
+            gradient={site.iconGradient}
+            alt={site.name}
+          />
           <div>
             <p className="text-sm font-medium text-white">{site.name}</p>
             <p className="text-xs text-gray-400">{site.hostname}</p>
@@ -70,17 +80,24 @@ export const SiteRow: React.FC<SiteRowProps> = ({
 
       {/* Agents */}
       <td className="px-6 py-4">
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold text-white">
-            {site.agentCount}
-          </span>
-          <span className="text-xs text-gray-400">active</span>
-        </div>
+        <AgentCountBadge count={site.agentCount} />
       </td>
 
       {/* Status */}
       <td className="px-6 py-4">
-        <SiteStatusBadge status={site.status} />
+        <StatusBadge 
+          status={
+            site.status === "active" ? "online" :
+            site.status === "warning" ? "warning" :
+            "idle"
+          }
+          label={
+            site.status === "active" ? "Active" :
+            site.status === "warning" ? "Warning" :
+            "Inactive"
+          }
+          showDot
+        />
       </td>
 
       {/* Actions */}

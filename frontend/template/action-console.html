@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Action Console</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script> window.FontAwesomeConfig = { autoReplaceSvg: 'nest'};</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>::-webkit-scrollbar { display: none;}</style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        cyber: {
+                            dark: '#0a0e1a',
+                            darker: '#060911',
+                            card: '#0f1420',
+                            border: '#1a2332',
+                            accent: '#00d9ff',
+                            purple: '#a855f7',
+                            pink: '#ec4899',
+                        }
+                    },
+                    boxShadow: {
+                        'glow-cyan': '0 0 20px rgba(0, 217, 255, 0.3)',
+                        'glow-purple': '0 0 20px rgba(168, 85, 247, 0.3)',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-cyber-darker font-sans antialiased">
+    
+    <div id="action-console-container" class="min-h-screen relative overflow-hidden">
+        
+        <div class="absolute inset-0 bg-gradient-to-br from-cyber-accent/5 via-transparent to-cyber-purple/5"></div>
+        <div class="absolute top-20 left-20 w-96 h-96 bg-cyber-accent/10 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-20 right-20 w-96 h-96 bg-cyber-purple/10 rounded-full blur-3xl"></div>
+        
+        <div id="main-content" class="relative z-10 flex">
+            
+            <aside id="sidebar" class="w-64 border-r border-cyber-border bg-cyber-card/50 backdrop-blur-xl">
+                <div class="p-6">
+                    <div class="flex items-center gap-3 mb-8">
+                        <div class="inline-flex items-center justify-center w-10 h-10 bg-gradient-to-br from-cyber-accent to-cyber-purple rounded-lg shadow-glow-cyan">
+                            <i class="fas fa-shield-halved text-lg text-white"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-lg font-bold text-white">SecureVault</h1>
+                            <p class="text-xs text-gray-400">Cybersecurity</p>
+                        </div>
+                    </div>
+                    
+                    <nav class="space-y-1">
+                        <a href="#" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-cyber-dark/50 rounded-lg transition-colors">
+                            <i class="fas fa-gauge-high w-5"></i>
+                            <span>Dashboard</span>
+                        </a>
+                        <a href="#" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-cyber-dark/50 rounded-lg transition-colors">
+                            <i class="fas fa-shield-virus w-5"></i>
+                            <span>Threat Intel</span>
+                        </a>
+                        <a href="#" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-cyber-dark/50 rounded-lg transition-colors">
+                            <i class="fas fa-server w-5"></i>
+                            <span>Sites</span>
+                        </a>
+                        <a href="#" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-cyber-dark/50 rounded-lg transition-colors">
+                            <i class="fas fa-desktop w-5"></i>
+                            <span>Agents</span>
+                        </a>
+                        <a href="#" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-cyber-dark/50 rounded-lg transition-colors">
+                            <i class="fas fa-exclamation-triangle w-5"></i>
+                            <span>Incidents</span>
+                        </a>
+                        <a href="#" class="flex items-center gap-3 px-4 py-3 bg-cyber-accent/10 border border-cyber-accent/30 text-cyber-accent rounded-lg">
+                            <i class="fas fa-bolt w-5"></i>
+                            <span class="font-medium">Action Console</span>
+                        </a>
+                        <a href="#" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-cyber-dark/50 rounded-lg transition-colors">
+                            <i class="fas fa-chart-line w-5"></i>
+                            <span>Reports</span>
+                        </a>
+                        <a href="#" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-cyber-dark/50 rounded-lg transition-colors">
+                            <i class="fas fa-cog w-5"></i>
+                            <span>Settings</span>
+                        </a>
+                    </nav>
+                </div>
+                
+                <div class="absolute bottom-6 left-6 right-6">
+                    <div class="flex items-center gap-3 p-3 bg-cyber-dark/50 rounded-lg border border-cyber-border">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-3.jpg" alt="User" class="w-10 h-10 rounded-full">
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium text-white truncate">John Smith</p>
+                            <p class="text-xs text-gray-400 truncate">Admin</p>
+                        </div>
+                        <button class="text-gray-400 hover:text-white">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                    </div>
+                </div>
+            </aside>
+
+            <div class="flex-1 flex flex-col">
+                
+                <header id="header" class="border-b border-cyber-border bg-cyber-card/50 backdrop-blur-xl">
+                    <div class="px-8 py-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h2 class="text-2xl font-bold text-white mb-1">Action Console</h2>
+                                <p class="text-sm text-gray-400">Execute automated response playbooks and remediation actions</p>
+                            </div>
+                            
+                            <div class="flex items-center gap-4">
+                                <div class="flex items-center gap-2 px-4 py-2 bg-cyber-dark border border-cyber-border rounded-lg">
+                                    <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                                    <span class="text-sm text-gray-400">All Systems Operational</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+
+                <main id="action-console-main" class="flex-1 p-8 overflow-auto">
+                    
+                    <div class="grid grid-cols-3 gap-6 mb-8">
+                        <div id="stat-card-1" class="bg-cyber-card border border-cyber-border rounded-xl p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-check-circle text-green-400 text-xl"></i>
+                                </div>
+                                <span class="text-xs text-gray-400">Last 24h</span>
+                            </div>
+                            <h3 class="text-3xl font-bold text-white mb-1">47</h3>
+                            <p class="text-sm text-gray-400">Actions Executed</p>
+                        </div>
+
+                        <div id="stat-card-2" class="bg-cyber-card border border-cyber-border rounded-xl p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-clock text-orange-400 text-xl"></i>
+                                </div>
+                                <span class="text-xs text-gray-400">Pending</span>
+                            </div>
+                            <h3 class="text-3xl font-bold text-white mb-1">3</h3>
+                            <p class="text-sm text-gray-400">Awaiting Approval</p>
+                        </div>
+
+                        <div id="stat-card-3" class="bg-cyber-card border border-cyber-border rounded-xl p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 bg-red-500/20 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-times-circle text-red-400 text-xl"></i>
+                                </div>
+                                <span class="text-xs text-gray-400">Failed</span>
+                            </div>
+                            <h3 class="text-3xl font-bold text-white mb-1">2</h3>
+                            <p class="text-sm text-gray-400">Requires Attention</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-8">
+                        
+                        <div id="playbook-actions-section">
+                            <h3 class="text-xl font-semibold text-white mb-6">Available Actions</h3>
+                            
+                            <div class="space-y-4">
+                                
+                                <div id="action-card-block-ip" class="bg-cyber-card border border-cyber-border rounded-xl p-6 hover:border-cyber-accent/50 transition-colors">
+                                    <div class="flex items-start justify-between mb-4">
+                                        <div class="flex items-start gap-4">
+                                            <div class="w-12 h-12 bg-red-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                                                <i class="fas fa-ban text-red-400 text-xl"></i>
+                                            </div>
+                                            <div>
+                                                <h4 class="text-lg font-semibold text-white mb-1">Block IP Address</h4>
+                                                <p class="text-sm text-gray-400 mb-3">Add malicious IP to firewall blocklist across all network segments</p>
+                                                <div class="flex items-center gap-2">
+                                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-red-500/20 text-red-400">High Impact</span>
+                                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-purple-500/20 text-purple-400">Network</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button onclick="openModal('modal-block-ip')" class="w-full px-4 py-2.5 bg-red-500/20 text-red-400 border border-red-500/30 rounded-lg hover:bg-red-500/30 transition-colors font-medium">
+                                        <i class="fas fa-play mr-2"></i>
+                                        Execute Action
+                                    </button>
+                                </div>
+
+                                <div id="action-card-isolate-host" class="bg-cyber-card border border-cyber-border rounded-xl p-6 hover:border-cyber-accent/50 transition-colors">
+                                    <div class="flex items-start justify-between mb-4">
+                                        <div class="flex items-start gap-4">
+                                            <div class="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                                                <i class="fas fa-network-wired text-orange-400 text-xl"></i>
+                                            </div>
+                                            <div>
+                                                <h4 class="text-lg font-semibold text-white mb-1">Isolate Host</h4>
+                                                <p class="text-sm text-gray-400 mb-3">Disconnect compromised system from network to prevent lateral movement</p>
+                                                <div class="flex items-center gap-2">
+                                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-orange-500/20 text-orange-400">Critical</span>
+                                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-blue-500/20 text-blue-400">Endpoint</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button onclick="openModal('modal-isolate-host')" class="w-full px-4 py-2.5 bg-orange-500/20 text-orange-400 border border-orange-500/30 rounded-lg hover:bg-orange-500/30 transition-colors font-medium">
+                                        <i class="fas fa-play mr-2"></i>
+                                        Execute Action
+                                    </button>
+                                </div>
+
+                                <div id="action-card-revoke-token" class="bg-cyber-card border border-cyber-border rounded-xl p-6 hover:border-cyber-accent/50 transition-colors">
+                                    <div class="flex items-start justify-between mb-4">
+                                        <div class="flex items-start gap-4">
+                                            <div class="w-12 h-12 bg-yellow-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                                                <i class="fas fa-key text-yellow-400 text-xl"></i>
+                                            </div>
+                                            <div>
+                                                <h4 class="text-lg font-semibold text-white mb-1">Revoke Access Token</h4>
+                                                <p class="text-sm text-gray-400 mb-3">Invalidate compromised authentication tokens and force re-authentication</p>
+                                                <div class="flex items-center gap-2">
+                                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-yellow-500/20 text-yellow-400">Medium Impact</span>
+                                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-green-500/20 text-green-400">Identity</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button onclick="openModal('modal-revoke-token')" class="w-full px-4 py-2.5 bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 rounded-lg hover:bg-yellow-500/30 transition-colors font-medium">
+                                        <i class="fas fa-play mr-2"></i>
+                                        Execute Action
+                                    </button>
+                                </div>
+
+                                <div id="action-card-quarantine-file" class="bg-cyber-card border border-cyber-border rounded-xl p-6 hover:border-cyber-accent/50 transition-colors">
+                                    <div class="flex items-start justify-between mb-4">
+                                        <div class="flex items-start gap-4">
+                                            <div class="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                                                <i class="fas fa-file-shield text-purple-400 text-xl"></i>
+                                            </div>
+                                            <div>
+                                                <h4 class="text-lg font-semibold text-white mb-1">Quarantine Malicious File</h4>
+                                                <p class="text-sm text-gray-400 mb-3">Move detected malware to secure quarantine location for analysis</p>
+                                                <div class="flex items-center gap-2">
+                                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-red-500/20 text-red-400">High Impact</span>
+                                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-purple-500/20 text-purple-400">Malware</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button onclick="openModal('modal-quarantine-file')" class="w-full px-4 py-2.5 bg-purple-500/20 text-purple-400 border border-purple-500/30 rounded-lg hover:bg-purple-500/30 transition-colors font-medium">
+                                        <i class="fas fa-play mr-2"></i>
+                                        Execute Action
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div id="execution-history-section">
+                            <h3 class="text-xl font-semibold text-white mb-6">Execution History</h3>
+                            
+                            <div class="bg-cyber-card border border-cyber-border rounded-xl p-6">
+                                <div class="space-y-4">
+                                    
+                                    <div class="flex gap-4">
+                                        <div class="flex flex-col items-center">
+                                            <div class="w-10 h-10 bg-green-500/20 rounded-full flex items-center justify-center border-2 border-green-500/50">
+                                                <i class="fas fa-check text-green-400 text-sm"></i>
+                                            </div>
+                                            <div class="w-0.5 h-20 bg-cyber-border mt-2"></div>
+                                        </div>
+                                        <div class="flex-1 pb-6">
+                                            <div class="flex items-start justify-between mb-2">
+                                                <div>
+                                                    <h4 class="text-sm font-semibold text-white mb-1">Block IP Address</h4>
+                                                    <p class="text-xs text-gray-400">IP: 185.234.72.45 added to blocklist</p>
+                                                </div>
+                                                <span class="text-xs text-gray-500">2 min ago</span>
+                                            </div>
+                                            <div class="flex items-center gap-2 mb-2">
+                                                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-green-500/20 text-green-400">
+                                                    <i class="fas fa-check-circle mr-1"></i>
+                                                    Completed
+                                                </span>
+                                                <span class="text-xs text-gray-500">Duration: 1.2s</span>
+                                            </div>
+                                            <div class="flex items-center gap-2">
+                                                <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-3.jpg" alt="User" class="w-5 h-5 rounded-full">
+                                                <span class="text-xs text-gray-400">Executed by John Smith</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex gap-4">
+                                        <div class="flex flex-col items-center">
+                                            <div class="w-10 h-10 bg-green-500/20 rounded-full flex items-center justify-center border-2 border-green-500/50">
+                                                <i class="fas fa-check text-green-400 text-sm"></i>
+                                            </div>
+                                            <div class="w-0.5 h-20 bg-cyber-border mt-2"></div>
+                                        </div>
+                                        <div class="flex-1 pb-6">
+                                            <div class="flex items-start justify-between mb-2">
+                                                <div>
+                                                    <h4 class="text-sm font-semibold text-white mb-1">Isolate Host</h4>
+                                                    <p class="text-xs text-gray-400">Host: WS-001 disconnected from network</p>
+                                                </div>
+                                                <span class="text-xs text-gray-500">15 min ago</span>
+                                            </div>
+                                            <div class="flex items-center gap-2 mb-2">
+                                                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-green-500/20 text-green-400">
+                                                    <i class="fas fa-check-circle mr-1"></i>
+                                                    Completed
+                                                </span>
+                                                <span class="text-xs text-gray-500">Duration: 3.8s</span>
+                                            </div>
+                                            <div class="flex items-center gap-2">
+                                                <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-5.jpg" alt="User" class="w-5 h-5 rounded-full">
+                                                <span class="text-xs text-gray-400">Executed by Sarah Johnson</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex gap-4">
+                                        <div class="flex flex-col items-center">
+                                            <div class="w-10 h-10 bg-orange-500/20 rounded-full flex items-center justify-center border-2 border-orange-500/50 animate-pulse">
+                                                <i class="fas fa-spinner fa-spin text-orange-400 text-sm"></i>
+                                            </div>
+                                            <div class="w-0.5 h-20 bg-cyber-border mt-2"></div>
+                                        </div>
+                                        <div class="flex-1 pb-6">
+                                            <div class="flex items-start justify-between mb-2">
+                                                <div>
+                                                    <h4 class="text-sm font-semibold text-white mb-1">Revoke Access Token</h4>
+                                                    <p class="text-xs text-gray-400">Token: tok_7x9k invalidation in progress</p>
+                                                </div>
+                                                <span class="text-xs text-gray-500">1 min ago</span>
+                                            </div>
+                                            <div class="flex items-center gap-2 mb-2">
+                                                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-orange-500/20 text-orange-400">
+                                                    <i class="fas fa-clock mr-1"></i>
+                                                    In Progress
+                                                </span>
+                                                <span class="text-xs text-gray-500">Elapsed: 45s</span>
+                                            </div>
+                                            <div class="flex items-center gap-2">
+                                                <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-3.jpg" alt="User" class="w-5 h-5 rounded-full">
+                                                <span class="text-xs text-gray-400">Executed by John Smith</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex gap-4">
+                                        <div class="flex flex-col items-center">
+                                            <div class="w-10 h-10 bg-green-500/20 rounded-full flex items-center justify-center border-2 border-green-500/50">
+                                                <i class="fas fa-check text-green-400 text-sm"></i>
+                                            </div>
+                                            <div class="w-0.5 h-20 bg-cyber-border mt-2"></div>
+                                        </div>
+                                        <div class="flex-1 pb-6">
+                                            <div class="flex items-start justify-between mb-2">
+                                                <div>
+                                                    <h4 class="text-sm font-semibold text-white mb-1">Quarantine Malicious File</h4>
+                                                    <p class="text-xs text-gray-400">File: update.exe moved to quarantine</p>
+                                                </div>
+                                                <span class="text-xs text-gray-500">32 min ago</span>
+                                            </div>
+                                            <div class="flex items-center gap-2 mb-2">
+                                                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-green-500/20 text-green-400">
+                                                    <i class="fas fa-check-circle mr-1"></i>
+                                                    Completed
+                                                </span>
+                                                <span class="text-xs text-gray-500">Duration: 2.1s</span>
+                                            </div>
+                                            <div class="flex items-center gap-2">
+                                                <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="User" class="w-5 h-5 rounded-full">
+                                                <span class="text-xs text-gray-400">Executed by Alex Chen</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex gap-4">
+                                        <div class="flex flex-col items-center">
+                                            <div class="w-10 h-10 bg-red-500/20 rounded-full flex items-center justify-center border-2 border-red-500/50">
+                                                <i class="fas fa-times text-red-400 text-sm"></i>
+                                            </div>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="flex items-start justify-between mb-2">
+                                                <div>
+                                                    <h4 class="text-sm font-semibold text-white mb-1">Block IP Address</h4>
+                                                    <p class="text-xs text-gray-400">IP: 203.45.67.89 - Action failed</p>
+                                                </div>
+                                                <span class="text-xs text-gray-500">1 hour ago</span>
+                                            </div>
+                                            <div class="flex items-center gap-2 mb-2">
+                                                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-red-500/20 text-red-400">
+                                                    <i class="fas fa-exclamation-triangle mr-1"></i>
+                                                    Failed
+                                                </span>
+                                                <span class="text-xs text-gray-500">Error: Firewall timeout</span>
+                                            </div>
+                                            <div class="flex items-center gap-2">
+                                                <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-5.jpg" alt="User" class="w-5 h-5 rounded-full">
+                                                <span class="text-xs text-gray-400">Executed by Sarah Johnson</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-block-ip" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden items-center justify-center">
+        <div class="bg-cyber-card border border-cyber-border rounded-xl p-8 max-w-lg w-full mx-4 shadow-glow-cyan">
+            <div class="flex items-center gap-4 mb-6">
+                <div class="w-14 h-14 bg-red-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-ban text-red-400 text-2xl"></i>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-white">Block IP Address</h3>
+                    <p class="text-sm text-gray-400">Add IP to firewall blocklist</p>
+                </div>
+            </div>
+            
+            <div class="space-y-4 mb-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-2">Target IP Address</label>
+                    <input type="text" placeholder="e.g., 185.234.72.45" class="w-full px-4 py-2.5 bg-cyber-dark border border-cyber-border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-cyber-accent transition-colors">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-2">Reason</label>
+                    <textarea placeholder="Describe the threat..." rows="3" class="w-full px-4 py-2.5 bg-cyber-dark border border-cyber-border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-cyber-accent transition-colors resize-none"></textarea>
+                </div>
+                <div class="bg-red-500/10 border border-red-500/30 rounded-lg p-4">
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-exclamation-triangle text-red-400 mt-0.5"></i>
+                        <div>
+                            <p class="text-sm font-medium text-red-400 mb-1">High Impact Action</p>
+                            <p class="text-xs text-gray-400">This will immediately block all traffic from the specified IP address across all network segments.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex gap-3">
+                <button onclick="closeModal('modal-block-ip')" class="flex-1 px-4 py-2.5 bg-cyber-dark border border-cyber-border rounded-lg text-gray-400 hover:text-white hover:border-gray-600 transition-colors font-medium">
+                    Cancel
+                </button>
+                <button onclick="executeAction('modal-block-ip')" class="flex-1 px-4 py-2.5 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-medium">
+                    <i class="fas fa-bolt mr-2"></i>
+                    Execute Now
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-isolate-host" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden items-center justify-center">
+        <div class="bg-cyber-card border border-cyber-border rounded-xl p-8 max-w-lg w-full mx-4 shadow-glow-cyan">
+            <div class="flex items-center gap-4 mb-6">
+                <div class="w-14 h-14 bg-orange-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-network-wired text-orange-400 text-2xl"></i>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-white">Isolate Host</h3>
+                    <p class="text-sm text-gray-400">Disconnect system from network</p>
+                </div>
+            </div>
+            
+            <div class="space-y-4 mb-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-2">Host Identifier</label>
+                    <input type="text" placeholder="e.g., WS-001 or hostname" class="w-full px-4 py-2.5 bg-cyber-dark border border-cyber-border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-cyber-accent transition-colors">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-2">Reason</label>
+                    <textarea placeholder="Describe the incident..." rows="3" class="w-full px-4 py-2.5 bg-cyber-dark border border-cyber-border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-cyber-accent transition-colors resize-none"></textarea>
+                </div>
+                <div class="bg-orange-500/10 border border-orange-500/30 rounded-lg p-4">
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-exclamation-triangle text-orange-400 mt-0.5"></i>
+                        <div>
+                            <p class="text-sm font-medium text-orange-400 mb-1">Critical Action</p>
+                            <p class="text-xs text-gray-400">This will immediately disconnect the host from the network, preventing all communications.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex gap-3">
+                <button onclick="closeModal('modal-isolate-host')" class="flex-1 px-4 py-2.5 bg-cyber-dark border border-cyber-border rounded-lg text-gray-400 hover:text-white hover:border-gray-600 transition-colors font-medium">
+                    Cancel
+                </button>
+                <button onclick="executeAction('modal-isolate-host')" class="flex-1 px-4 py-2.5 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors font-medium">
+                    <i class="fas fa-bolt mr-2"></i>
+                    Execute Now
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-revoke-token" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden items-center justify-center">
+        <div class="bg-cyber-card border border-cyber-border rounded-xl p-8 max-w-lg w-full mx-4 shadow-glow-cyan">
+            <div class="flex items-center gap-4 mb-6">
+                <div class="w-14 h-14 bg-yellow-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-key text-yellow-400 text-2xl"></i>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-white">Revoke Access Token</h3>
+                    <p class="text-sm text-gray-400">Invalidate authentication token</p>
+                </div>
+            </div>
+            
+            <div class="space-y-4 mb-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-2">Token ID</label>
+                    <input type="text" placeholder="e.g., tok_7x9k..." class="w-full px-4 py-2.5 bg-cyber-dark border border-cyber-border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-cyber-accent transition-colors">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-2">User Email</label>
+                    <input type="email" placeholder="user@company.com" class="w-full px-4 py-2.5 bg-cyber-dark border border-cyber-border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-cyber-accent transition-colors">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-2">Reason</label>
+                    <textarea placeholder="Describe the security concern..." rows="3" class="w-full px-4 py-2.5 bg-cyber-dark border border-cyber-border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-cyber-accent transition-colors resize-none"></textarea>
+                </div>
+            </div>
+
+            <div class="flex gap-3">
+                <button onclick="closeModal('modal-revoke-token')" class="flex-1 px-4 py-2.5 bg-cyber-dark border border-cyber-border rounded-lg text-gray-400 hover:text-white hover:border-gray-600 transition-colors font-medium">
+                    Cancel
+                </button>
+                <button onclick="executeAction('modal-revoke-token')" class="flex-1 px-4 py-2.5 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors font-medium">
+                    <i class="fas fa-bolt mr-2"></i>
+                    Execute Now
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-quarantine-file" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden items-center justify-center">
+        <div class="bg-cyber-card border border-cyber-border rounded-xl p-8 max-w-lg w-full mx-4 shadow-glow-cyan">
+            <div class="flex items-center gap-4 mb-6">
+                <div class="w-14 h-14 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-file-shield text-purple-400 text-2xl"></i>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-white">Quarantine Malicious File</h3>
+                    <p class="text-sm text-gray-400">Move file to secure quarantine</p>
+                </div>
+            </div>
+            
+            <div class="space-y-4 mb-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-2">File Path</label>
+                    <input type="text" placeholder="e.g., C:\Users\...\update.exe" class="w-full px-4 py-2.5 bg-cyber-dark border border-cyber-border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-cyber-accent transition-colors">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-2">Host Identifier</label>
+                    <input type="text" placeholder="e.g., WS-001" class="w-full px-4 py-2.5 bg-cyber-dark border border-cyber-border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-cyber-accent transition-colors">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-2">Detection Details</label>
+                    <textarea placeholder="Malware signature, behavior, etc..." rows="3" class="w-full px-4 py-2.5 bg-cyber-dark border border-cyber-border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-cyber-accent transition-colors resize-none"></textarea>
+                </div>
+            </div>
+
+            <div class="flex gap-3">
+                <button onclick="closeModal('modal-quarantine-file')" class="flex-1 px-4 py-2.5 bg-cyber-dark border border-cyber-border rounded-lg text-gray-400 hover:text-white hover:border-gray-600 transition-colors font-medium">
+                    Cancel
+                </button>
+                <button onclick="executeAction('modal-quarantine-file')" class="flex-1 px-4 py-2.5 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors font-medium">
+                    <i class="fas fa-bolt mr-2"></i>
+                    Execute Now
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        function executeAction(modalId) {
+            closeModal(modalId);
+            alert('Action executed successfully!');
+        }
+
+        document.addEventListener('click', function(e) {
+            const modals = ['modal-block-ip', 'modal-isolate-host', 'modal-revoke-token', 'modal-quarantine-file'];
+            modals.forEach(modalId => {
+                const modal = document.getElementById(modalId);
+                if (modal && e.target === modal) {
+                    closeModal(modalId);
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

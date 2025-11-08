@@ -1,4 +1,3 @@
-// Auth Layout - Group route for authentication pages
 import { Metadata } from "next";
 import Script from "next/script";
 

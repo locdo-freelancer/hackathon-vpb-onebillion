@@ -1,71 +1,30 @@
 "use client";
 
-import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import React from "react";
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
-import {
-  IncidentsFilters,
-  IncidentsTable,
-} from "@/components/incidents";
-import { useIncidentsData } from "@/hooks/useIncidentsData";
+import { IncidentsFilters, IncidentsTable } from "@/components/incidents";
+import { getNavItems, getDefaultUser } from "@/config/navigation.config";
+import { useIncidentsFlow } from "@/hooks/useIncidentsFlow";
 
 export default function IncidentsPage() {
-  const router = useRouter();
   const {
+    searchQuery,
     filteredIncidents,
     filter,
+    selectedIncidents,
+    stats,
+    handleSearch,
+    handleIncidentClick,
+    handleNewIncident,
+    handleBulkAction,
     setFilter,
     applyFilters,
-    selectIncident,
-    selectedIncidents,
     toggleIncidentSelection,
     toggleAllIncidents,
-    stats,
-  } = useIncidentsData();
+  } = useIncidentsFlow();
 
-  const [searchQuery, setSearchQuery] = useState("");
-
-  const handleIncidentClick = async (id: string) => {
-    router.push(`/incidents/${id}`);
-  };
-
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-    setFilter({ searchQuery: query });
-    applyFilters();
-  };
-
-  const handleNewIncident = () => {
-    console.log("Create new incident");
-  };
-
-  const handleBulkAction = (action: "close" | "assign" | "export") => {
-    console.log("Bulk action:", action, "for incidents:", selectedIncidents);
-  };
-
-  // Navigation items
-  const navItems = [
-    { icon: "fas fa-gauge-high", label: "Dashboard", href: "/dashboard" },
-    { icon: "fas fa-shield-virus", label: "Threats", href: "/threats" },
-    { icon: "fas fa-server", label: "Sites", href: "/sites" },
-    { icon: "fas fa-desktop", label: "Agents", href: "/agents" },
-    {
-      icon: "fas fa-exclamation-triangle",
-      label: "Incidents",
-      href: "/incidents",
-      active: true,
-    },
-    { icon: "fas fa-chart-line", label: "Reports", href: "#" },
-    { icon: "fas fa-cog", label: "Settings", href: "#" },
-  ];
-
-  const user = {
-    name: "John Smith",
-    email: "admin@example.com",
-    avatar:
-      "https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-3.jpg",
-    role: "Admin",
-  };
+  const user = getDefaultUser();
+  const navItems = getNavItems("/incidents");
 
   return (
     <div className="flex h-screen bg-slate-950">
@@ -76,7 +35,9 @@ export default function IncidentsPage() {
         <div className="border-b border-slate-800 bg-slate-900/50 backdrop-blur-xl">
           <div className="px-8 py-6 flex items-center justify-between">
             <div>
-              <h2 className="text-2xl font-bold text-white">Security Incidents</h2>
+              <h2 className="text-2xl font-bold text-white">
+                Security Incidents
+              </h2>
               <p className="text-sm text-gray-400 mt-1">
                 Monitor and manage security incidents across your infrastructure
               </p>
