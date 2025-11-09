@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import type { DashboardData } from "@/types/dashboard.types";
-import { 
-  SitesService, 
-  AgentsService, 
+import {
+  SitesService,
+  AgentsService,
   IncidentsService,
   ThreatsService,
-  SecurityMetricsService 
+  SecurityMetricsService,
 } from "@/lib/services";
 
 interface UseDashboardDataReturn {
@@ -19,6 +19,7 @@ export const useDashboardData = (): UseDashboardDataReturn => {
   const [data, setData] = useState<DashboardData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+  const hasFetchedRef = useRef(false);
 
   const fetchData = async () => {
     try {
@@ -26,12 +27,53 @@ export const useDashboardData = (): UseDashboardDataReturn => {
       setError(null);
 
       // Fetch data from real APIs in parallel
-      const [sitesData, agentsStats, incidentsStats, threatsStats, metricsData] = await Promise.all([
-        SitesService.getAllSites().catch(() => ({ sites: [], totalSites: 0, activeSites: 0, inactiveSites: 0, warningSites: 0 })),
-        AgentsService.getAgentStats().catch(() => ({ totalAgents: 0, onlineAgents: 0, offlineAgents: 0, updatingAgents: 0, byOS: { linux: 0, windows: 0, docker: 0, macos: 0 } })),
-        IncidentsService.getIncidentStats().catch(() => ({ total: 0, open: 0, investigating: 0, resolved: 0, closed: 0, critical: 0, high: 0, medium: 0, low: 0 })),
-        ThreatsService.getThreatStats().catch(() => ({ total: 0, critical: 0, high: 0, medium: 0, low: 0, blocked: 0, active: 0 })),
-        SecurityMetricsService.getStatistics().catch(() => ({ total: 0, active: 0, byType: {}, trends: { improving: 0, degrading: 0, stable: 0 } }))
+      const [
+        sitesData,
+        agentsStats,
+        incidentsStats,
+        threatsStats,
+        metricsData,
+      ] = await Promise.all([
+        SitesService.getAllSites().catch(() => ({
+          sites: [],
+          totalSites: 0,
+          activeSites: 0,
+          inactiveSites: 0,
+          warningSites: 0,
+        })),
+        AgentsService.getAgentStats().catch(() => ({
+          totalAgents: 0,
+          onlineAgents: 0,
+          offlineAgents: 0,
+          updatingAgents: 0,
+          byOS: { linux: 0, windows: 0, docker: 0, macos: 0 },
+        })),
+        IncidentsService.getIncidentStats().catch(() => ({
+          total: 0,
+          open: 0,
+          investigating: 0,
+          resolved: 0,
+          closed: 0,
+          critical: 0,
+          high: 0,
+          medium: 0,
+          low: 0,
+        })),
+        ThreatsService.getThreatStats().catch(() => ({
+          total: 0,
+          critical: 0,
+          high: 0,
+          medium: 0,
+          low: 0,
+          blocked: 0,
+          active: 0,
+        })),
+        SecurityMetricsService.getStatistics().catch(() => ({
+          total: 0,
+          active: 0,
+          byType: {},
+          trends: { improving: 0, degrading: 0, stable: 0 },
+        })),
       ]);
 
       // Transform to DashboardData format
@@ -59,6 +101,10 @@ export const useDashboardData = (): UseDashboardDataReturn => {
   };
 
   useEffect(() => {
+    // Prevent duplicate calls in React Strict Mode (development)
+    if (hasFetchedRef.current) return;
+    hasFetchedRef.current = true;
+
     fetchData();
 
     // Refetch data every 30 seconds

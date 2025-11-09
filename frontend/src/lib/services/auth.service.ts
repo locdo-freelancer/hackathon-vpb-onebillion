@@ -16,16 +16,13 @@ export class AuthService {
    */
   static async login(credentials: LoginCredentials): Promise<AuthResponse> {
     try {
-      const response: ApiResponse<LoginResponseData> = await apiClient.post(
-        "/auth/login",
-        {
-          email: credentials.email,
-          password: credentials.password,
-        }
-      );
+      const response = await apiClient.post("/auth/login", {
+        email: credentials.email,
+        password: credentials.password,
+      });
 
-      // API returns: { success: true, data: { access_token, user } }
-      if (response.success && response.data?.access_token) {
+      // Backend returns: { success: true, data: { access_token, user } }
+      if (response.data?.access_token) {
         localStorage.setItem("token", response.data.access_token);
         return {
           success: true,
@@ -40,14 +37,24 @@ export class AuthService {
 
       return {
         success: false,
-        message: "Login failed. Invalid response.",
+        message: "Login failed. Invalid response from server.",
       };
     } catch (error) {
       console.error("Login error:", error);
-      const message =
-        error instanceof Error
-          ? error.message
-          : "Login failed. Please try again.";
+
+      // Extract error message from API error
+      let message = "Login failed. Please check your credentials.";
+      if (error instanceof Error) {
+        // If API returned error message, use it
+        if (error.message.includes("Unauthorized")) {
+          message = "Invalid email or password. Please try again.";
+        } else if (error.message.includes("API Error")) {
+          message = "Server error. Please try again later.";
+        } else {
+          message = error.message;
+        }
+      }
+
       return {
         success: false,
         message,
@@ -60,18 +67,15 @@ export class AuthService {
    */
   static async register(credentials: SignupCredentials): Promise<AuthResponse> {
     try {
-      const response: ApiResponse<RegisterResponseData> = await apiClient.post(
-        "/auth/register",
-        {
-          email: credentials.email,
-          password: credentials.password,
-          full_name: credentials.fullName || credentials.email.split("@")[0],
-          company_name: credentials.companyName || "",
-        }
-      );
+      const response = await apiClient.post("/auth/register", {
+        email: credentials.email,
+        password: credentials.password,
+        full_name: credentials.fullName || credentials.email.split("@")[0],
+        company_name: credentials.companyName || "",
+      });
 
-      // API returns: { success: true, data: { message, user } }
-      if (response.success && response.data?.user) {
+      // Backend returns: { success: true, data: { message, user } }
+      if (response.data?.user) {
         return {
           success: true,
           message: response.data.message || "Registration successful",
@@ -85,14 +89,26 @@ export class AuthService {
 
       return {
         success: false,
-        message: "Registration failed. Invalid response.",
+        message: "Registration failed. Invalid response from server.",
       };
     } catch (error) {
       console.error("Register error:", error);
-      const message =
-        error instanceof Error
-          ? error.message
-          : "Registration failed. Please try again.";
+
+      // Extract error message from API error
+      let message = "Registration failed. Please try again.";
+      if (error instanceof Error) {
+        if (
+          error.message.includes("Conflict") ||
+          error.message.includes("409")
+        ) {
+          message = "Email already registered. Please use a different email.";
+        } else if (error.message.includes("API Error")) {
+          message = "Server error. Please try again later.";
+        } else {
+          message = error.message;
+        }
+      }
+
       return {
         success: false,
         message,
@@ -113,18 +129,16 @@ export class AuthService {
         };
       }
 
-      const response: ApiResponse<ProfileResponseData> = await apiClient.get(
-        "/auth/profile"
-      );
+      const response = await apiClient.get("/auth/profile");
 
-      // API returns: { success: true, data: { id, email, ... } }
-      if (response.success && response.data?.id) {
+      // Backend returns: { id, email, full_name, ... }
+      if (response.id) {
         return {
           success: true,
           user: {
-            id: response.data.id,
-            email: response.data.email,
-            name: response.data.full_name,
+            id: response.id,
+            email: response.email,
+            name: response.full_name,
           },
         };
       }

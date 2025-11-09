@@ -57,7 +57,26 @@ export class SitesService {
   static async getAllSites(): Promise<SitesResponse> {
     try {
       const response = await apiClient.get("/sites");
-      return response;
+
+      // Handle wrapped response format: { success: true, data: { ... } }
+      if (response.data) {
+        return {
+          sites: Array.isArray(response.data.sites) ? response.data.sites : [],
+          totalSites: response.data.totalSites || 0,
+          activeSites: response.data.activeSites || 0,
+          inactiveSites: response.data.inactiveSites || 0,
+          warningSites: response.data.warningSites || 0,
+        };
+      }
+
+      // Handle direct response format
+      return {
+        sites: Array.isArray(response.sites) ? response.sites : [],
+        totalSites: response.totalSites || 0,
+        activeSites: response.activeSites || 0,
+        inactiveSites: response.inactiveSites || 0,
+        warningSites: response.warningSites || 0,
+      };
     } catch (error: any) {
       console.error("Get sites error:", error);
       throw new Error(error.message || "Failed to fetch sites");
@@ -82,7 +101,24 @@ export class SitesService {
    */
   static async createSite(data: CreateSiteDto): Promise<Site> {
     try {
-      const response = await apiClient.post("/sites", data);
+      // Transform frontend data to backend format
+      const requestData = {
+        name: data.name,
+        ip_address: data.ipAddress,
+        domain_name:
+          data.domains && data.domains.length > 0 ? data.domains[0] : undefined,
+        hostname: data.hostname,
+        server_type: data.serverType || "linux",
+        port: data.port ? parseInt(data.port) : undefined,
+      };
+
+      const response = await apiClient.post("/sites", requestData);
+
+      // Handle wrapped response: { success: true, data: { ... } }
+      if (response.data) {
+        return response.data;
+      }
+
       return response;
     } catch (error: any) {
       console.error("Create site error:", error);
@@ -95,7 +131,23 @@ export class SitesService {
    */
   static async updateSite(id: string, data: UpdateSiteDto): Promise<Site> {
     try {
-      const response = await apiClient.patch(`/sites/${id}`, data);
+      // Transform frontend data to backend format
+      const requestData: any = {};
+      if (data.name) requestData.name = data.name;
+      if (data.ipAddress) requestData.ip_address = data.ipAddress;
+      if (data.domains && data.domains.length > 0)
+        requestData.domain_name = data.domains[0];
+      if (data.hostname) requestData.hostname = data.hostname;
+      if (data.port) requestData.port = parseInt(data.port);
+      if (data.status) requestData.status = data.status;
+
+      const response = await apiClient.patch(`/sites/${id}`, requestData);
+
+      // Handle wrapped response
+      if (response.data) {
+        return response.data;
+      }
+
       return response;
     } catch (error: any) {
       console.error("Update site error:", error);
@@ -106,7 +158,9 @@ export class SitesService {
   /**
    * Delete site - DELETE /api/sites/:id
    */
-  static async deleteSite(id: string): Promise<{ success: boolean; message: string }> {
+  static async deleteSite(
+    id: string
+  ): Promise<{ success: boolean; message: string }> {
     try {
       const response = await apiClient.delete(`/sites/${id}`);
       return response;

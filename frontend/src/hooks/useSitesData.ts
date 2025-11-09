@@ -30,25 +30,33 @@ export const useSitesData = (): UseSitesDataReturn => {
     try {
       setIsLoading(true);
       setError(null);
-      
+
       // Fetch from real API
       const sitesResponse = await SitesService.getAllSites();
-      
+
       // Transform to SitesData format
       const sitesData: SitesData = {
-        sites: sitesResponse.sites,
-        totalSites: sitesResponse.totalSites,
-        activeSites: sitesResponse.activeSites,
-        inactiveSites: sitesResponse.inactiveSites,
-        warningSites: sitesResponse.warningSites,
+        sites: Array.isArray(sitesResponse.sites) ? sitesResponse.sites : [],
+        totalSites: sitesResponse.totalSites || 0,
+        activeSites: sitesResponse.activeSites || 0,
+        inactiveSites: sitesResponse.inactiveSites || 0,
+        warningSites: sitesResponse.warningSites || 0,
       };
-      
+
       setData(sitesData);
     } catch (err) {
       console.error("Failed to fetch sites:", err);
       setError(
         err instanceof Error ? err : new Error("Failed to fetch sites data")
       );
+      // Set empty data on error to prevent undefined errors
+      setData({
+        sites: [],
+        totalSites: 0,
+        activeSites: 0,
+        inactiveSites: 0,
+        warningSites: 0,
+      });
     } finally {
       setIsLoading(false);
     }
@@ -59,33 +67,37 @@ export const useSitesData = (): UseSitesDataReturn => {
   }, []);
 
   // Filter sites based on current filter
-  const filteredSites = data?.sites.filter((site) => {
-    // Status filter
-    if (filter.status !== "all" && site.status !== filter.status) {
-      return false;
-    }
-
-    // Agent count filter
-    if (filter.agentCount !== "any") {
-      if (filter.agentCount === "0" && site.agentCount !== 0) return false;
-      if (filter.agentCount === "1-5" && (site.agentCount < 1 || site.agentCount > 5))
+  const filteredSites =
+    data?.sites.filter((site) => {
+      // Status filter
+      if (filter.status !== "all" && site.status !== filter.status) {
         return false;
-      if (filter.agentCount === "5+" && site.agentCount <= 5) return false;
-    }
+      }
 
-    // Search query filter
-    if (filter.searchQuery) {
-      const query = filter.searchQuery.toLowerCase();
-      return (
-        site.name.toLowerCase().includes(query) ||
-        site.hostname.toLowerCase().includes(query) ||
-        site.ipAddress.includes(query) ||
-        site.domains?.some((d) => d.toLowerCase().includes(query))
-      );
-    }
+      // Agent count filter
+      if (filter.agentCount !== "any") {
+        if (filter.agentCount === "0" && site.agentCount !== 0) return false;
+        if (
+          filter.agentCount === "1-5" &&
+          (site.agentCount < 1 || site.agentCount > 5)
+        )
+          return false;
+        if (filter.agentCount === "5+" && site.agentCount <= 5) return false;
+      }
 
-    return true;
-  }) || [];
+      // Search query filter
+      if (filter.searchQuery) {
+        const query = filter.searchQuery.toLowerCase();
+        return (
+          site.name.toLowerCase().includes(query) ||
+          site.hostname.toLowerCase().includes(query) ||
+          site.ipAddress.includes(query) ||
+          site.domains?.some((d) => d.toLowerCase().includes(query))
+        );
+      }
+
+      return true;
+    }) || [];
 
   const applyFilter = (newFilter: SitesFilter) => {
     setFilter(newFilter);

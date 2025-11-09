@@ -42,6 +42,11 @@ export const LoginForm: React.FC<LoginFormProps> = ({
       return;
     }
 
+    if (!password) {
+      setError("Password is required");
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -55,16 +60,17 @@ export const LoginForm: React.FC<LoginFormProps> = ({
 
       if (response.success && response.token) {
         // Token already stored in AuthService.login()
-        // Redirect to onboarding
-        window.location.href = "/onboarding";
+        // Redirect to dashboard
+        window.location.href = "/dashboard";
       } else {
-        setError(response.message || "Login failed");
+        // Show error message
+        setError(response.message || "Login failed. Please try again.");
+        setIsLoading(false);
       }
     } catch (err) {
       const message =
         err instanceof Error ? err.message : "An unexpected error occurred";
       setError(message);
-    } finally {
       setIsLoading(false);
     }
   };
@@ -96,12 +102,17 @@ export const LoginForm: React.FC<LoginFormProps> = ({
             onChange={setRememberMe}
             label="Remember me"
           />
-          <a
-            href="#"
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              // TODO: Implement forgot password
+              console.log("Forgot password clicked");
+            }}
             className="text-sm text-cyber-accent hover:text-cyan-400 transition-colors"
           >
             Forgot password?
-          </a>
+          </button>
         </div>
 
         <FormButton type="submit" isLoading={isLoading} variant="primary">
