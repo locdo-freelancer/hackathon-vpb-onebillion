@@ -5,10 +5,7 @@ import {
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository, SelectQueryBuilder } from "typeorm";
-import {
-  RemediationAction,
-  RemediationStatus,
-} from "../../../libs/entities/src/remediation-action.entity";
+import { RemediationAction, RemediationStatus } from "../../../libs/entities";
 import {
   CreateRemediationActionDto,
   UpdateRemediationActionDto,
@@ -149,9 +146,11 @@ export class RemediationActionsService {
       this.remediationActionRepository.createQueryBuilder("remediation");
 
     if (siteId) {
-      queryBuilder = queryBuilder.where("remediation.site_id = :siteId", {
-        siteId,
-      });
+      queryBuilder = queryBuilder
+        .leftJoin("remediation.site", "site")
+        .where("site.id = :siteId", {
+          siteId,
+        });
     }
 
     const actions = await queryBuilder.getMany();
@@ -227,13 +226,13 @@ export class RemediationActionsService {
 
     switch (sourceType) {
       case "incident":
-        whereCondition.incident_id = sourceId;
+        whereCondition.incident = { id: sourceId };
         break;
       case "threat":
-        whereCondition.threat_indicator_id = sourceId;
+        whereCondition.threatIndicator = { id: sourceId };
         break;
       case "vulnerability":
-        whereCondition.site_vulnerability_id = sourceId;
+        whereCondition.siteVulnerability = { id: sourceId };
         break;
       default:
         throw new BadRequestException("Invalid source type");
@@ -259,7 +258,7 @@ export class RemediationActionsService {
 
     // Apply filters
     if (filters.site_id) {
-      queryBuilder = queryBuilder.andWhere("remediation.site_id = :siteId", {
+      queryBuilder = queryBuilder.andWhere("site.id = :siteId", {
         siteId: filters.site_id,
       });
     }
@@ -284,10 +283,12 @@ export class RemediationActionsService {
     }
 
     if (filters.assigned_to) {
-      queryBuilder = queryBuilder.andWhere(
-        "remediation.assigned_to = :assignedTo",
-        { assignedTo: filters.assigned_to }
-      );
+      queryBuilder = queryBuilder
+        .leftJoin("remediation.assignee", "assignee")
+        .andWhere(
+          "assignee.id = :assignedTo",
+          { assignedTo: filters.assigned_to }
+        );
     }
 
     if (filters.action_type) {
@@ -299,7 +300,7 @@ export class RemediationActionsService {
 
     if (filters.incident_id) {
       queryBuilder = queryBuilder.andWhere(
-        "remediation.incident_id = :incidentId",
+        "incident.id = :incidentId",
         { incidentId: filters.incident_id }
       );
     }

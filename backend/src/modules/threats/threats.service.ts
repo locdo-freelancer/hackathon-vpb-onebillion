@@ -74,7 +74,7 @@ export class ThreatsService {
     }
 
     if (filter.siteId) {
-      queryBuilder.andWhere("indicator.site_id = :siteId", {
+      queryBuilder.andWhere("site.id = :siteId", {
         siteId: filter.siteId,
       });
     }

@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { Site, AgentEntity } from "../../../libs/entities";
+import { Site, AgentEntity, User, SiteStatus } from "../../../libs/entities";
 import * as crypto from "crypto";
 import * as dns from "dns";
 import { promisify } from "util";
@@ -15,7 +15,9 @@ export class OnboardingService {
     @InjectRepository(Site)
     private siteRepository: Repository<Site>,
     @InjectRepository(AgentEntity)
-    private agentRepository: Repository<AgentEntity>
+    private agentRepository: Repository<AgentEntity>,
+    @InjectRepository(User)
+    private userRepository: Repository<User>
   ) {}
 
   async saveProgress(userId: string, dto: OnboardingProgressDto) {
@@ -24,13 +26,21 @@ export class OnboardingService {
 
   async completeOnboarding(userId: string, dto: CompleteOnboardingDto) {
     try {
+      const user = await this.userRepository.findOne({
+        where: { id: userId },
+      });
+
+      if (!user) {
+        throw new Error("User not found");
+      }
+
       const site = this.siteRepository.create({
-        user_id: userId,
+        user,
         name: dto.siteName,
         ip_address: dto.ipAddress,
         domain_name: dto.domainName,
         server_type: dto.serverType,
-        status: "Pending",
+        status: SiteStatus.PENDING,
         entity_token: crypto.randomBytes(32).toString("hex"),
       });
 

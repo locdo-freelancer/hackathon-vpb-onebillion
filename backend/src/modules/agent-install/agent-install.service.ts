@@ -50,7 +50,7 @@ export class AgentInstallService {
 
   async checkInstallStatus(userId: string) {
     const sites = await this.siteRepository.find({
-      where: { user_id: userId },
+      where: { user: { id: userId } },
       relations: ["agent"],
     });
 

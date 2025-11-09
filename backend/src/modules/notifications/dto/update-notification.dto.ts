@@ -17,3 +17,4 @@ export class UpdateNotificationDto extends PartialType(CreateNotificationDto) {
   @IsNumber()
   read_at?: number;
 }
+

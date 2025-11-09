@@ -21,7 +21,8 @@ export class AgentsService {
     const queryBuilder = this.agentRepository
       .createQueryBuilder("agent")
       .leftJoinAndSelect("agent.site", "site")
-      .where("site.user_id = :userId", { userId });
+      .leftJoinAndSelect("site.user", "user")
+      .where("user.id = :userId", { userId });
 
     if (query.status && query.status !== "all") {
       if (query.status === "online") {
@@ -32,7 +33,7 @@ export class AgentsService {
     }
 
     if (query.siteId) {
-      queryBuilder.andWhere("agent.site_id = :siteId", {
+      queryBuilder.andWhere("site.id = :siteId", {
         siteId: query.siteId,
       });
     }
@@ -59,7 +60,8 @@ export class AgentsService {
     const agents = await this.agentRepository
       .createQueryBuilder("agent")
       .leftJoinAndSelect("agent.site", "site")
-      .where("site.user_id = :userId", { userId })
+      .leftJoinAndSelect("site.user", "user")
+      .where("user.id = :userId", { userId })
       .getMany();
 
     const total = agents.length;
@@ -82,7 +84,8 @@ export class AgentsService {
     const agents = await this.agentRepository
       .createQueryBuilder("agent")
       .leftJoinAndSelect("agent.site", "site")
-      .where("site.user_id = :userId", { userId })
+      .leftJoinAndSelect("site.user", "user")
+      .where("user.id = :userId", { userId })
       .getMany();
 
     const osCount = agents.reduce(
@@ -105,8 +108,9 @@ export class AgentsService {
     const agent = await this.agentRepository
       .createQueryBuilder("agent")
       .leftJoinAndSelect("agent.site", "site")
+      .leftJoinAndSelect("site.user", "user")
       .where("agent.id = :id", { id })
-      .andWhere("site.user_id = :userId", { userId })
+      .andWhere("user.id = :userId", { userId })
       .getOne();
 
     if (!agent) {

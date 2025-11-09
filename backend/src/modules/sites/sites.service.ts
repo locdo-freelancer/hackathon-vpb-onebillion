@@ -8,7 +8,7 @@ import { In, Repository } from "typeorm";
 import { CreateSiteDto } from "./dto/create-site.dto";
 import { UpdateSiteDto } from "./dto/update-site.dto";
 import * as crypto from "crypto";
-import { AgentEntity, Site, User } from "../../../libs/entities";
+import { AgentEntity, Site, User, SiteStatus } from "../../../libs/entities";
 
 @Injectable()
 export class SitesService {
@@ -32,15 +32,13 @@ export class SitesService {
     const agentToken = crypto.randomBytes(32).toString("hex");
 
     const site = this.siteRepository.create({
-      user_id: userId,
+      user,
       name: dto.name,
       ip_address: dto.ip_address,
       domain_name: dto.domain_name,
       server_type: dto.server_type,
-      status: "Pending",
+      status: SiteStatus.PENDING,
       entity_token: agentToken,
-      createdAt: now,
-      updatedAt: now,
     });
 
     await this.siteRepository.save(site);
@@ -62,7 +60,7 @@ export class SitesService {
 
   async findAll(userId: string) {
     const sites = await this.siteRepository.find({
-      where: { user_id: userId },
+      where: { user: { id: userId } },
       relations: ["agent"],
       order: { createdAt: "DESC" },
     });
@@ -82,19 +80,23 @@ export class SitesService {
         lastChecked: this.formatLastChecked(site.updatedAt),
       })),
       totalSites: sites.length,
-      activeSites: sites.filter((s) => s.status === "Connected").length,
-      inactiveSites: sites.filter((s) => s.status === "Disconnected").length,
-      warningSites: sites.filter((s) => s.status === "Warning").length,
+      activeSites: sites.filter((s) => s.status === SiteStatus.CONNECTED)
+        .length,
+      inactiveSites: sites.filter((s) => s.status === SiteStatus.DISCONNECTED)
+        .length,
+      warningSites: sites.filter((s) => s.status === SiteStatus.WARNING).length,
     };
   }
 
-  private mapStatus(status: string): "active" | "inactive" | "warning" {
+  private mapStatus(status: SiteStatus): "active" | "inactive" | "warning" {
     switch (status) {
-      case "Connected":
+      case SiteStatus.CONNECTED:
         return "active";
-      case "Disconnected":
+      case SiteStatus.DISCONNECTED:
+      case SiteStatus.INACTIVE:
+      case SiteStatus.OFFLINE:
         return "inactive";
-      case "Warning":
+      case SiteStatus.WARNING:
         return "warning";
       default:
         return "inactive";
@@ -150,14 +152,14 @@ export class SitesService {
   async findOne(id: string, userId: string) {
     const site = await this.siteRepository.findOne({
       where: { id },
-      relations: ["agent"],
+      relations: ["agent", "user"],
     });
 
     if (!site) {
       throw new NotFoundException("Site not found");
     }
 
-    if (site.user_id !== userId) {
+    if (site.user.id !== userId) {
       throw new ForbiddenException("You do not have access to this site");
     }
 
@@ -171,7 +173,6 @@ export class SitesService {
     const updated = await this.siteRepository.save({
       ...site,
       ...dto,
-      updated_at: Date.now(),
     });
 
     const { entity_token, ...result } = updated;

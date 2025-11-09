@@ -2,7 +2,7 @@ import { PartialType } from "@nestjs/swagger";
 import { CreateSecurityMetricDto } from "./create-security-metric.dto";
 import { IsOptional, IsEnum } from "class-validator";
 import { ApiPropertyOptional } from "@nestjs/swagger";
-import { AlertThreshold } from "../../../../libs/entities/src/security-metric.entity";
+import { AlertThreshold } from "../../../../libs/constant/src";
 
 export class UpdateSecurityMetricDto extends PartialType(
   CreateSecurityMetricDto
@@ -22,3 +22,4 @@ export class UpdateSecurityMetricDto extends PartialType(
   @IsOptional()
   change_percentage?: number;
 }
+

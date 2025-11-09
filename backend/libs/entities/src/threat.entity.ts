@@ -1,20 +1,28 @@
 import { Entity, Column, ManyToOne, JoinColumn } from "typeorm";
-import { BaseEntity } from "../../shared/src";
+import { BaseEntity } from "../../shared/src/base.entity";
 import { Site } from "./site.entity";
+import { ThreatType, ThreatSeverity, ThreatStatus } from "../../constant/src";
 
 @Entity("threats")
 export class Threat extends BaseEntity {
   @Column({ type: "text" })
   site_id: string;
 
-  @Column({ type: "text" })
-  threat_type: string;
+  @Column({
+    type: "enum",
+    enum: ThreatType,
+  })
+  threat_type: ThreatType;
 
   @Column({ type: "text", nullable: true })
   description: string;
 
-  @Column({ type: "text", nullable: true })
-  severity: string;
+  @Column({
+    type: "enum",
+    enum: ThreatSeverity,
+    default: ThreatSeverity.MEDIUM,
+  })
+  severity: ThreatSeverity;
 
   @Column({
     type: "bigint",
@@ -25,8 +33,12 @@ export class Threat extends BaseEntity {
   })
   detected_at: number;
 
-  @Column({ type: "text", default: "Active" })
-  status: string;
+  @Column({
+    type: "enum",
+    enum: ThreatStatus,
+    default: ThreatStatus.ACTIVE,
+  })
+  status: ThreatStatus;
 
   @ManyToOne(() => Site, (site) => site.threats, { onDelete: "CASCADE" })
   @JoinColumn({ name: "site_id" })

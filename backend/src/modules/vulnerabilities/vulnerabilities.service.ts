@@ -5,7 +5,12 @@ import {
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository, Between } from "typeorm";
-import { Vulnerability, SiteVulnerability, Site } from "../../../libs/entities";
+import {
+  Vulnerability,
+  SiteVulnerability,
+  Site,
+  VulnerabilityStatus,
+} from "../../../libs/entities";
 import {
   CreateVulnerabilityDto,
   CreateSiteVulnerabilityDto,
@@ -40,9 +45,10 @@ export class VulnerabilitiesService {
       );
     }
 
-    const vulnerability = this.vulnerabilitiesRepository.create(
-      createVulnerabilityDto
-    );
+    const vulnerability = this.vulnerabilitiesRepository.create({
+      ...createVulnerabilityDto,
+      severity: createVulnerabilityDto.severity as any,
+    });
     return await this.vulnerabilitiesRepository.save(vulnerability);
   }
 
@@ -169,9 +175,14 @@ export class VulnerabilitiesService {
     }
 
     const siteVulnerability = this.siteVulnerabilitiesRepository.create({
-      ...createSiteVulnerabilityDto,
-      status: createSiteVulnerabilityDto.status || "Active",
+      site_id: createSiteVulnerabilityDto.site_id,
+      vulnerability_id: createSiteVulnerabilityDto.vulnerability_id,
+      detected_at: createSiteVulnerabilityDto.detected_at || Date.now(),
+      status:
+        (createSiteVulnerabilityDto.status as any) ||
+        VulnerabilityStatus.IDENTIFIED,
       last_scanned: createSiteVulnerabilityDto.last_scanned || Date.now(),
+      context: createSiteVulnerabilityDto.context,
     });
 
     return await this.siteVulnerabilitiesRepository.save(siteVulnerability);
@@ -185,7 +196,7 @@ export class VulnerabilitiesService {
       .createQueryBuilder("siteVuln")
       .leftJoinAndSelect("siteVuln.vulnerability", "vulnerability")
       .leftJoinAndSelect("siteVuln.site", "site")
-      .where("siteVuln.site_id = :siteId", { siteId })
+      .where("site.id = :siteId", { siteId })
       .orderBy("siteVuln.detected_at", "DESC");
 
     // Apply filters

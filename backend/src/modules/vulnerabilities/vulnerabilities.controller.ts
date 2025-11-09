@@ -31,7 +31,7 @@ import { User } from "../../../libs/entities";
 import { ApiOperationDecorator } from "../../../libs/decorators/src/";
 
 @ApiTags("vulnerabilities")
-@ApiBearerAuth()
+@ApiBearerAuth("JWT-auth")
 @UseGuards(JwtAuthGuard)
 @Controller("vulnerabilities")
 export class VulnerabilitiesController {

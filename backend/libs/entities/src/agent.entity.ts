@@ -1,5 +1,5 @@
 import { Entity, Column, OneToOne, JoinColumn } from "typeorm";
-import { BaseEntity } from "../../shared/src";
+import { BaseEntity } from "../../shared/src/base.entity";
 import { Site } from "./site.entity";
 
 @Entity("agents")

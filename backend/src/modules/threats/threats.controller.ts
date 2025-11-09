@@ -29,7 +29,7 @@ import { User } from "../../../libs/entities";
 import { ApiOperationDecorator } from "../../../libs/decorators/src";
 
 @ApiTags("threats")
-@ApiBearerAuth()
+@ApiBearerAuth("JWT-auth")
 @UseGuards(JwtAuthGuard)
 @Controller("threats")
 export class ThreatsController {

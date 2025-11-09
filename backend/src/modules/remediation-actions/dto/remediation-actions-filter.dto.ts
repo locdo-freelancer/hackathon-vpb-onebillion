@@ -10,7 +10,7 @@ import {
   RemediationStatus,
   RemediationPriority,
   RemediationType,
-} from "../../../../libs/entities/src/remediation-action.entity";
+} from "../../../../libs/constant/src";
 
 export class RemediationActionsFilterDto {
   @ApiPropertyOptional({ description: "Filter by site ID" })
@@ -131,3 +131,4 @@ export class RemediationActionsFilterDto {
   @IsString()
   sort_order?: "ASC" | "DESC" = "DESC";
 }
+

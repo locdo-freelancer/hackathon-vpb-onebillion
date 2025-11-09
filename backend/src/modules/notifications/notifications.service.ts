@@ -1,10 +1,7 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository, SelectQueryBuilder, In } from "typeorm";
-import {
-  Notification,
-  NotificationPriority,
-} from "../../../libs/entities/src/notification.entity";
+import { Notification, NotificationPriority } from "../../../libs/entities";
 import {
   CreateNotificationDto,
   UpdateNotificationDto,
@@ -110,7 +107,7 @@ export class NotificationsService {
 
   async markAllAsRead(userId: string): Promise<{ updated: number }> {
     const result = await this.notificationRepository.update(
-      { user_id: userId, is_read: false },
+      { user: { id: userId }, is_read: false },
       { is_read: true, read_at: Date.now() }
     );
 
@@ -142,11 +139,12 @@ export class NotificationsService {
   ): Promise<Notification[]> {
     const queryBuilder = this.notificationRepository
       .createQueryBuilder("notification")
+      .leftJoinAndSelect("notification.user", "user")
       .leftJoinAndSelect("notification.incident", "incident")
       .leftJoinAndSelect("notification.site", "site")
       .leftJoinAndSelect("notification.threatIndicator", "threatIndicator")
       .leftJoinAndSelect("notification.securityMetric", "securityMetric")
-      .where("notification.user_id = :userId", { userId })
+      .where("user.id = :userId", { userId })
       .orderBy("notification.created_at", "DESC")
       .take(limit);
 
@@ -174,16 +172,16 @@ export class NotificationsService {
 
     switch (sourceType) {
       case "incident":
-        whereCondition.incident_id = sourceId;
+        whereCondition.incident = { id: sourceId };
         break;
       case "site":
-        whereCondition.site_id = sourceId;
+        whereCondition.site = { id: sourceId };
         break;
       case "threat":
-        whereCondition.threat_indicator_id = sourceId;
+        whereCondition.threatIndicator = { id: sourceId };
         break;
       case "security_metric":
-        whereCondition.security_metric_id = sourceId;
+        whereCondition.securityMetric = { id: sourceId };
         break;
     }
 
@@ -207,9 +205,11 @@ export class NotificationsService {
       this.notificationRepository.createQueryBuilder("notification");
 
     if (userId) {
-      queryBuilder = queryBuilder.where("notification.user_id = :userId", {
-        userId,
-      });
+      queryBuilder = queryBuilder
+        .leftJoin("notification.user", "user")
+        .where("user.id = :userId", {
+          userId,
+        });
     }
 
     const notifications = await queryBuilder.getMany();
@@ -285,6 +285,7 @@ export class NotificationsService {
   async getHighPriorityNotifications(userId?: string): Promise<Notification[]> {
     let queryBuilder = this.notificationRepository
       .createQueryBuilder("notification")
+      .leftJoinAndSelect("notification.user", "user")
       .leftJoinAndSelect("notification.incident", "incident")
       .leftJoinAndSelect("notification.site", "site")
       .leftJoinAndSelect("notification.threatIndicator", "threatIndicator")
@@ -297,7 +298,7 @@ export class NotificationsService {
       .addOrderBy("notification.created_at", "DESC");
 
     if (userId) {
-      queryBuilder = queryBuilder.andWhere("notification.user_id = :userId", {
+      queryBuilder = queryBuilder.andWhere("user.id = :userId", {
         userId,
       });
     }
@@ -325,7 +326,7 @@ export class NotificationsService {
 
     // Apply filters
     if (filters.user_id) {
-      queryBuilder = queryBuilder.andWhere("notification.user_id = :userId", {
+      queryBuilder = queryBuilder.andWhere("user.id = :userId", {
         userId: filters.user_id,
       });
     }
@@ -358,13 +359,13 @@ export class NotificationsService {
 
     if (filters.incident_id) {
       queryBuilder = queryBuilder.andWhere(
-        "notification.incident_id = :incidentId",
+        "incident.id = :incidentId",
         { incidentId: filters.incident_id }
       );
     }
 
     if (filters.site_id) {
-      queryBuilder = queryBuilder.andWhere("notification.site_id = :siteId", {
+      queryBuilder = queryBuilder.andWhere("site.id = :siteId", {
         siteId: filters.site_id,
       });
     }

@@ -24,10 +24,10 @@ import {
   UpdateSecurityMetricDto,
   SecurityMetricsFilterDto,
 } from "./dto";
-import { MetricType } from "../../../libs/entities/src/security-metric.entity";
+import { MetricType } from "../../../libs/entities";
 
 @ApiTags("Security Metrics")
-@ApiBearerAuth()
+@ApiBearerAuth("JWT-auth")
 @UseGuards(JwtAuthGuard)
 @Controller("security-metrics")
 export class SecurityMetricsController {

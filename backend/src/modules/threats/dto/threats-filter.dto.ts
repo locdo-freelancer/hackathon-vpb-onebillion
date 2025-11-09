@@ -4,7 +4,7 @@ import {
   ThreatSeverity,
   ThreatStatus,
   ThreatType,
-} from "../../../../libs/entities/src/threat-indicator.entity";
+} from "../../../../libs/constant/src";
 
 export class ThreatsFilterDto {
   @ApiPropertyOptional({
@@ -59,3 +59,4 @@ export class ThreatsFilterDto {
   @IsString()
   siteId?: string;
 }
+

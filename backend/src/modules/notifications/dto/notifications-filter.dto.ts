@@ -11,7 +11,7 @@ import {
   NotificationType,
   NotificationPriority,
   NotificationChannel,
-} from "../../../../libs/entities/src/notification.entity";
+} from "../../../../libs/constant/src";
 
 export class NotificationsFilterDto {
   @ApiPropertyOptional({ description: "Filter by user ID" })
@@ -149,3 +149,4 @@ export class NotificationsFilterDto {
   @IsString()
   sort_order?: "ASC" | "DESC" = "DESC";
 }
+

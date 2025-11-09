@@ -33,18 +33,16 @@ export class AuthService {
     const now = Date.now();
 
     const user = this.userRepository.create({
-      id: uuidv4(),
       email: dto.email,
-      password_hash: hashedPassword,
+      password: hashedPassword,
       full_name: dto.full_name,
       company_name: dto.company_name,
-      createdAt: now,
       last_login: now,
     });
 
     await this.userRepository.save(user);
 
-    const { password_hash, ...result } = user;
+    const { password, ...result } = user;
     return result;
   }
 
@@ -57,10 +55,7 @@ export class AuthService {
       throw new UnauthorizedException("Invalid credentials");
     }
 
-    const isPasswordValid = await bcrypt.compare(
-      dto.password,
-      user.password_hash
-    );
+    const isPasswordValid = await bcrypt.compare(dto.password, user.password);
 
     if (!isPasswordValid) {
       throw new UnauthorizedException("Invalid credentials");

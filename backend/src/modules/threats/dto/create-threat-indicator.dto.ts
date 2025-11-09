@@ -12,7 +12,7 @@ import {
   ThreatSeverity,
   ThreatStatus,
   ThreatType,
-} from "../../../../libs/entities/src/threat-indicator.entity";
+} from "../../../../libs/constant/src";
 
 export class CreateThreatIndicatorDto {
   @ApiProperty({
@@ -144,3 +144,4 @@ export class CreateThreatIndicatorDto {
   @IsString()
   site_id?: string;
 }
+

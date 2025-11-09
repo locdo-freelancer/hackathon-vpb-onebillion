@@ -6,7 +6,7 @@ import {
   OneToMany,
   JoinColumn,
 } from "typeorm";
-import { BaseEntity } from "../../shared/src";
+import { BaseEntity } from "../../shared/src/base.entity";
 import { User } from "./user.entity";
 import { RemediationAction } from "./remediation-action.entity";
 import { SiteVulnerability } from "./site-vulnerability.entity";
@@ -15,12 +15,10 @@ import { AgentEntity } from "./agent.entity";
 import { Incident } from "./incident.entity";
 import { SecurityMetric } from "./security-metric.entity";
 import { Notification } from "./notification.entity";
+import { SiteStatus } from "../../constant/src";
 
 @Entity("sites")
 export class Site extends BaseEntity {
-  @Column({ type: "text" })
-  user_id: string;
-
   @Column({ type: "text" })
   name: string;
 
@@ -33,14 +31,18 @@ export class Site extends BaseEntity {
   @Column({ type: "text", nullable: true })
   server_type: string;
 
-  @Column({ type: "text", default: "Pending" })
-  status: string;
+  @Column({
+    type: "enum",
+    enum: SiteStatus,
+    default: SiteStatus.PENDING,
+  })
+  status: SiteStatus;
 
   @Column({ type: "text", unique: true })
   entity_token: string;
 
   @ManyToOne(() => User, (user) => user.sites, { onDelete: "CASCADE" })
-  @JoinColumn({ name: "user_id" })
+  @JoinColumn()
   user: User;
 
   @OneToOne(() => AgentEntity, (agent) => agent.site)

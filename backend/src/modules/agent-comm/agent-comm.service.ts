@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { AgentEntity, Site } from "../../../libs/entities";
+import { AgentEntity, Site, SiteStatus } from "../../../libs/entities";
 import { Repository } from "typeorm";
 
 @Injectable()
@@ -26,8 +26,7 @@ export class AgentCommService {
 
     // Update site status
     await this.siteRepository.update(site.id, {
-      status: "Connected",
-      updatedAt: now,
+      status: SiteStatus.CONNECTED,
     });
 
     return {

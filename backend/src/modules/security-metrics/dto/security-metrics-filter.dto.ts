@@ -10,7 +10,7 @@ import {
   MetricType,
   MetricCategory,
   AlertThreshold,
-} from "../../../../libs/entities/src/security-metric.entity";
+} from "../../../../libs/constant/src";
 
 export class SecurityMetricsFilterDto {
   @ApiPropertyOptional({ description: "Filter by site ID" })
@@ -120,3 +120,4 @@ export class SecurityMetricsFilterDto {
   @IsString()
   sort_order?: "ASC" | "DESC" = "DESC";
 }
+

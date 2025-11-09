@@ -1,29 +1,9 @@
 import { Entity, Column, ManyToOne, JoinColumn, OneToMany } from "typeorm";
-import { BaseEntity } from "../../shared/src";
+import { BaseEntity } from "../../shared/src/base.entity";
 import { Site } from "./site.entity";
 import { RemediationAction } from "./remediation-action.entity";
 import { Notification } from "./notification.entity";
-
-export enum ThreatSeverity {
-  CRITICAL = "critical",
-  HIGH = "high",
-  MEDIUM = "medium",
-  LOW = "low",
-}
-
-export enum ThreatType {
-  IP = "ip",
-  DOMAIN = "domain",
-  URL = "url",
-  HASH = "hash",
-}
-
-export enum ThreatStatus {
-  ACTIVE = "active",
-  BLOCKED = "blocked",
-  FLAGGED = "flagged",
-  MONITORING = "monitoring",
-}
+import { ThreatSeverity, ThreatType, ThreatStatus } from "../../constant/src";
 
 @Entity("threat_indicators")
 export class ThreatIndicator extends BaseEntity {
@@ -100,11 +80,8 @@ export class ThreatIndicator extends BaseEntity {
   related_indicators: string[];
 
   // Optional site association
-  @Column({ type: "text", nullable: true })
-  site_id: string;
-
   @ManyToOne(() => Site, { onDelete: "SET NULL" })
-  @JoinColumn({ name: "site_id" })
+  @JoinColumn()
   site: Site;
 
   @OneToMany(

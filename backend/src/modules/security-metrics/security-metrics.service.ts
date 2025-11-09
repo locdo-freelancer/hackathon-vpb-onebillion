@@ -5,7 +5,7 @@ import {
   SecurityMetric,
   AlertThreshold,
   MetricType,
-} from "../../../libs/entities/src/security-metric.entity";
+} from "../../../libs/entities";
 import {
   CreateSecurityMetricDto,
   UpdateSecurityMetricDto,
@@ -129,7 +129,7 @@ export class SecurityMetricsService {
     limit = 100
   ): Promise<SecurityMetric[]> {
     return await this.securityMetricRepository.find({
-      where: { site_id: siteId, is_active: true },
+      where: { site: { id: siteId }, is_active: true },
       order: { recorded_at: "DESC" },
       take: limit,
       relations: ["site"],
@@ -143,7 +143,7 @@ export class SecurityMetricsService {
       .where("metric.is_active = :active", { active: true });
 
     if (siteId) {
-      queryBuilder = queryBuilder.andWhere("metric.site_id = :siteId", {
+      queryBuilder = queryBuilder.andWhere("site.id = :siteId", {
         siteId,
       });
     }
@@ -151,12 +151,13 @@ export class SecurityMetricsService {
     // Get latest metric for each type
     const subQuery = this.securityMetricRepository
       .createQueryBuilder("sub")
+      .leftJoin("sub.site", "subSite")
       .select("sub.metric_type")
       .addSelect("MAX(sub.recorded_at)", "max_recorded_at")
       .where("sub.is_active = :active", { active: true });
 
     if (siteId) {
-      subQuery.andWhere("sub.site_id = :siteId", { siteId });
+      subQuery.andWhere("subSite.id = :siteId", { siteId });
     }
 
     subQuery.groupBy("sub.metric_type");
@@ -179,15 +180,18 @@ export class SecurityMetricsService {
   ): Promise<SecurityMetric[]> {
     const fromTime = Date.now() - timeRangeHours * 60 * 60 * 1000;
 
-    return await this.securityMetricRepository.find({
-      where: {
-        site_id: siteId,
-        metric_type: metricType,
-        is_active: true,
-        recorded_at: Between(fromTime, Date.now()),
-      },
-      order: { recorded_at: "ASC" },
-    });
+    return await this.securityMetricRepository
+      .createQueryBuilder("metric")
+      .leftJoin("metric.site", "site")
+      .where("site.id = :siteId", { siteId })
+      .andWhere("metric.metric_type = :metricType", { metricType })
+      .andWhere("metric.is_active = :active", { active: true })
+      .andWhere("metric.recorded_at BETWEEN :fromTime AND :toTime", {
+        fromTime,
+        toTime: Date.now(),
+      })
+      .orderBy("metric.recorded_at", "ASC")
+      .getMany();
   }
 
   async getAlertsCount(siteId?: string): Promise<{
@@ -196,11 +200,12 @@ export class SecurityMetricsService {
   }> {
     let queryBuilder = this.securityMetricRepository
       .createQueryBuilder("metric")
+      .leftJoin("metric.site", "site")
       .where("metric.is_active = :active", { active: true })
       .andWhere("metric.current_alert_level IS NOT NULL");
 
     if (siteId) {
-      queryBuilder = queryBuilder.andWhere("metric.site_id = :siteId", {
+      queryBuilder = queryBuilder.andWhere("site.id = :siteId", {
         siteId,
       });
     }
@@ -242,7 +247,9 @@ export class SecurityMetricsService {
       this.securityMetricRepository.createQueryBuilder("metric");
 
     if (siteId) {
-      queryBuilder = queryBuilder.where("metric.site_id = :siteId", { siteId });
+      queryBuilder = queryBuilder
+        .leftJoin("metric.site", "site")
+        .where("site.id = :siteId", { siteId });
     }
 
     const metrics = await queryBuilder.getMany();
@@ -375,7 +382,7 @@ export class SecurityMetricsService {
 
     // Apply filters
     if (filters.site_id) {
-      queryBuilder = queryBuilder.andWhere("metric.site_id = :siteId", {
+      queryBuilder = queryBuilder.andWhere("site.id = :siteId", {
         siteId: filters.site_id,
       });
     }

@@ -11,7 +11,7 @@ import {
   NotificationType,
   NotificationPriority,
   NotificationChannel,
-} from "../../../../libs/entities/src/notification.entity";
+} from "../../../../libs/constant/src";
 
 export class CreateNotificationDto {
   @ApiProperty({ description: "User ID to receive this notification" })
@@ -105,3 +105,4 @@ export class CreateNotificationDto {
   @IsObject()
   metadata?: Record<string, any>;
 }
+

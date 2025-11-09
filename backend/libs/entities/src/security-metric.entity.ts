@@ -1,40 +1,11 @@
 import { Entity, Column, ManyToOne, JoinColumn, OneToMany } from "typeorm";
-import { BaseEntity } from "../../shared/src";
+import { BaseEntity } from "../../shared/src/base.entity";
 import { Site } from "./site.entity";
 import { Notification } from "./notification.entity";
-
-export enum MetricType {
-  ATTACK_COUNT = "attack_count",
-  VULNERABILITY_COUNT = "vulnerability_count",
-  THREAT_LEVEL = "threat_level",
-  SECURITY_SCORE = "security_score",
-  INCIDENT_COUNT = "incident_count",
-  REMEDIATION_RATE = "remediation_rate",
-  UPTIME = "uptime",
-  DOWNTIME = "downtime",
-  RESPONSE_TIME = "response_time",
-  COMPLIANCE_SCORE = "compliance_score",
-}
-
-export enum MetricCategory {
-  SECURITY = "security",
-  PERFORMANCE = "performance",
-  COMPLIANCE = "compliance",
-  OPERATIONAL = "operational",
-}
-
-export enum AlertThreshold {
-  LOW = "low",
-  MEDIUM = "medium",
-  HIGH = "high",
-  CRITICAL = "critical",
-}
+import { MetricType, MetricCategory, AlertThreshold } from "../../constant/src";
 
 @Entity("security_metrics")
 export class SecurityMetric extends BaseEntity {
-  @Column({ type: "text" })
-  site_id: string;
-
   @Column({ type: "text" })
   metric_name: string;
 
@@ -113,7 +84,7 @@ export class SecurityMetric extends BaseEntity {
   @ManyToOne(() => Site, (site) => site.securityMetrics, {
     onDelete: "CASCADE",
   })
-  @JoinColumn({ name: "site_id" })
+  @JoinColumn()
   site: Site;
 
   @OneToMany(() => Notification, (notification) => notification.securityMetric)

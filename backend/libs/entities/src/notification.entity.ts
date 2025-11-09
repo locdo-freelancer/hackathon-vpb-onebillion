@@ -1,43 +1,18 @@
 import { Entity, Column, ManyToOne, JoinColumn } from "typeorm";
-import { BaseEntity } from "../../shared/src";
+import { BaseEntity } from "../../shared/src/base.entity";
 import { User } from "./user.entity";
 import { Incident } from "./incident.entity";
 import { Site } from "./site.entity";
 import { ThreatIndicator } from "./threat-indicator.entity";
 import { SecurityMetric } from "./security-metric.entity";
-
-export enum NotificationType {
-  INCIDENT = "incident",
-  THREAT = "threat",
-  VULNERABILITY = "vulnerability",
-  SECURITY_METRIC = "security_metric",
-  REMEDIATION = "remediation",
-  SYSTEM = "system",
-  ALERT = "alert",
-  WARNING = "warning",
-  INFO = "info",
-}
-
-export enum NotificationPriority {
-  LOW = "low",
-  MEDIUM = "medium",
-  HIGH = "high",
-  CRITICAL = "critical",
-}
-
-export enum NotificationChannel {
-  EMAIL = "email",
-  SMS = "sms",
-  IN_APP = "in_app",
-  WEBHOOK = "webhook",
-  SLACK = "slack",
-}
+import {
+  NotificationType,
+  NotificationPriority,
+  NotificationChannel,
+} from "../../constant/src";
 
 @Entity("notifications")
 export class Notification extends BaseEntity {
-  @Column({ type: "text" })
-  user_id: string;
-
   @Column({
     type: "enum",
     enum: NotificationType,
@@ -67,18 +42,6 @@ export class Notification extends BaseEntity {
     default: NotificationChannel.IN_APP,
   })
   channel: NotificationChannel;
-
-  @Column({ type: "text", nullable: true })
-  incident_id: string;
-
-  @Column({ type: "text", nullable: true })
-  site_id: string;
-
-  @Column({ type: "text", nullable: true })
-  threat_indicator_id: string;
-
-  @Column({ type: "text", nullable: true })
-  security_metric_id: string;
 
   @Column({ type: "text", nullable: true })
   action_url: string;
@@ -114,30 +77,30 @@ export class Notification extends BaseEntity {
 
   // Relationships
   @ManyToOne(() => User, (user) => user.notifications, { onDelete: "CASCADE" })
-  @JoinColumn({ name: "user_id" })
+  @JoinColumn()
   user: User;
 
   @ManyToOne(() => Incident, (incident) => incident.notifications, {
     onDelete: "CASCADE",
   })
-  @JoinColumn({ name: "incident_id" })
+  @JoinColumn()
   incident: Incident;
 
   @ManyToOne(() => Site, (site) => site.notifications, {
     onDelete: "CASCADE",
   })
-  @JoinColumn({ name: "site_id" })
+  @JoinColumn()
   site: Site;
 
   @ManyToOne(() => ThreatIndicator, (threat) => threat.notifications, {
     onDelete: "CASCADE",
   })
-  @JoinColumn({ name: "threat_indicator_id" })
+  @JoinColumn()
   threatIndicator: ThreatIndicator;
 
   @ManyToOne(() => SecurityMetric, (metric) => metric.notifications, {
     onDelete: "CASCADE",
   })
-  @JoinColumn({ name: "security_metric_id" })
+  @JoinColumn()
   securityMetric: SecurityMetric;
 }

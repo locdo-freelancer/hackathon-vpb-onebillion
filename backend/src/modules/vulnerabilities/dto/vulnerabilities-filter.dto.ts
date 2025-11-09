@@ -48,3 +48,4 @@ export class VulnerabilitiesFilterDto {
   @IsString()
   cvssRange?: string;
 }
+

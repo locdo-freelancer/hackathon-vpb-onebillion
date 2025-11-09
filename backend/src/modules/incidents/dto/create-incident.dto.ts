@@ -10,8 +10,7 @@ import {
   IncidentSeverity,
   IncidentStatus,
   IncidentType,
-} from "../../../../libs/entities/src/incident.entity";
-
+} from "../../../../libs/constant/src";
 
 export class CreateIncidentDto {
   @ApiProperty({ description: "Incident title" })

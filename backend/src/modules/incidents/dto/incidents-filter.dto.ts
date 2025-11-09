@@ -1,10 +1,10 @@
-import { IsOptional, IsString, IsEnum, IsDateString } from "class-validator";
+import { IsOptional, IsEnum, IsString } from "class-validator";
 import { ApiPropertyOptional } from "@nestjs/swagger";
 import {
   IncidentSeverity,
   IncidentStatus,
   IncidentType,
-} from "../../../../libs/entities/src/incident.entity";
+} from "../../../../libs/constant/src";
 
 export class IncidentsFilterDto {
   @ApiPropertyOptional({
@@ -33,12 +33,12 @@ export class IncidentsFilterDto {
 
   @ApiPropertyOptional({ description: "Filter from date (ISO string)" })
   @IsOptional()
-  @IsDateString()
+  @IsString()
   dateFrom?: string;
 
   @ApiPropertyOptional({ description: "Filter to date (ISO string)" })
   @IsOptional()
-  @IsDateString()
+  @IsString()
   dateTo?: string;
 
   @ApiPropertyOptional({ description: "Filter by assignee user ID" })

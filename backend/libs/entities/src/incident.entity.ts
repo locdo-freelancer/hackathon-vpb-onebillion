@@ -1,34 +1,14 @@
 import { Entity, Column, ManyToOne, JoinColumn, OneToMany } from "typeorm";
-import { BaseEntity } from "../../shared/src";
+import { BaseEntity } from "../../shared/src/base.entity";
 import { Site } from "./site.entity";
 import { User } from "./user.entity";
 import { RemediationAction } from "./remediation-action.entity";
 import { Notification } from "./notification.entity";
-
-export enum IncidentSeverity {
-  CRITICAL = "critical",
-  HIGH = "high",
-  MEDIUM = "medium",
-  LOW = "low",
-}
-
-export enum IncidentStatus {
-  OPEN = "open",
-  INVESTIGATING = "investigating",
-  RESOLVED = "resolved",
-  CLOSED = "closed",
-}
-
-export enum IncidentType {
-  MALWARE = "malware",
-  PHISHING = "phishing",
-  DDOS = "ddos",
-  INTRUSION = "intrusion",
-  DATA_BREACH = "data-breach",
-  POLICY_VIOLATION = "policy-violation",
-  RANSOMWARE = "ransomware",
-  VULNERABILITY = "vulnerability",
-}
+import {
+  IncidentSeverity,
+  IncidentStatus,
+  IncidentType,
+} from "../../constant/src";
 
 @Entity("incidents")
 export class Incident extends BaseEntity {
@@ -63,12 +43,6 @@ export class Incident extends BaseEntity {
     enum: IncidentType,
   })
   type: IncidentType;
-
-  @Column({ type: "text", nullable: true })
-  site_id: string;
-
-  @Column({ type: "text", nullable: true })
-  assignee_id: string;
 
   @Column({ type: "simple-array", nullable: true })
   affected_systems: string[];
@@ -119,11 +93,11 @@ export class Incident extends BaseEntity {
   evidence: object[];
 
   @ManyToOne(() => Site, (site) => site.incidents, { onDelete: "CASCADE" })
-  @JoinColumn({ name: "site_id" })
+  @JoinColumn()
   site: Site;
 
   @ManyToOne(() => User, { onDelete: "SET NULL" })
-  @JoinColumn({ name: "assignee_id" })
+  @JoinColumn()
   assignee: User;
 
   @OneToMany(() => RemediationAction, (action) => action.incident)

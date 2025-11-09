@@ -10,7 +10,7 @@ import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import {
   RemediationPriority,
   RemediationType,
-} from "../../../../libs/entities/src/remediation-action.entity";
+} from "../../../../libs/constant/src";
 
 export class CreateRemediationActionDto {
   @ApiProperty({
@@ -97,3 +97,4 @@ export class CreateRemediationActionDto {
   @IsObject()
   metadata?: Record<string, any>;
 }
+

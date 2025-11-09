@@ -24,10 +24,10 @@ import {
   UpdateRemediationActionDto,
   RemediationActionsFilterDto,
 } from "./dto";
-import { RemediationStatus } from "../../../libs/entities/src/remediation-action.entity";
+import { RemediationStatus } from "../../../libs/entities";
 
 @ApiTags("Remediation Actions")
-@ApiBearerAuth()
+@ApiBearerAuth("JWT-auth")
 @UseGuards(JwtAuthGuard)
 @Controller("remediation-actions")
 export class RemediationActionsController {

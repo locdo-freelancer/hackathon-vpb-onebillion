@@ -1,36 +1,17 @@
 import { Entity, Column, ManyToOne, JoinColumn } from "typeorm";
-import { BaseEntity } from "../../shared/src";
+import { BaseEntity } from "../../shared/src/base.entity";
 import { Site } from "./site.entity";
 import { Incident } from "./incident.entity";
 import { ThreatIndicator } from "./threat-indicator.entity";
 import { SiteVulnerability } from "./site-vulnerability.entity";
-
-export enum RemediationStatus {
-  PENDING = "Pending",
-  IN_PROGRESS = "In Progress",
-  COMPLETED = "Completed",
-  FAILED = "Failed",
-  CANCELLED = "Cancelled",
-}
-
-export enum RemediationPriority {
-  LOW = "Low",
-  MEDIUM = "Medium",
-  HIGH = "High",
-  CRITICAL = "Critical",
-}
-
-export enum RemediationType {
-  MANUAL = "Manual",
-  AUTOMATED = "Automated",
-  SEMI_AUTOMATED = "Semi-Automated",
-}
+import {
+  RemediationStatus,
+  RemediationPriority,
+  RemediationType,
+} from "../../constant/src";
 
 @Entity("remediation_actions")
 export class RemediationAction extends BaseEntity {
-  @Column({ type: "text" })
-  site_id: string;
-
   @Column({ type: "text" })
   action_type: string;
 
@@ -55,15 +36,6 @@ export class RemediationAction extends BaseEntity {
 
   @Column({ type: "text", nullable: true })
   result: string;
-
-  @Column({ type: "text", nullable: true })
-  incident_id: string;
-
-  @Column({ type: "text", nullable: true })
-  threat_indicator_id: string;
-
-  @Column({ type: "text", nullable: true })
-  site_vulnerability_id: string;
 
   @Column({
     type: "enum",
@@ -123,19 +95,19 @@ export class RemediationAction extends BaseEntity {
   @ManyToOne(() => Site, (site) => site.remediationActions, {
     onDelete: "CASCADE",
   })
-  @JoinColumn({ name: "site_id" })
+  @JoinColumn()
   site: Site;
 
   @ManyToOne(() => Incident, (incident) => incident.remediationActions, {
     onDelete: "CASCADE",
   })
-  @JoinColumn({ name: "incident_id" })
+  @JoinColumn()
   incident: Incident;
 
   @ManyToOne(() => ThreatIndicator, (threat) => threat.remediationActions, {
     onDelete: "CASCADE",
   })
-  @JoinColumn({ name: "threat_indicator_id" })
+  @JoinColumn()
   threatIndicator: ThreatIndicator;
 
   @ManyToOne(
@@ -145,6 +117,6 @@ export class RemediationAction extends BaseEntity {
       onDelete: "CASCADE",
     }
   )
-  @JoinColumn({ name: "site_vulnerability_id" })
+  @JoinColumn()
   siteVulnerability: SiteVulnerability;
 }

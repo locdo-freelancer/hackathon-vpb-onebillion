@@ -26,7 +26,7 @@ import {
 } from "./dto";
 
 @ApiTags("Notifications")
-@ApiBearerAuth()
+@ApiBearerAuth("JWT-auth")
 @UseGuards(JwtAuthGuard)
 @Controller("notifications")
 export class NotificationsController {

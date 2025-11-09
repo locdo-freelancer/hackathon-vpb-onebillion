@@ -1,7 +1,7 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { Cron, CronExpression } from "@nestjs/schedule";
 import { InjectRepository } from "@nestjs/typeorm";
-import { AgentEntity, Site } from "../../../libs/entities";
+import { AgentEntity, Site, SiteStatus } from "../../../libs/entities";
 import { Repository, LessThan } from "typeorm";
 
 @Injectable()
@@ -44,8 +44,7 @@ export class AgentStatusTaskService {
         // Update site status to Disconnected
         if (agent.site) {
           await this.siteRepository.update(agent.site.id, {
-            status: "Disconnected",
-            updatedAt: now,
+            status: SiteStatus.DISCONNECTED,
           });
 
           this.logger.log(

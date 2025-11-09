@@ -81,13 +81,13 @@ export class IncidentsService {
     }
 
     if (filter.assignee) {
-      queryBuilder.andWhere("incident.assignee_id = :assigneeId", {
+      queryBuilder.andWhere("assignee.id = :assigneeId", {
         assigneeId: filter.assignee,
       });
     }
 
     if (filter.siteId) {
-      queryBuilder.andWhere("incident.site_id = :siteId", {
+      queryBuilder.andWhere("site.id = :siteId", {
         siteId: filter.siteId,
       });
     }
@@ -182,7 +182,7 @@ export class IncidentsService {
         }
         await this.incidentsRepository.update(
           { id: { $in: incidentIds } as any },
-          { assignee_id: action.assigneeId }
+          { assignee: { id: action.assigneeId } as any }
         );
         return {
           message: `${incidentIds.length} incidents assigned successfully`,

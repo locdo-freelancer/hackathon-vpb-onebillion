@@ -9,21 +9,23 @@ import {
 } from "@nestjs/common";
 import { ApiTags, ApiBearerAuth } from "@nestjs/swagger";
 import { UsersService } from "./users.service";
-import { User } from "../../../libs/entities";
+import { User, Role } from "../../../libs/entities";
 import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
-import { ApiOperationDecorator, UserReq } from "../../../libs/decorators/src";
+import { RolesGuard } from "../../../libs/guards/src";
+import { ApiOperationDecorator, UserReq, Roles } from "../../../libs/decorators/src";
 
 @ApiTags("users")
 @ApiBearerAuth("JWT-auth")
 @Controller("users")
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
+  @Roles(Role.ADMIN)
   @ApiOperationDecorator({
     summary: "Get all users",
-    description: "Retrieve list of all registered users",
+    description: "Retrieve list of all registered users (Admin only)",
   })
   findAll(): Promise<User[]> {
     return this.usersService.findAll();
@@ -48,18 +50,20 @@ export class UsersController {
   }
 
   @Post()
+  @Roles(Role.ADMIN)
   @ApiOperationDecorator({
     summary: "Create user",
-    description: "Create a new user (admin only)",
+    description: "Create a new user (Admin only)",
   })
   create(@Body() userData: Partial<User>): Promise<User> {
     return this.usersService.create(userData);
   }
 
   @Delete(":id")
+  @Roles(Role.ADMIN)
   @ApiOperationDecorator({
     summary: "Delete user",
-    description: "Remove user from system (admin only)",
+    description: "Remove user from system (Admin only)",
   })
   remove(@Param("id") id: string): Promise<void> {
     return this.usersService.remove(id);
