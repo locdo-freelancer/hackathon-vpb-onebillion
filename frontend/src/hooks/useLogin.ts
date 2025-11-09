@@ -42,11 +42,6 @@ export const useLogin = () => {
     await router.push("/signup");
   };
 
-  const handleQuickDemo = async () => {
-    console.log("🚀 Quick Demo: Skipping to onboarding...");
-    await router.push("/onboarding");
-  };
-
   return {
     showMFAModal,
     setShowMFAModal,
@@ -54,6 +49,5 @@ export const useLogin = () => {
     handleLoginSuccess,
     handleMFAVerify,
     handleToggleSignup,
-    handleQuickDemo,
   };
 };

@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 export interface Signup {
   handleSignupSuccess: () => void;
   handleToggleLogin: () => void;
-  handleQuickDemo: () => void;
 }
 
 export const useSignup = (): Signup => {
@@ -20,14 +19,8 @@ export const useSignup = (): Signup => {
     router.push("/login");
   };
 
-  const handleQuickDemo = () => {
-    console.log("🚀 Quick Demo: Skipping to onboarding...");
-    router.push("/onboarding");
-  };
-
   return {
     handleSignupSuccess,
     handleToggleLogin,
-    handleQuickDemo,
   };
 };

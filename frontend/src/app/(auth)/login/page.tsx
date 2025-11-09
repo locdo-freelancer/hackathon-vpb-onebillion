@@ -15,7 +15,6 @@ export default function LoginPage() {
     handleLoginSuccess,
     handleMFAVerify,
     handleToggleSignup,
-    handleQuickDemo,
   } = useLogin();
 
   return (
@@ -47,15 +46,6 @@ export default function LoginPage() {
           Bank-grade security • 256-bit encryption
           <i className="fas fa-shield-check text-cyber-accent ml-1" />
         </p>
-
-        {/* Quick Demo Button */}
-        <button
-          onClick={handleQuickDemo}
-          className="text-sm text-cyber-purple hover:text-purple-400 transition-colors font-medium"
-        >
-          <i className="fas fa-rocket mr-2" />
-          Quick Demo → Skip to Onboarding
-        </button>
       </div>
 
       <MFAModal
