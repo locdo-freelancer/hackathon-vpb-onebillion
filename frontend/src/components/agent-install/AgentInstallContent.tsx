@@ -13,6 +13,7 @@ interface AgentInstallContentProps {
   connectionPhase: ConnectionPhase;
   heartbeatTime?: string;
   onCopyCommand: (command: string) => void;
+  installToken?: string;
 }
 
 export const AgentInstallContent: React.FC<AgentInstallContentProps> = ({
@@ -21,6 +22,7 @@ export const AgentInstallContent: React.FC<AgentInstallContentProps> = ({
   connectionPhase,
   heartbeatTime,
   onCopyCommand,
+  installToken,
 }) => {
   return (
     <>
@@ -31,7 +33,11 @@ export const AgentInstallContent: React.FC<AgentInstallContentProps> = ({
 
       {/* Installation Commands Section */}
       <div className="mb-8">
-        <CommandDisplay currentTab={currentTab} onCopy={onCopyCommand} />
+        <CommandDisplay
+          currentTab={currentTab}
+          onCopy={onCopyCommand}
+          installToken={installToken}
+        />
       </div>
 
       {/* Connection Status Section */}

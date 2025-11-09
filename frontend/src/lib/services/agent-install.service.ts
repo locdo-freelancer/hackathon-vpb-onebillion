@@ -1,37 +1,71 @@
 // Agent Install Service - Handle agent installation API calls
 import { apiClient } from "../api-client";
+import type {
+  Platform,
+  AgentInstallApiResponse,
+  GetInstallCommandsResponseData,
+  CheckInstallStatusResponseData,
+} from "@/types/agent-install.types";
 
-export type Platform = "linux" | "windows" | "docker";
+export type { Platform };
 
 export interface InstallCommands {
   platform: Platform;
-  downloadCommand: string;
-  installCommand: string;
-  verifyCommand: string;
-  fullScript: string;
+  commands: {
+    download?: string;
+    install?: string;
+    configure?: string;
+    start?: string;
+    status?: string;
+    pull?: string;
+    run?: string;
+  };
+  downloadUrl: string;
 }
 
 export interface InstallStatus {
-  agentId?: string;
-  status: "not_installed" | "installing" | "installed" | "error";
-  message?: string;
-  progress?: number;
-  lastChecked?: string;
+  totalSites: number;
+  connectedAgents: number;
+  isRegistered: boolean;
+  agents: Array<{
+    id: string;
+    siteName: string;
+    lastHeartbeat: string | null;
+    version: string | null;
+    osInfo: string | null;
+  }>;
 }
 
 export class AgentInstallService {
   /**
    * Get platform-specific installation commands
-   * GET /api/agent-install/commands/:platform
+   * GET /api/agent-install/commands/:platform?token=xxx
    */
-  static async getInstallCommands(platform: Platform, token?: string): Promise<InstallCommands> {
+  static async getInstallCommands(
+    platform: Platform,
+    token?: string
+  ): Promise<InstallCommands> {
     try {
       const queryParam = token ? `?token=${token}` : "";
-      const response = await apiClient.get(`/agent-install/commands/${platform}${queryParam}`);
-      return response;
-    } catch (error: any) {
+      const response = (await apiClient.get(
+        `/agent-install/commands/${platform}${queryParam}`
+      )) as AgentInstallApiResponse<GetInstallCommandsResponseData>;
+
+      // API returns: { success: true, data: { platform, commands, downloadUrl }, timestamp }
+      const commandData = response.data;
+
+      return {
+        platform: commandData.platform as Platform,
+        commands: commandData.commands,
+        downloadUrl: commandData.downloadUrl,
+      };
+    } catch (error) {
       console.error("Get install commands error:", error);
-      throw new Error(error.message || "Failed to fetch installation commands");
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Failed to fetch installation commands";
+      throw new Error(message);
     }
   }
 
@@ -39,14 +73,28 @@ export class AgentInstallService {
    * Check agent installation status
    * GET /api/agent-install/status
    */
-  static async getInstallStatus(siteId?: string): Promise<InstallStatus> {
+  static async getInstallStatus(): Promise<InstallStatus> {
     try {
-      const queryParam = siteId ? `?siteId=${siteId}` : "";
-      const response = await apiClient.get(`/agent-install/status${queryParam}`);
-      return response;
-    } catch (error: any) {
+      const response = (await apiClient.get(
+        `/agent-install/status`
+      )) as AgentInstallApiResponse<CheckInstallStatusResponseData>;
+
+      // API returns: { success: true, data: { totalSites, connectedAgents, isRegistered, agents }, timestamp }
+      const statusData = response.data;
+
+      return {
+        totalSites: statusData.totalSites,
+        connectedAgents: statusData.connectedAgents,
+        isRegistered: statusData.isRegistered,
+        agents: statusData.agents,
+      };
+    } catch (error) {
       console.error("Get install status error:", error);
-      throw new Error(error.message || "Failed to fetch installation status");
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Failed to fetch installation status";
+      throw new Error(message);
     }
   }
 
@@ -73,28 +121,29 @@ export class AgentInstallService {
 
   /**
    * Poll installation status - Helper method
+   * Continuously check if agent has connected
    */
   static async pollInstallStatus(
-    siteId: string,
     onProgress: (status: InstallStatus) => void,
-    interval: number = 3000,
+    interval: number = 5000,
     maxAttempts: number = 60
   ): Promise<InstallStatus> {
     let attempts = 0;
-    
+
     return new Promise((resolve, reject) => {
       const poll = setInterval(async () => {
         try {
           attempts++;
-          const status = await this.getInstallStatus(siteId);
-          
+          const status = await this.getInstallStatus();
+
           onProgress(status);
-          
-          if (status.status === "installed" || status.status === "error") {
+
+          // Stop polling when agent is registered
+          if (status.isRegistered && status.connectedAgents > 0) {
             clearInterval(poll);
             resolve(status);
           }
-          
+
           if (attempts >= maxAttempts) {
             clearInterval(poll);
             reject(new Error("Installation timeout"));

@@ -19,7 +19,7 @@ import { AuthService } from "@/lib/services/auth.service";
 import { SignupCredentials } from "@/types/auth.types";
 
 interface SignupFormProps {
-  onSuccess: (email: string) => void;
+  onSuccess: () => void;
   onToggleLogin: () => void;
 }
 
@@ -68,12 +68,15 @@ export const SignupForm: React.FC<SignupFormProps> = ({
       const response = await AuthService.register(credentials);
 
       if (response.success) {
-        onSuccess(email);
+        // Redirect directly to onboarding
+        onSuccess();
       } else {
         setError(response.message || "Registration failed");
       }
-    } catch (err: any) {
-      setError(err.message || "An unexpected error occurred");
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "An unexpected error occurred";
+      setError(message);
     } finally {
       setIsLoading(false);
     }

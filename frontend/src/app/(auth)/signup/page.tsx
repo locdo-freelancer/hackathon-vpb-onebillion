@@ -1,57 +1,40 @@
 // Signup Page - Dependency Inversion: Depends on abstractions
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { AuthLayout } from "@/components/auth/AuthLayout";
 import { AuthHeader } from "@/components/auth/AuthHeader";
 import { OAuthButtons } from "@/components/auth/OAuthButtons";
 import { SignupForm } from "@/components/auth/SignupForm";
-import { EmailVerification } from "@/components/auth/EmailVerification";
-import { useRouter } from "next/navigation";
 import { useSignup } from "@/hooks/useSigup";
 
 export default function SignupPage() {
-  const {
-    showVerification,
-    email,
-    handleSignupSuccess,
-    handleToggleLogin,
-    handleVerificationComplete,
-    handleBack,
-    handleQuickDemo,
-  } = useSignup();
+  const { handleSignupSuccess, handleToggleLogin, handleQuickDemo } =
+    useSignup();
 
   return (
     <AuthLayout>
       <AuthHeader />
 
-      {!showVerification ? (
-        <div className="bg-cyber-card border border-cyber-border rounded-2xl p-8 shadow-2xl backdrop-blur-xl">
-          <OAuthButtons />
+      <div className="bg-cyber-card border border-cyber-border rounded-2xl p-8 shadow-2xl backdrop-blur-xl">
+        <OAuthButtons />
 
-          <div className="relative mb-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-cyber-border" />
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-cyber-card text-gray-500">
-                Or continue with email
-              </span>
-            </div>
+        <div className="relative mb-6">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-cyber-border" />
           </div>
-
-          <SignupForm
-            onSuccess={handleSignupSuccess}
-            onToggleLogin={handleToggleLogin}
-          />
+          <div className="relative flex justify-center text-sm">
+            <span className="px-4 bg-cyber-card text-gray-500">
+              Or continue with email
+            </span>
+          </div>
         </div>
-      ) : (
-        <EmailVerification
-          email={email}
-          onBack={handleBack}
-          onComplete={handleVerificationComplete}
+
+        <SignupForm
+          onSuccess={handleSignupSuccess}
+          onToggleLogin={handleToggleLogin}
         />
-      )}
+      </div>
 
       <div className="mt-6 text-center space-y-3">
         <p className="text-xs text-gray-500">

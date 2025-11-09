@@ -1,8 +1,9 @@
 // Step 4: Validation - Single Responsibility
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { SiteConfigData } from "@/types/onboarding.types";
+import { OnboardingService } from "@/lib/services/onboarding.service";
 
 interface Step4SecurityProps {
   data: SiteConfigData;
@@ -43,34 +44,52 @@ export const Step4Security: React.FC<Step4SecurityProps> = ({
   onChange,
 }) => {
   const [isValidating, setIsValidating] = useState(false);
+  const hasValidated = useRef(false);
 
   useEffect(() => {
-    // Auto-start validation when entering this step
-    if (!isValidating && data.networkConnectivity === "pending") {
+    // Auto-start validation when entering this step (only once)
+    if (
+      !hasValidated.current &&
+      !isValidating &&
+      data.networkConnectivity === "pending"
+    ) {
+      hasValidated.current = true;
       startValidation();
     }
-  }, []);
+  }, [data.networkConnectivity]);
 
   const startValidation = async () => {
     setIsValidating(true);
 
-    // Simulate validation process
-    // Step 1: Network Connectivity
-    onChange({ networkConnectivity: "validating" });
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    onChange({ networkConnectivity: "success" });
+    try {
+      // Call backend API to validate connectivity
+      onChange({
+        networkConnectivity: "validating",
+        agentAuthentication: "validating",
+        initialDataSync: "validating",
+      });
 
-    // Step 2: Agent Authentication
-    onChange({ agentAuthentication: "validating" });
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    onChange({ agentAuthentication: "success" });
+      const response = await OnboardingService.validateConnectivity();
 
-    // Step 3: Initial Data Sync
-    onChange({ initialDataSync: "validating" });
-    await new Promise((resolve) => setTimeout(resolve, 2500));
-    onChange({ initialDataSync: "success" });
-
-    setIsValidating(false);
+      // Update all statuses from backend response
+      onChange({
+        networkConnectivity: response.networkConnectivity,
+        agentAuthentication: response.agentAuthentication,
+        initialDataSync: response.initialDataSync,
+      });
+    } catch (error) {
+      console.error("Validation failed:", error);
+      // Mark all as failed on error
+      onChange({
+        networkConnectivity: "failed",
+        agentAuthentication: "failed",
+        initialDataSync: "failed",
+      });
+      // Reset flag on error to allow retry
+      hasValidated.current = false;
+    } finally {
+      setIsValidating(false);
+    }
   };
 
   const getStatusIcon = (status: ValidationStatus) => {

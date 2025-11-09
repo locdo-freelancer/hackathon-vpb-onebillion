@@ -10,7 +10,7 @@ interface Step2AccountTypeProps {
 }
 
 interface ServerTypeOption {
-  id: "linux" | "windows" | "docker";
+  id: "linux" | "windows" | "docker" | "macos";
   name: string;
   icon: string;
   description: string;
@@ -28,6 +28,12 @@ const SERVER_TYPES: ServerTypeOption[] = [
     name: "Windows Server",
     icon: "fa-brands fa-windows",
     description: "Windows Server 2016, 2019, 2022",
+  },
+  {
+    id: "macos",
+    name: "macOS Server",
+    icon: "fa-brands fa-apple",
+    description: "macOS 10.15+ (Catalina or later)",
   },
   {
     id: "docker",

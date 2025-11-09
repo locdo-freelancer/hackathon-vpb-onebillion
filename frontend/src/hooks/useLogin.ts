@@ -16,7 +16,8 @@ export const useLogin = () => {
       setShowMFAModal(true);
       return;
     }
-    await router.push("/dashboard");
+    // Redirect to onboarding after successful login
+    await router.push("/onboarding");
   };
 
   const handleMFAVerify = async (code: string) => {

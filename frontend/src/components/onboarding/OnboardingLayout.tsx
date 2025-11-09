@@ -1,5 +1,8 @@
 // Onboarding Layout - Single Responsibility: Layout structure
+"use client";
+
 import React from "react";
+import { useLogout } from "@/hooks/useLogout";
 
 interface OnboardingLayoutProps {
   children: React.ReactNode;
@@ -10,6 +13,8 @@ export const OnboardingLayout: React.FC<OnboardingLayoutProps> = ({
   children,
   helpPanel,
 }) => {
+  const { handleLogout } = useLogout();
+
   return (
     <div className="min-h-screen flex relative overflow-hidden bg-cyber-darker">
       {/* Background gradients */}
@@ -38,6 +43,14 @@ export const OnboardingLayout: React.FC<OnboardingLayoutProps> = ({
               </div>
               <button className="text-gray-400 hover:text-white transition-colors">
                 <i className="fas fa-question-circle text-lg" />
+              </button>
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg text-gray-400 hover:text-white hover:bg-red-500/10 hover:border hover:border-red-500/30 transition-colors"
+                title="Logout"
+              >
+                <i className="fas fa-sign-out-alt" />
+                <span className="text-sm">Logout</span>
               </button>
             </div>
           </div>

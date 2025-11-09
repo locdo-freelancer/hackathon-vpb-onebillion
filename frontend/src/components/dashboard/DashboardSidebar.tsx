@@ -1,6 +1,9 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
 import type { NavItem, User } from "@/types/dashboard.types";
+import { useLogout } from "@/hooks/useLogout";
 
 interface DashboardSidebarProps {
   navItems: NavItem[];
@@ -13,6 +16,8 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
   user,
   onNavItemClick,
 }) => {
+  const { handleLogout } = useLogout();
+
   return (
     <aside className="w-64 border-r border-slate-800 bg-slate-900/50 backdrop-blur-xl flex flex-col">
       {/* Logo Section */}
@@ -61,13 +66,23 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
         </nav>
       </div>
 
-      {/* User Section */}
-      <div className="mt-auto p-6">
-        <div className="flex items-center gap-3 p-3 bg-slate-950/50 rounded-lg border border-slate-800">
+      {/* User Section - Fixed at bottom */}
+      <div className="mt-auto p-6 space-y-3 border-t border-slate-800">
+        {/* Logout Button - Very visible */}
+        <button
+          onClick={handleLogout}
+          className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-lg bg-red-500/10 border-2 border-red-500/30 text-red-400 hover:text-white hover:bg-red-500/20 hover:border-red-500/50 transition-all duration-200 font-semibold"
+        >
+          <i className="fas fa-sign-out-alt text-lg" />
+          <span>Logout</span>
+        </button>
+
+        {/* User Info */}
+        <div className="flex items-center gap-3 p-3 bg-slate-950/50 rounded-lg border border-slate-800 hover:border-slate-700 transition-colors">
           <img
             src={user.avatar}
             alt={user.name}
-            className="w-10 h-10 rounded-full"
+            className="w-10 h-10 rounded-full ring-2 ring-cyan-500/20"
           />
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium text-white truncate">

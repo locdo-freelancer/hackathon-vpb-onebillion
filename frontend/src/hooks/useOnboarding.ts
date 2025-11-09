@@ -56,16 +56,36 @@ export const useOnboarding = () => {
     setIsLoading(true);
 
     try {
+      // First validate that all required fields are filled
+      if (
+        !formData.siteName ||
+        !formData.ipAddress ||
+        !formData.port ||
+        !formData.serverType
+      ) {
+        setError("Please fill all required fields");
+        return false;
+      }
+
+      // Call backend API to complete onboarding
       const response = await OnboardingService.completeOnboarding(formData);
 
       if (response.success) {
+        // Store the site ID and install token from backend response
+        if (response.site) {
+          console.log("✅ Site created:", response.site);
+        }
+
         return true;
       } else {
         setError(response.message || "Failed to complete setup");
         return false;
       }
-    } catch (err) {
-      setError("An unexpected error occurred");
+    } catch (error) {
+      console.error("Complete onboarding error:", error);
+      const message =
+        error instanceof Error ? error.message : "An unexpected error occurred";
+      setError(message);
       return false;
     } finally {
       setIsLoading(false);

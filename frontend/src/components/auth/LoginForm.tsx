@@ -55,13 +55,15 @@ export const LoginForm: React.FC<LoginFormProps> = ({
 
       if (response.success && response.token) {
         // Token already stored in AuthService.login()
-        // Redirect to dashboard or onboarding
-        window.location.href = "/dashboard";
+        // Redirect to onboarding
+        window.location.href = "/onboarding";
       } else {
         setError(response.message || "Login failed");
       }
-    } catch (err: any) {
-      setError(err.message || "An unexpected error occurred");
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "An unexpected error occurred";
+      setError(message);
     } finally {
       setIsLoading(false);
     }

@@ -14,7 +14,7 @@ export interface SiteConfigData {
   domainName: string;
 
   // Step 2: Server Type
-  serverType: "linux" | "windows" | "docker" | "";
+  serverType: "linux" | "windows" | "docker" | "macos" | "";
 
   // Step 3: Agent Installation
   installToken: string;
@@ -42,6 +42,78 @@ export interface ServerTypeOption {
   name: string;
   description: string;
   icon: string;
+}
+
+// API Response Types - Backend always wraps in { success, data, timestamp }
+
+/**
+ * Standard API wrapper from backend ResponseLoggingInterceptor
+ */
+export interface OnboardingApiResponse<T = any> {
+  success: boolean;
+  data: T;
+  timestamp: string;
+}
+
+/**
+ * Generate Install Token Response
+ * POST /api/onboarding/generate-token
+ */
+export interface GenerateTokenResponseData {
+  success: boolean;
+  token: string;
+}
+
+/**
+ * Validate Connectivity Response
+ * POST /api/onboarding/validate-connectivity
+ */
+export interface ValidateConnectivityResponseData {
+  success: boolean;
+  networkConnectivity: boolean;
+  agentAuthentication: boolean;
+  initialDataSync: boolean;
+  message?: string;
+}
+
+/**
+ * Complete Onboarding Response
+ * POST /api/onboarding/complete
+ */
+export interface CompleteOnboardingResponseData {
+  success: boolean;
+  site: {
+    id: string;
+    name: string;
+    ipAddress: string;
+    port: number;
+    domain?: string;
+  };
+  agent: {
+    id: string;
+    installToken: string;
+    status: string;
+  };
+  message: string;
+}
+
+/**
+ * Save Progress Response
+ * POST /api/onboarding/progress
+ */
+export interface SaveProgressResponseData {
+  success: boolean;
+  message?: string;
+}
+
+/**
+ * Validate IP Response
+ * POST /api/onboarding/validate-ip
+ */
+export interface ValidateIpResponseData {
+  success: boolean;
+  isValid: boolean;
+  message?: string;
 }
 
 // Keep old interface name for backward compatibility

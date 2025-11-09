@@ -1,9 +1,22 @@
-import { Controller, Get, Param, UseGuards, Query } from "@nestjs/common";
+import {
+  Controller,
+  Get,
+  Param,
+  UseGuards,
+  Query,
+  Post,
+  Body,
+} from "@nestjs/common";
 import { ApiTags, ApiBearerAuth } from "@nestjs/swagger";
 import { AgentInstallService } from "./agent-install.service";
 import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
-import { ApiOperationDecorator, UserReq } from "../../../libs/decorators/src";
+import {
+  ApiOperationDecorator,
+  UserReq,
+  Public,
+} from "../../../libs/decorators/src";
 import { User } from "../../../libs/entities";
+import { AgentHeartbeatDto } from "./dto";
 
 @ApiTags("agent-install")
 @ApiBearerAuth("JWT-auth")
@@ -32,5 +45,15 @@ export class AgentInstallController {
   })
   async checkInstallStatus(@UserReq() user: User) {
     return this.agentInstallService.checkInstallStatus(user.id);
+  }
+
+  @Post("heartbeat")
+  @Public()
+  @ApiOperationDecorator({
+    summary: "Agent heartbeat (Real Agent)",
+    description: "Receive heartbeat from real agent with system metrics",
+  })
+  async agentHeartbeat(@Body() dto: AgentHeartbeatDto) {
+    return this.agentInstallService.handleAgentHeartbeat(dto);
   }
 }

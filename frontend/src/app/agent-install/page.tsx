@@ -12,7 +12,7 @@ import { useAgentInstallFlow } from "@/hooks/useAgentInstallFlow";
 
 /**
  * Agent Install Page - SOLID Principles Applied
- * 
+ *
  * Single Responsibility: Only handles page composition and routing
  * Open/Closed: Extended by adding new components, not modifying existing
  * Liskov Substitution: Components can be replaced with compatible implementations
@@ -21,13 +21,14 @@ import { useAgentInstallFlow } from "@/hooks/useAgentInstallFlow";
  */
 export default function AgentInstallPage() {
   const router = useRouter();
-  
+
   // Dependency Injection: Business logic injected via hook
   const {
     currentTab,
     connectionPhase,
     heartbeatTime,
     isRegistered,
+    installToken,
     handleTabChange,
     handleCopyCommand,
   } = useAgentInstallFlow();
@@ -64,6 +65,7 @@ export default function AgentInstallPage() {
             connectionPhase={connectionPhase}
             heartbeatTime={heartbeatTime}
             onCopyCommand={handleCopyCommand}
+            installToken={installToken}
           />
 
           {/* Dependency Inversion: Actions depend on abstract callbacks */}

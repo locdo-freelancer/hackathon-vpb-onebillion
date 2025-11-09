@@ -9,6 +9,7 @@ import { ApiProperty } from "@nestjs/swagger";
 
 export class OnboardingProgressDto {
   @ApiProperty({ example: { siteName: "Production Server" } })
+  @IsNotEmpty()
   data: any;
 
   @ApiProperty({ example: 1 })
@@ -39,7 +40,7 @@ export class CompleteOnboardingDto {
 
   @ApiProperty({ example: "linux" })
   @IsString()
-  @IsIn(["linux", "windows", "docker"])
+  @IsIn(["linux", "windows", "docker", "macos"])
   serverType: string;
 
   @ApiProperty({ example: "sv_abc123def456", required: false })
@@ -58,6 +59,6 @@ export class ValidateIPDto {
 export class GenerateTokenDto {
   @ApiProperty({ example: "linux" })
   @IsString()
-  @IsIn(["linux", "windows", "docker"])
+  @IsIn(["linux", "windows", "docker", "macos"])
   serverType: string;
 }

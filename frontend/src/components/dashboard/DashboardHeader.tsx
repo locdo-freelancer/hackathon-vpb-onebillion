@@ -1,4 +1,7 @@
+"use client";
+
 import React from "react";
+import { useLogout } from "@/hooks/useLogout";
 
 interface DashboardHeaderProps {
   title: string;
@@ -13,6 +16,8 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   notificationCount = 0,
   onSearch,
 }) => {
+  const { handleLogout } = useLogout();
+
   return (
     <header className="border-b border-slate-800 bg-slate-900/50 backdrop-blur-xl">
       <div className="px-8 py-6 flex items-center justify-between">
@@ -41,6 +46,16 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             {notificationCount > 0 && (
               <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
             )}
+          </button>
+
+          {/* Logout Button */}
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-2 px-4 py-2 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 hover:bg-red-500/20 hover:text-white transition-all duration-200"
+            title="Logout"
+          >
+            <i className="fas fa-sign-out-alt" />
+            <span className="font-medium">Logout</span>
           </button>
         </div>
       </div>

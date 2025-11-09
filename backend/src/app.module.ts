@@ -11,6 +11,7 @@ import { AgentsModule } from "./modules/agents/agents.module";
 import { AgentCommModule } from "./modules/agent-comm/agent-comm.module";
 import { AgentInstallModule } from "./modules/agent-install/agent-install.module";
 import { OnboardingModule } from "./modules/onboarding/onboarding.module";
+import { DownloadsModule } from "./modules/downloads/downloads.module";
 import { TasksModule } from "./modules/tasks/tasks.module";
 import { IncidentsModule } from "./modules/incidents/incidents.module";
 import { ThreatsModule } from "./modules/threats/threats.module";
@@ -36,6 +37,7 @@ import { LoggingMiddleware } from "../libs/middlewares/src";
     AgentCommModule,
     AgentInstallModule,
     OnboardingModule,
+    DownloadsModule,
     TasksModule,
     IncidentsModule,
     ThreatsModule,
