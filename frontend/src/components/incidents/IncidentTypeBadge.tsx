@@ -16,9 +16,9 @@ export const IncidentTypeBadge: React.FC<IncidentTypeBadgeProps> = ({ type }) =>
         return "bg-cyan-500/20 text-cyan-400";
       case "intrusion":
         return "bg-red-500/20 text-red-400";
-      case "data-breach":
+      case "breach":
         return "bg-pink-500/20 text-pink-400";
-      case "policy-violation":
+      case "policy_violation":
         return "bg-green-500/20 text-green-400";
       case "ransomware":
         return "bg-orange-500/20 text-orange-400";

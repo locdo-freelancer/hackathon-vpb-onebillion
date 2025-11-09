@@ -16,7 +16,10 @@ export const OAuthButtons: React.FC = () => {
   const providers = getOAuthProviders();
 
   const handleOAuthLogin = async (provider: AuthProvider) => {
-    await AuthService.oauthLogin(provider);
+    // TODO: Implement oauthLogin in AuthService
+    console.log('OAuth login with provider:', provider);
+    alert('OAuth login not yet implemented');
+    // await AuthService.oauthLogin(provider);
   };
 
   return (

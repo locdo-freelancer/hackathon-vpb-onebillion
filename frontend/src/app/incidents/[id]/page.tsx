@@ -81,11 +81,14 @@ export default function IncidentDetailPage() {
               <div className="col-span-2 space-y-6">
                 {/* Overview */}
                 <IncidentOverviewCard
+                  severity={selectedIncident.severity}
+                  status={selectedIncident.status}
+                  createdAt={selectedIncident.dateCreated}
                   assignee={
                     selectedIncident.assignee
                       ? {
                           name: selectedIncident.assignee.name,
-                          avatar: selectedIncident.assignee.avatar,
+                          avatar: selectedIncident.assignee.avatar || "",
                         }
                       : undefined
                   }
@@ -93,7 +96,7 @@ export default function IncidentDetailPage() {
                   sourceIP={selectedIncident.sourceIP}
                   destinationIP={selectedIncident.destinationIP}
                   protocol={selectedIncident.protocol}
-                  lastUpdated={selectedIncident.dateUpdated}
+                  lastUpdated={selectedIncident.dateCreated}
                 />
 
                 {/* MITRE ATT&CK */}

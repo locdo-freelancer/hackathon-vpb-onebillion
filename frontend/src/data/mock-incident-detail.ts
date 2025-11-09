@@ -21,6 +21,7 @@ export const fetchIncidentDetail = async (id: string): Promise<IncidentDetail> =
       {
         id: "t1",
         timestamp: "2024-01-15 14:32:00",
+        event: "Malicious File Detected",
         action: "Malicious File Detected",
         user: "EDR Agent",
         details: "Suspicious executable detected on endpoint: malware.exe",
@@ -28,6 +29,7 @@ export const fetchIncidentDetail = async (id: string): Promise<IncidentDetail> =
       {
         id: "t2",
         timestamp: "2024-01-15 14:33:15",
+        event: "Network Connection Established",
         action: "Network Connection Established",
         user: "Firewall",
         details: "Outbound connection to known C2 server: 185.234.72.45",
@@ -35,6 +37,7 @@ export const fetchIncidentDetail = async (id: string): Promise<IncidentDetail> =
       {
         id: "t3",
         timestamp: "2024-01-15 14:34:30",
+        event: "Registry Modification",
         action: "Registry Modification",
         user: "EDR Agent",
         details: "Persistence mechanism detected in HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Run",
@@ -42,6 +45,7 @@ export const fetchIncidentDetail = async (id: string): Promise<IncidentDetail> =
       {
         id: "t4",
         timestamp: "2024-01-15 14:35:45",
+        event: "Incident Created",
         action: "Incident Created",
         user: "SIEM",
         details: "Automated detection triggered incident creation based on threat correlation",

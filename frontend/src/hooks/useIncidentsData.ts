@@ -94,8 +94,7 @@ export const useIncidentsData = (): UseIncidentsDataReturn => {
         return (
           incident.incidentId.toLowerCase().includes(query) ||
           incident.title.toLowerCase().includes(query) ||
-          incident.description.toLowerCase().includes(query) ||
-          incident.aiSummary.toLowerCase().includes(query)
+          incident.description?.toLowerCase().includes(query)
         );
       }
 

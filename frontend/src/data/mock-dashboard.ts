@@ -6,6 +6,17 @@ export const fetchDashboardData = async (): Promise<DashboardData> => {
   await new Promise((resolve) => setTimeout(resolve, 500));
 
   return {
+    stats: {
+      totalSites: 8,
+      activeSites: 7,
+      totalAgents: 24,
+      onlineAgents: 22,
+      totalIncidents: 15,
+      criticalIncidents: 3,
+      totalThreats: 89,
+      blockedThreats: 67,
+    },
+    recentIncidents: [],
     riskScore: {
       score: 68,
       maxScore: 100,

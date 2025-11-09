@@ -1,6 +1,7 @@
+// Aligned with Backend API responses
 export type ThreatSeverity = "critical" | "high" | "medium" | "low";
 export type ThreatType = "ip" | "domain" | "url" | "hash";
-export type ThreatStatus = "active" | "blocked" | "flagged" | "monitoring";
+export type ThreatStatus = "active" | "blocked" | "expired" | "investigating"; // Changed to match BE
 
 export interface ThreatIndicator {
   id: string;
@@ -9,15 +10,21 @@ export interface ThreatIndicator {
   type: ThreatType;
   severity: ThreatSeverity;
   confidence: number; // 0-100
-  country: string;
-  countryCode: string;
-  countryFlag: string;
+  country?: string; // Optional from BE
+  countryCode?: string; // Optional from BE
+  countryFlag?: string; // Optional from BE
   firstSeen: string;
   lastSeen: string;
   status: ThreatStatus;
   icon: string;
   iconColor: string;
+  malwareFamily?: string; // Added to match BE
+  tags?: string[]; // Added to match BE
+  sources?: string[]; // Added to match BE
 }
+
+// Alias for compatibility
+export type Threat = ThreatIndicator;
 
 export interface ThreatEnrichment {
   isp?: string;

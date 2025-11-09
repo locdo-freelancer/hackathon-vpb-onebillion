@@ -75,11 +75,22 @@ export interface TimeSeriesData {
 }
 
 export interface DashboardData {
-  riskScore: RiskScore;
-  riskMetrics: RiskMetrics;
-  threats: Threat[];
-  incidentStats: IncidentStats;
-  resolutionStats: ResolutionStats;
-  severityChart: ChartData;
-  trendsChart: TimeSeriesData[];
+  stats: {
+    totalSites: number;
+    activeSites: number;
+    totalAgents: number;
+    onlineAgents: number;
+    totalIncidents: number;
+    criticalIncidents: number;
+    totalThreats: number;
+    blockedThreats: number;
+  };
+  recentIncidents: any[];
+  riskScore?: RiskScore;
+  riskMetrics?: RiskMetrics;
+  threats?: Threat[];
+  incidentStats?: IncidentStats;
+  resolutionStats?: ResolutionStats;
+  severityChart?: ChartData;
+  trendsChart?: TimeSeriesData[];
 }

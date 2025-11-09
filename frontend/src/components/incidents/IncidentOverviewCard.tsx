@@ -11,6 +11,9 @@ interface IncidentOverviewCardProps {
   destinationIP?: string;
   protocol?: string;
   lastUpdated: string;
+  severity?: "critical" | "high" | "medium" | "low";
+  status?: "open" | "investigating" | "resolved" | "closed";
+  createdAt?: string;
 }
 
 export const IncidentOverviewCard: React.FC<IncidentOverviewCardProps> = ({
@@ -20,6 +23,9 @@ export const IncidentOverviewCard: React.FC<IncidentOverviewCardProps> = ({
   destinationIP,
   protocol,
   lastUpdated,
+  severity,
+  status,
+  createdAt,
 }) => {
   return (
     <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">

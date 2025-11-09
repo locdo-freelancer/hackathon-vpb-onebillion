@@ -1,7 +1,8 @@
 // Agents Management Types - Single Responsibility Principle
+// Aligned with Backend API responses
 
 export type AgentStatus = "online" | "offline" | "updating";
-export type OSType = "linux" | "windows" | "macos" | "other";
+export type OSType = "linux" | "windows" | "docker" | "macos"; // Added "docker" to match BE
 
 export interface Agent {
   id: string;
@@ -12,13 +13,15 @@ export interface Agent {
   osIcon: string;
   version: string;
   status: AgentStatus;
-  lastHeartbeat: string;
+  lastHeartbeat: string; // Formatted time ago from BE
   cpuUsage?: number;
   memoryUsage?: number;
   updateProgress?: number;
   iconGradient: string;
-  siteId?: string;
-  siteName?: string;
+  siteId: string; // Required from BE
+  siteName: string; // Required from BE
+  createdAt?: number;
+  updatedAt?: number;
 }
 
 export interface AgentStats {

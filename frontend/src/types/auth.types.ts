@@ -8,6 +8,8 @@ export interface LoginCredentials {
 
 export interface SignupCredentials extends LoginCredentials {
   confirmPassword: string;
+  fullName?: string;
+  companyName?: string;
 }
 
 export interface MFAVerification {

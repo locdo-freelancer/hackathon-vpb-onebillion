@@ -53,13 +53,15 @@ export const LoginForm: React.FC<LoginFormProps> = ({
 
       const response = await AuthService.login(credentials);
 
-      if (response.success) {
-        onSuccess(response.requiresMFA || false, response.userId);
+      if (response.success && response.token) {
+        // Token already stored in AuthService.login()
+        // Redirect to dashboard or onboarding
+        window.location.href = "/dashboard";
       } else {
         setError(response.message || "Login failed");
       }
-    } catch (err) {
-      setError("An unexpected error occurred");
+    } catch (err: any) {
+      setError(err.message || "An unexpected error occurred");
     } finally {
       setIsLoading(false);
     }

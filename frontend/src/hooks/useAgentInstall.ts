@@ -1,12 +1,14 @@
 import { useState, useEffect, useCallback } from "react";
 import type { ConnectionPhase } from "@/components/agent-install";
+import { AgentInstallService } from "@/lib/services";
 
 interface UseAgentInstallReturn {
   connectionPhase: ConnectionPhase;
   heartbeatTime: string;
   isConnected: boolean;
   isRegistered: boolean;
-  simulateConnection: () => void;
+  checkInstallStatus: (siteId: string) => Promise<void>;
+  pollInstallStatus: (siteId: string) => void;
 }
 
 export const useAgentInstall = (): UseAgentInstallReturn => {
@@ -21,38 +23,64 @@ export const useAgentInstall = (): UseAgentInstallReturn => {
     setHeartbeatTime(timestamp);
   }, []);
 
-  const simulateConnection = useCallback(() => {
-    // First phase: Connected after 5 seconds
-    const connectedTimeout = setTimeout(() => {
-      setConnectionPhase("connected");
+  // Check installation status from API
+  const checkInstallStatus = useCallback(async (siteId: string) => {
+    try {
+      const status = await AgentInstallService.getInstallStatus(siteId);
+      
+      switch (status.status) {
+        case "not_installed":
+          setConnectionPhase("waiting");
+          break;
+        case "installing":
+          setConnectionPhase("connected");
+          break;
+        case "installed":
+          setConnectionPhase("registered");
+          updateHeartbeat();
+          break;
+        case "error":
+          console.error("Installation error:", status.message);
+          break;
+      }
+    } catch (error) {
+      console.error("Failed to check install status:", error);
+    }
+  }, [updateHeartbeat]);
 
-      // Second phase: Registered after additional 3 seconds
-      const registeredTimeout = setTimeout(() => {
-        setConnectionPhase("registered");
-        updateHeartbeat();
-
-        // Update heartbeat every 30 seconds
-        const heartbeatInterval = setInterval(updateHeartbeat, 30000);
-
-        return () => clearInterval(heartbeatInterval);
-      }, 3000);
-
-      return () => clearTimeout(registeredTimeout);
-    }, 5000);
-
-    return () => clearTimeout(connectedTimeout);
+  // Poll installation status
+  const pollInstallStatus = useCallback((siteId: string) => {
+    AgentInstallService.pollInstallStatus(
+      siteId,
+      (status) => {
+        if (status.status === "installing") {
+          setConnectionPhase("connected");
+        } else if (status.status === "installed") {
+          setConnectionPhase("registered");
+          updateHeartbeat();
+        }
+      },
+      5000, // Check every 5 seconds
+      60    // Max 60 attempts (5 minutes)
+    ).catch((error) => {
+      console.error("Installation polling failed:", error);
+    });
   }, [updateHeartbeat]);
 
   useEffect(() => {
-    const cleanup = simulateConnection();
-    return cleanup;
-  }, [simulateConnection]);
+    // Start heartbeat update when registered
+    if (connectionPhase === "registered") {
+      const heartbeatInterval = setInterval(updateHeartbeat, 30000);
+      return () => clearInterval(heartbeatInterval);
+    }
+  }, [connectionPhase, updateHeartbeat]);
 
   return {
     connectionPhase,
     heartbeatTime,
     isConnected: connectionPhase !== "waiting",
     isRegistered: connectionPhase === "registered",
-    simulateConnection,
+    checkInstallStatus,
+    pollInstallStatus,
   };
 };

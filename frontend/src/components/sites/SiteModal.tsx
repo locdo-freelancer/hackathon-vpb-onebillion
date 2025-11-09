@@ -27,8 +27,8 @@ export const SiteModal: React.FC<SiteModalProps> = ({
       setFormData({
         name: site.name,
         ipAddress: site.ipAddress,
-        domains: site.domains,
-        hostname: site.hostname,
+        domains: site.domains || [],
+        hostname: site.hostname || "",
       });
     } else {
       setFormData({

@@ -108,11 +108,15 @@ export const ThreatRow: React.FC<ThreatRowProps> = ({
 
       {/* Country */}
       <td className="px-6 py-4">
-        <CountryFlag
-          countryCode={threat.countryCode}
-          countryName={threat.country}
-          flag={threat.countryFlag}
-        />
+        {threat.countryCode && threat.country && threat.countryFlag ? (
+          <CountryFlag
+            countryCode={threat.countryCode}
+            countryName={threat.country}
+            flag={threat.countryFlag}
+          />
+        ) : (
+          <span className="text-gray-500 text-sm">Unknown</span>
+        )}
       </td>
 
       {/* First Seen */}

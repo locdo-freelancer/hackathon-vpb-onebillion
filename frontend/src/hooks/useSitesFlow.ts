@@ -40,17 +40,52 @@ export const useSitesFlow = () => {
     alert(`Viewing details for: ${site.name}`);
   };
 
-  const handleDeleteSite = (site: Site) => {
+  const handleDeleteSite = async (site: Site) => {
     if (confirm(`Are you sure you want to delete ${site.name}?`)) {
-      alert(`Deleted site: ${site.name}`);
+      try {
+        const { SitesService } = await import("@/lib/services");
+        await SitesService.deleteSite(site.id);
+        alert(`Deleted site: ${site.name}`);
+        // Refetch data
+        window.location.reload();
+      } catch (error: any) {
+        alert(`Failed to delete site: ${error.message}`);
+      }
     }
   };
 
-  const handleSaveSite = (formData: SiteFormData) => {
-    if (editingSite) {
-      alert(`Updated site: ${formData.name}`);
-    } else {
-      alert(`Created new site: ${formData.name}`);
+  const handleSaveSite = async (formData: SiteFormData) => {
+    try {
+      const { SitesService } = await import("@/lib/services");
+      
+      if (editingSite) {
+        // Update existing site
+        await SitesService.updateSite(editingSite.id, {
+          name: formData.name,
+          hostname: formData.hostname,
+          ipAddress: formData.ipAddress,
+          port: formData.port,
+          domains: formData.domains,
+        });
+        alert(`Updated site: ${formData.name}`);
+      } else {
+        // Create new site
+        await SitesService.createSite({
+          name: formData.name,
+          hostname: formData.hostname || "",
+          ipAddress: formData.ipAddress,
+          port: formData.port,
+          domains: formData.domains,
+          serverType: formData.serverType || "linux",
+        });
+        alert(`Created new site: ${formData.name}`);
+      }
+      
+      setIsModalOpen(false);
+      // Refetch data
+      window.location.reload();
+    } catch (error: any) {
+      alert(`Failed to save site: ${error.message}`);
     }
   };
 

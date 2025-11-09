@@ -1,4 +1,5 @@
 // Sites Management Types - Single Responsibility Principle
+// Aligned with Backend API responses
 
 export type SiteStatus = "active" | "inactive" | "warning";
 
@@ -7,12 +8,15 @@ export interface Site {
   name: string;
   hostname: string;
   ipAddress: string;
-  domains: string[];
+  domains?: string[]; // Optional - may not be returned from BE
   agentCount: number;
   status: SiteStatus;
   icon: string;
   iconGradient: string;
-  lastChecked?: string;
+  lastChecked: string;
+  port?: string; // Backend returns this
+  createdAt?: number;
+  updatedAt?: number;
 }
 
 export interface SitesFilter {
@@ -42,4 +46,6 @@ export interface SiteFormData {
   ipAddress: string;
   domains: string[];
   hostname?: string;
+  port?: string;
+  serverType?: "linux" | "windows" | "docker";
 }
