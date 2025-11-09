@@ -48,10 +48,6 @@ const nextConfig = {
     ];
   },
 
-  experimental: {
-    optimizeCss: true,
-  },
-
   poweredByHeader: false,
 
   env: {
