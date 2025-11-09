@@ -66,15 +66,17 @@ export default function DashboardPage() {
           />
 
           {/* Dashboard Content (DIP - depends on abstract data interface) */}
-          <DashboardMainContent
-            riskScore={data.riskScore}
-            riskMetrics={data.riskMetrics}
-            severityChart={data.severityChart}
-            trendsChart={data.trendsChart}
-            threats={data.threats}
-            incidentStats={data.incidentStats}
-            resolutionStats={data.resolutionStats}
-          />
+          {data.riskScore && data.riskMetrics && data.severityChart && data.trendsChart && data.threats && data.incidentStats && data.resolutionStats && (
+            <DashboardMainContent
+              riskScore={data.riskScore}
+              riskMetrics={data.riskMetrics}
+              severityChart={data.severityChart}
+              trendsChart={data.trendsChart}
+              threats={data.threats}
+              incidentStats={data.incidentStats}
+              resolutionStats={data.resolutionStats}
+            />
+          )}
         </div>
       </div>
     </div>

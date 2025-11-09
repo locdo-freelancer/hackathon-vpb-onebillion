@@ -72,11 +72,11 @@ export const IncidentRow: React.FC<IncidentRowProps> = ({
         <IncidentTypeBadge type={incident.type} />
       </td>
 
-      {/* AI Summary */}
+      {/* Description */}
       <td className="px-6 py-4 max-w-xs">
         <div className="flex items-start gap-2">
-          <i className="fas fa-robot text-cyan-500 mt-1 text-xs" />
-          <p className="text-sm text-gray-300 truncate">{incident.aiSummary}</p>
+          <i className="fas fa-info-circle text-cyan-500 mt-1 text-xs" />
+          <p className="text-sm text-gray-300 truncate">{incident.description || 'No description'}</p>
         </div>
       </td>
 

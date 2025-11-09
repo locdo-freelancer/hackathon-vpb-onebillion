@@ -67,14 +67,14 @@ export const SiteRow: React.FC<SiteRowProps> = ({
       {/* Domains */}
       <td className="px-6 py-4">
         <div className="flex flex-wrap gap-1">
-          {site.domains.map((domain, index) => (
+          {site.domains?.map((domain, index) => (
             <span
               key={index}
               className="px-2 py-1 bg-cyan-500/10 text-cyan-400 text-xs rounded"
             >
               {domain}
             </span>
-          ))}
+          )) || <span className="text-gray-500 text-xs">No domains</span>}
         </div>
       </td>
 

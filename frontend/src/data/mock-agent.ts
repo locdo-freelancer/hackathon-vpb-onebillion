@@ -17,6 +17,7 @@ export const fetchAgentsData = async (): Promise<AgentsData> => {
       lastHeartbeat: "2s ago",
       cpuUsage: 15,
       iconGradient: "from-blue-500 to-cyan-500",
+      siteId: "site-1",
       siteName: "Production Web Server",
     },
     {
@@ -31,6 +32,7 @@ export const fetchAgentsData = async (): Promise<AgentsData> => {
       lastHeartbeat: "5s ago",
       cpuUsage: 32,
       iconGradient: "from-red-500 to-pink-500",
+      siteId: "site-2",
       siteName: "MySQL Database",
     },
     {
@@ -45,6 +47,7 @@ export const fetchAgentsData = async (): Promise<AgentsData> => {
       lastHeartbeat: "1s ago",
       cpuUsage: 8,
       iconGradient: "from-green-500 to-emerald-500",
+      siteId: "site-3",
       siteName: "API Gateway",
     },
     {
@@ -59,6 +62,7 @@ export const fetchAgentsData = async (): Promise<AgentsData> => {
       lastHeartbeat: "3s ago",
       cpuUsage: 22,
       iconGradient: "from-purple-500 to-indigo-500",
+      siteId: "site-4",
       siteName: "Cloud Storage",
     },
     {
@@ -72,6 +76,7 @@ export const fetchAgentsData = async (): Promise<AgentsData> => {
       status: "offline",
       lastHeartbeat: "5m ago",
       iconGradient: "from-gray-500 to-gray-600",
+      siteId: "site-5",
       siteName: "Mail Server",
     },
     {
@@ -86,6 +91,7 @@ export const fetchAgentsData = async (): Promise<AgentsData> => {
       lastHeartbeat: "10s ago",
       updateProgress: 65,
       iconGradient: "from-orange-500 to-yellow-500",
+      siteId: "site-6",
       siteName: "Backup Server",
     },
   ];

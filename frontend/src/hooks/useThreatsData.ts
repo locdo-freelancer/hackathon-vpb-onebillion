@@ -94,7 +94,7 @@ export const useThreatsData = (): UseThreatsDataReturn => {
         return (
           indicator.indicator.toLowerCase().includes(query) ||
           indicator.description.toLowerCase().includes(query) ||
-          indicator.country.toLowerCase().includes(query)
+          indicator.country?.toLowerCase().includes(query)
         );
       }
 

@@ -53,6 +53,24 @@ export const apiClient = {
     return response.json();
   },
 
+  async patch(endpoint: string, data: any) {
+    const token = localStorage.getItem("token");
+    const response = await fetch(`${API_URL}/api${endpoint}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        ...(token && { Authorization: `Bearer ${token}` }),
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      throw new Error(`API Error: ${response.statusText}`);
+    }
+
+    return response.json();
+  },
+
   async delete(endpoint: string) {
     const token = localStorage.getItem("token");
     const response = await fetch(`${API_URL}/api${endpoint}`, {

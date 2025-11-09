@@ -23,13 +23,15 @@ export const useLogin = () => {
     if (!userId) return;
 
     try {
-      const response = await AuthService.verifyMFA({ code, userId });
-      if (response.success) {
-        setShowMFAModal(false);
-        await router.push("/dashboard");
-      } else {
-        setError(response.message || "Invalid code");
-      }
+      // TODO: Implement verifyMFA in AuthService
+      setError("MFA verification not yet implemented");
+      // const response = await AuthService.verifyMFA({ code, userId });
+      // if (response.success) {
+      //   setShowMFAModal(false);
+      //   await router.push("/dashboard");
+      // } else {
+      //   setError(response.message || "Invalid code");
+      // }
     } catch {
       setError("Verification failed. Please try again.");
     }

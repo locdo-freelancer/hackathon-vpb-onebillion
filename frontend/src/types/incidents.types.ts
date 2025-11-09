@@ -1,46 +1,52 @@
+// Aligned with Backend API responses
 export type IncidentSeverity = "critical" | "high" | "medium" | "low";
 export type IncidentStatus = "open" | "investigating" | "resolved" | "closed";
 export type IncidentType =
   | "malware"
   | "phishing"
   | "ddos"
-  | "intrusion"
-  | "data-breach"
-  | "policy-violation"
+  | "breach" // Changed from "data-breach" to match BE
+  | "policy_violation" // Changed from "policy-violation" to match BE
+  | "vulnerability"
   | "ransomware"
-  | "vulnerability";
+  | "intrusion";
+
+export interface Assignee {
+  id: string;
+  name: string;
+  avatar?: string; // Optional to match BE
+}
 
 export interface Incident {
   id: string;
   incidentId: string; // Display ID like INC-001
   title: string;
-  description: string;
-  aiSummary: string;
   severity: IncidentSeverity;
   status: IncidentStatus;
   type: IncidentType;
   dateCreated: string;
-  dateUpdated: string;
-  assignee: {
-    id: string;
-    name: string;
-    avatar: string;
-  } | null;
+  assignee?: Assignee; // Changed to optional Assignee type
   affectedSystems: string[];
   tags: string[];
+  description?: string; // Optional - returned in detail view
+  timeline?: TimelineEvent[]; // Optional - returned in detail view
+  mitreAttack?: string[]; // Optional - returned in detail view
+  aiRecommendations?: string[]; // Optional - returned in detail view
+  relatedIncidents?: string[]; // Optional - returned in detail view
+  // Removed UI-only fields: aiSummary, dateUpdated
 }
 
-export interface IncidentDetail extends Incident {
-  timeline: IncidentTimelineEvent[];
+export interface IncidentDetail extends Omit<Incident, 'timeline' | 'mitreAttack' | 'relatedIncidents' | 'aiRecommendations'> {
+  timeline: IncidentTimelineEvent[]; // Override with extended type for UI
+  mitreAttack: MitreTechnique[]; // Override with detailed objects for UI
+  relatedIncidents: RelatedIncident[]; // Override with detailed objects for UI
+  aiRecommendations: AIRecommendation[]; // Override with detailed objects for UI
   relatedIndicators: string[];
   recommendations: string[];
   evidence: IncidentEvidence[];
-  mitreAttack: MitreTechnique[];
   rawLogs: string[];
-  aiRecommendations: AIRecommendation[];
   fileHash?: FileHashAnalysis;
   ipReputation?: IPReputation;
-  relatedIncidents: RelatedIncident[];
   externalReferences: ExternalReference[];
   sourceIP?: string;
   destinationIP?: string;
@@ -92,12 +98,17 @@ export interface ExternalReference {
   url: string;
 }
 
-export interface IncidentTimelineEvent {
-  id: string;
+export interface TimelineEvent {
   timestamp: string;
+  event: string;
+  user?: string;
+  details?: string;
+}
+
+// UI-specific extended timeline event with icon
+export interface IncidentTimelineEvent extends TimelineEvent {
+  id: string;
   action: string;
-  user: string;
-  details: string;
 }
 
 export interface IncidentEvidence {

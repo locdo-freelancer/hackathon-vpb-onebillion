@@ -23,8 +23,10 @@ export const EmailVerification: React.FC<EmailVerificationProps> = ({
     setMessage("");
 
     try {
-      const response = await AuthService.resendVerificationEmail(email);
-      setMessage(response.message || "Verification email sent!");
+      // TODO: Implement resendVerificationEmail in AuthService
+      setMessage("Verification email resend feature not yet implemented");
+      // const response = await AuthService.resendVerificationEmail(email);
+      // setMessage(response.message || "Verification email sent!");
     } catch (error) {
       setMessage("Failed to resend email. Please try again.");
     } finally {

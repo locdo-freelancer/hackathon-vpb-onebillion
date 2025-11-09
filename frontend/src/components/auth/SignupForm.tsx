@@ -62,17 +62,18 @@ export const SignupForm: React.FC<SignupFormProps> = ({
         email,
         password,
         confirmPassword,
+        fullName: email.split("@")[0], // Extract from email as default
       };
 
-      const response = await AuthService.signup(credentials);
+      const response = await AuthService.register(credentials);
 
       if (response.success) {
         onSuccess(email);
       } else {
-        setError(response.message || "Signup failed");
+        setError(response.message || "Registration failed");
       }
-    } catch (err) {
-      setError("An unexpected error occurred");
+    } catch (err: any) {
+      setError(err.message || "An unexpected error occurred");
     } finally {
       setIsLoading(false);
     }

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import type { Site, SitesData, SitesFilter } from "@/types/sites.types";
-import { fetchSitesData } from "@/data/mock-site";
+import { SitesService } from "@/lib/services";
 
 export interface UseSitesDataReturn {
   data: SitesData | null;
@@ -30,9 +30,22 @@ export const useSitesData = (): UseSitesDataReturn => {
     try {
       setIsLoading(true);
       setError(null);
-      const sitesData = await fetchSitesData();
+      
+      // Fetch from real API
+      const sitesResponse = await SitesService.getAllSites();
+      
+      // Transform to SitesData format
+      const sitesData: SitesData = {
+        sites: sitesResponse.sites,
+        totalSites: sitesResponse.totalSites,
+        activeSites: sitesResponse.activeSites,
+        inactiveSites: sitesResponse.inactiveSites,
+        warningSites: sitesResponse.warningSites,
+      };
+      
       setData(sitesData);
     } catch (err) {
+      console.error("Failed to fetch sites:", err);
       setError(
         err instanceof Error ? err : new Error("Failed to fetch sites data")
       );
@@ -67,7 +80,7 @@ export const useSitesData = (): UseSitesDataReturn => {
         site.name.toLowerCase().includes(query) ||
         site.hostname.toLowerCase().includes(query) ||
         site.ipAddress.includes(query) ||
-        site.domains.some((d) => d.toLowerCase().includes(query))
+        site.domains?.some((d) => d.toLowerCase().includes(query))
       );
     }
 

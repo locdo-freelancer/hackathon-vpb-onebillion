@@ -2,134 +2,132 @@
 import {
   LoginCredentials,
   SignupCredentials,
-  MFAVerification,
   AuthResponse,
-  AuthProvider,
 } from "@/types/auth.types";
 import { apiClient } from "../api-client";
-import { MockAuthService } from "./auth.service.mock";
 
 // Toggle between mock and real API
-const USE_MOCK = true; // Set to false when backend is ready
+const USE_MOCK = false; // Real API enabled
 
 export class AuthService {
   /**
-   * Login user
+   * Login user - POST /api/auth/login
    */
   static async login(credentials: LoginCredentials): Promise<AuthResponse> {
-    if (USE_MOCK) {
-      return MockAuthService.login(credentials);
-    }
-
     try {
-      const response = await apiClient.post("/auth/login", credentials);
-      return response.data;
-    } catch (error) {
+      const response = await apiClient.post("/auth/login", {
+        email: credentials.email,
+        password: credentials.password,
+      });
+
+      if (response.access_token) {
+        localStorage.setItem("token", response.access_token);
+        return {
+          success: true,
+          token: response.access_token,
+          user: response.user,
+        };
+      }
+
+      return {
+        success: false,
+        message: "Login failed. Invalid response.",
+      };
+    } catch (error: any) {
       console.error("Login error:", error);
       return {
         success: false,
-        message: "Login failed. Please try again.",
+        message: error.message || "Login failed. Please try again.",
       };
     }
   }
 
   /**
-   * Signup new user
+   * Register new user - POST /api/auth/register
    */
-  static async signup(credentials: SignupCredentials): Promise<AuthResponse> {
-    if (USE_MOCK) {
-      return MockAuthService.signup(credentials);
-    }
-
+  static async register(credentials: SignupCredentials): Promise<AuthResponse> {
     try {
-      const response = await apiClient.post("/auth/signup", credentials);
-      return response.data;
-    } catch (error) {
-      console.error("Signup error:", error);
+      const response = await apiClient.post("/auth/register", {
+        email: credentials.email,
+        password: credentials.password,
+        full_name: credentials.fullName || credentials.email.split("@")[0],
+        company_name: credentials.companyName || "",
+      });
+
+      if (response.user) {
+        return {
+          success: true,
+          message: response.message || "Registration successful",
+          user: response.user,
+        };
+      }
+
       return {
         success: false,
-        message: "Signup failed. Please try again.",
+        message: "Registration failed. Invalid response.",
+      };
+    } catch (error: any) {
+      console.error("Register error:", error);
+      return {
+        success: false,
+        message: error.message || "Registration failed. Please try again.",
       };
     }
   }
 
   /**
-   * Verify MFA code
+   * Get user profile - GET /api/auth/profile
    */
-  static async verifyMFA(verification: MFAVerification): Promise<AuthResponse> {
-    if (USE_MOCK) {
-      return MockAuthService.verifyMFA(verification);
-    }
-
+  static async getProfile(): Promise<AuthResponse> {
     try {
-      const response = await apiClient.post("/auth/mfa/verify", verification);
-      return response.data;
-    } catch (error) {
-      console.error("MFA verification error:", error);
+      const token = localStorage.getItem("token");
+      if (!token) {
+        return {
+          success: false,
+          message: "Not authenticated",
+        };
+      }
+
+      const response = await apiClient.get("/auth/profile");
+
+      if (response.id) {
+        return {
+          success: true,
+          user: response,
+        };
+      }
+
       return {
         success: false,
-        message: "Verification failed. Please try again.",
+        message: "Failed to get profile",
+      };
+    } catch (error: any) {
+      console.error("Get profile error:", error);
+      return {
+        success: false,
+        message: error.message || "Failed to get profile",
       };
     }
   }
 
   /**
-   * OAuth login
+   * Logout user
    */
-  static async oauthLogin(provider: AuthProvider): Promise<AuthResponse> {
-    if (USE_MOCK) {
-      return MockAuthService.oauthLogin(provider);
-    }
-
-    try {
-      const response = await apiClient.post("/auth/oauth", { provider });
-      return response.data;
-    } catch (error) {
-      console.error("OAuth login error:", error);
-      return {
-        success: false,
-        message: `${provider} login failed. Please try again.`,
-      };
-    }
+  static logout(): void {
+    localStorage.removeItem("token");
   }
 
   /**
-   * Request password reset
+   * Check if user is authenticated
    */
-  static async requestPasswordReset(email: string): Promise<AuthResponse> {
-    if (USE_MOCK) {
-      return MockAuthService.requestPasswordReset(email);
-    }
-
-    try {
-      const response = await apiClient.post("/auth/password/reset", { email });
-      return response.data;
-    } catch (error) {
-      console.error("Password reset error:", error);
-      return {
-        success: false,
-        message: "Failed to send reset email. Please try again.",
-      };
-    }
+  static isAuthenticated(): boolean {
+    return !!localStorage.getItem("token");
   }
 
   /**
-   * Resend verification email
+   * Get stored token
    */
-  static async resendVerificationEmail(email: string): Promise<AuthResponse> {
-    if (USE_MOCK) {
-      return MockAuthService.resendVerificationEmail(email);
-    }
-
-    try {
-      const response = await apiClient.post("/auth/email/resend", { email });
-      return response.data;
-    } catch (error) {
-      console.error("Resend email error:", error);
-      return {
-        success: false,
-        message: "Failed to resend email. Please try again.",
-      };
-    }
+  static getToken(): string | null {
+    return localStorage.getItem("token");
   }
 }
