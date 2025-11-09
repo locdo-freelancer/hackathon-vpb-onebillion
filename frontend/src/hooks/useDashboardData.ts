@@ -79,16 +79,51 @@ export const useDashboardData = (): UseDashboardDataReturn => {
       // Transform to DashboardData format
       const dashboardData: DashboardData = {
         stats: {
-          totalSites: sitesData.totalSites,
-          activeSites: sitesData.activeSites,
-          totalAgents: agentsStats.totalAgents,
-          onlineAgents: agentsStats.onlineAgents,
-          totalIncidents: incidentsStats.total,
-          criticalIncidents: incidentsStats.critical,
-          totalThreats: threatsStats.total,
-          blockedThreats: threatsStats.blocked,
+          totalSites: overview.stats.totalSites,
+          activeSites: overview.stats.activeSites,
+          totalAgents: overview.stats.totalAgents,
+          onlineAgents: overview.stats.onlineAgents,
+          totalIncidents: overview.stats.totalIncidents,
+          criticalIncidents: overview.stats.criticalIncidents,
+          totalThreats: overview.stats.totalThreats,
+          blockedThreats: overview.stats.blockedThreats,
         },
-        recentIncidents: [], // Will be populated by separate call if needed
+        recentIncidents: recentIncidentsData.incidents,
+        riskScore,
+        riskMetrics: {
+          critical: overview.stats.criticalIncidents,
+          warnings: overview.stats.highIncidents,
+          informational: overview.stats.mediumIncidents + overview.stats.lowIncidents,
+        },
+        threats: recentThreatsData.indicators.slice(0, 5).map((threat: any) => ({
+          id: threat.id,
+          type: threat.type,
+          title: threat.indicator,
+          description: threat.description || "No description",
+          severity: threat.severity.toUpperCase() as "CRITICAL" | "HIGH" | "MEDIUM" | "LOW",
+          target: threat.sources?.[0] || "Unknown",
+          icon: "shield-alert",
+          timestamp: new Date(threat.firstSeen).toLocaleString(),
+        })),
+        incidentStats,
+        resolutionStats,
+        severityChart: {
+          labels: ["Critical", "High", "Medium", "Low"],
+          values: [severityDist.critical, severityDist.high, severityDist.medium, severityDist.low],
+          colors: ["#ef4444", "#f97316", "#eab308", "#22c55e"],
+        },
+        trendsChart: [
+          {
+            name: "Incidents",
+            data: trendData.map((d: any) => ({ x: new Date(d.timestamp).toLocaleDateString(), y: d.incidents })),
+            color: "#8b5cf6",
+          },
+          {
+            name: "Threats",
+            data: trendData.map((d: any) => ({ x: new Date(d.timestamp).toLocaleDateString(), y: d.threats })),
+            color: "#ef4444",
+          },
+        ],
       };
 
       setData(dashboardData);

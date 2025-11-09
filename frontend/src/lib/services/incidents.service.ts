@@ -95,8 +95,6 @@ export class IncidentsService {
     status?: IncidentStatus;
     severity?: IncidentSeverity;
     type?: IncidentType;
-    page?: number;
-    limit?: number;
   }): Promise<IncidentsResponse> {
     try {
       const queryParams = new URLSearchParams();
@@ -104,8 +102,6 @@ export class IncidentsService {
       if (params?.status) queryParams.append("status", params.status);
       if (params?.severity) queryParams.append("severity", params.severity);
       if (params?.type) queryParams.append("type", params.type);
-      if (params?.page) queryParams.append("page", params.page.toString());
-      if (params?.limit) queryParams.append("limit", params.limit.toString());
 
       const queryString = queryParams.toString();
       const endpoint = queryString ? `/incidents?${queryString}` : "/incidents";

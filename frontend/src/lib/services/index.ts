@@ -129,3 +129,13 @@ export type {
 
 // Password Utilities
 export { PasswordService } from "./password.service";
+
+// Dashboard Aggregation
+export { DashboardService } from "./dashboard.service";
+export type {
+  DashboardStats,
+  DashboardOverview,
+  RiskScoreData,
+  SeverityDistribution,
+  TrendData,
+} from "./dashboard.service";

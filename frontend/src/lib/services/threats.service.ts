@@ -95,8 +95,6 @@ export class ThreatsService {
     status?: ThreatStatus;
     startDate?: string;
     endDate?: string;
-    page?: number;
-    limit?: number;
   }): Promise<ThreatsResponse> {
     try {
       const queryParams = new URLSearchParams();
@@ -106,8 +104,6 @@ export class ThreatsService {
       if (params?.status) queryParams.append("status", params.status);
       if (params?.startDate) queryParams.append("startDate", params.startDate);
       if (params?.endDate) queryParams.append("endDate", params.endDate);
-      if (params?.page) queryParams.append("page", params.page.toString());
-      if (params?.limit) queryParams.append("limit", params.limit.toString());
 
       const queryString = queryParams.toString();
       const endpoint = queryString ? `/threats?${queryString}` : "/threats";
