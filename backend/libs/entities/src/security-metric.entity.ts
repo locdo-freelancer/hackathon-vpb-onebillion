@@ -1,5 +1,5 @@
 import { Entity, Column, ManyToOne, JoinColumn, OneToMany } from "typeorm";
-import { BaseEntity } from "libs/shared/src";
+import { BaseEntity } from "../../shared/src";
 import { Site } from "./site.entity";
 import { Notification } from "./notification.entity";
 

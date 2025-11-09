@@ -1,5 +1,5 @@
 import { Entity, Column, OneToMany } from "typeorm";
-import { BaseEntity } from "libs/shared/src";
+import { BaseEntity } from "../../shared/src";
 import { Notification, Site } from "..";
 
 @Entity("users")

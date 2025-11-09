@@ -6,7 +6,7 @@ import {
   OneToMany,
   JoinColumn,
 } from "typeorm";
-import { BaseEntity } from "libs/shared/src";
+import { BaseEntity } from "../../shared/src";
 import { User } from "./user.entity";
 import { RemediationAction } from "./remediation-action.entity";
 import { SiteVulnerability } from "./site-vulnerability.entity";
