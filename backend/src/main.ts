@@ -60,6 +60,16 @@ async function bootstrap() {
       customSiteTitle: "One Billion API Documentation",
       customfavIcon: "https://nestjs.com/img/logo-small.svg",
       customCss: ".swagger-ui .topbar { display: none }",
+      swaggerOptions: {
+        persistAuthorization: true,
+      },
+      customJs: [
+        "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.11.0/swagger-ui-bundle.js",
+        "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.11.0/swagger-ui-standalone-preset.js",
+      ],
+      customCssUrl: [
+        "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.11.0/swagger-ui.min.css",
+      ],
     });
 
     await app.init();
