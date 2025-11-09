@@ -3,11 +3,12 @@ import {
   LoginCredentials,
   SignupCredentials,
   AuthResponse,
+  ApiResponse,
+  LoginResponseData,
+  RegisterResponseData,
+  ProfileResponseData,
 } from "@/types/auth.types";
 import { apiClient } from "../api-client";
-
-// Toggle between mock and real API
-const USE_MOCK = false; // Real API enabled
 
 export class AuthService {
   /**
@@ -15,17 +16,25 @@ export class AuthService {
    */
   static async login(credentials: LoginCredentials): Promise<AuthResponse> {
     try {
-      const response = await apiClient.post("/auth/login", {
-        email: credentials.email,
-        password: credentials.password,
-      });
+      const response: ApiResponse<LoginResponseData> = await apiClient.post(
+        "/auth/login",
+        {
+          email: credentials.email,
+          password: credentials.password,
+        }
+      );
 
-      if (response.access_token) {
-        localStorage.setItem("token", response.access_token);
+      // API returns: { success: true, data: { access_token, user } }
+      if (response.success && response.data?.access_token) {
+        localStorage.setItem("token", response.data.access_token);
         return {
           success: true,
-          token: response.access_token,
-          user: response.user,
+          token: response.data.access_token,
+          user: {
+            id: response.data.user.id,
+            email: response.data.user.email,
+            name: response.data.user.full_name,
+          },
         };
       }
 
@@ -33,11 +42,15 @@ export class AuthService {
         success: false,
         message: "Login failed. Invalid response.",
       };
-    } catch (error: any) {
+    } catch (error) {
       console.error("Login error:", error);
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Login failed. Please try again.";
       return {
         success: false,
-        message: error.message || "Login failed. Please try again.",
+        message,
       };
     }
   }
@@ -47,18 +60,26 @@ export class AuthService {
    */
   static async register(credentials: SignupCredentials): Promise<AuthResponse> {
     try {
-      const response = await apiClient.post("/auth/register", {
-        email: credentials.email,
-        password: credentials.password,
-        full_name: credentials.fullName || credentials.email.split("@")[0],
-        company_name: credentials.companyName || "",
-      });
+      const response: ApiResponse<RegisterResponseData> = await apiClient.post(
+        "/auth/register",
+        {
+          email: credentials.email,
+          password: credentials.password,
+          full_name: credentials.fullName || credentials.email.split("@")[0],
+          company_name: credentials.companyName || "",
+        }
+      );
 
-      if (response.user) {
+      // API returns: { success: true, data: { message, user } }
+      if (response.success && response.data?.user) {
         return {
           success: true,
-          message: response.message || "Registration successful",
-          user: response.user,
+          message: response.data.message || "Registration successful",
+          user: {
+            id: response.data.user.id,
+            email: response.data.user.email,
+            name: response.data.user.full_name,
+          },
         };
       }
 
@@ -66,11 +87,15 @@ export class AuthService {
         success: false,
         message: "Registration failed. Invalid response.",
       };
-    } catch (error: any) {
+    } catch (error) {
       console.error("Register error:", error);
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Registration failed. Please try again.";
       return {
         success: false,
-        message: error.message || "Registration failed. Please try again.",
+        message,
       };
     }
   }
@@ -88,12 +113,19 @@ export class AuthService {
         };
       }
 
-      const response = await apiClient.get("/auth/profile");
+      const response: ApiResponse<ProfileResponseData> = await apiClient.get(
+        "/auth/profile"
+      );
 
-      if (response.id) {
+      // API returns: { success: true, data: { id, email, ... } }
+      if (response.success && response.data?.id) {
         return {
           success: true,
-          user: response,
+          user: {
+            id: response.data.id,
+            email: response.data.email,
+            name: response.data.full_name,
+          },
         };
       }
 
@@ -101,11 +133,13 @@ export class AuthService {
         success: false,
         message: "Failed to get profile",
       };
-    } catch (error: any) {
+    } catch (error) {
       console.error("Get profile error:", error);
+      const message =
+        error instanceof Error ? error.message : "Failed to get profile";
       return {
         success: false,
-        message: error.message || "Failed to get profile",
+        message,
       };
     }
   }

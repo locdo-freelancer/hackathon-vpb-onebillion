@@ -50,3 +50,44 @@ export enum AuthProvider {
   GITHUB = "github",
   MICROSOFT = "microsoft",
 }
+
+// API Response wrapper types
+export interface ApiResponse<T> {
+  success: boolean;
+  data: T;
+  timestamp: string;
+}
+
+export interface LoginResponseData {
+  access_token: string;
+  user: {
+    id: string;
+    email: string;
+    full_name: string;
+    company_name: string;
+  };
+}
+
+export interface RegisterResponseData {
+  message: string;
+  user: {
+    id: string;
+    email: string;
+    full_name: string;
+    company_name: string;
+  };
+}
+
+export interface ProfileResponseData {
+  id: string;
+  email: string;
+  full_name: string;
+  company_name: string;
+  createdAt?: number;
+}
+
+export interface ApiErrorResponse {
+  message: string;
+  statusCode?: number;
+  error?: string;
+}
