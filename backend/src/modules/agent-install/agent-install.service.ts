@@ -1,10 +1,14 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
+import { Cron, CronExpression } from "@nestjs/schedule";
 import { AgentEntity, Site } from "../../../libs/entities";
 
 @Injectable()
 export class AgentInstallService {
+  private readonly logger = new Logger(AgentInstallService.name);
+  private readonly HEARTBEAT_TIMEOUT = 30000; // 90 seconds (3x heartbeat interval)
+
   constructor(
     @InjectRepository(AgentEntity)
     private agentRepository: Repository<AgentEntity>,
@@ -106,6 +110,11 @@ export class AgentInstallService {
 
         const savedAgent = await this.agentRepository.save(newAgent);
 
+        // Update site status to CONNECTED
+        await this.siteRepository.update(site.id, {
+          status: "connected" as any,
+        });
+
         return {
           success: true,
           message: "Agent registered successfully",
@@ -120,6 +129,11 @@ export class AgentInstallService {
       site.agent.os_info = dto.osInfo;
 
       await this.agentRepository.save(site.agent);
+
+      // Update site status to CONNECTED
+      await this.siteRepository.update(site.id, {
+        status: "connected" as any,
+      });
 
       return {
         success: true,
@@ -137,6 +151,61 @@ export class AgentInstallService {
         message: "Failed to process heartbeat",
         error: error.message,
       };
+    }
+  }
+
+  /**
+   * Cron job: Check for offline agents every 30 seconds
+   * Mark agents as offline if no heartbeat received in last 90 seconds
+   */
+  @Cron(CronExpression.EVERY_30_SECONDS)
+  async checkOfflineAgents() {
+    try {
+      const now = Date.now();
+      const timeoutThreshold = now - this.HEARTBEAT_TIMEOUT;
+
+      // Find all agents that are marked as connected
+      const connectedAgents = await this.agentRepository.find({
+        where: { is_connected: 1 },
+        relations: ["site"],
+      });
+
+      this.logger.debug(
+        `Cron running: Checking ${connectedAgents.length} connected agent(s) for timeouts...`
+      );
+
+      let offlineCount = 0;
+
+      for (const agent of connectedAgents) {
+        const timeSinceLastHeartbeat = now - agent.last_checkin;
+
+        // Check if last heartbeat is older than threshold
+        if (agent.last_checkin < timeoutThreshold) {
+          // Mark agent as offline
+          agent.is_connected = 0;
+          await this.agentRepository.save(agent);
+
+          // Update site status to offline
+          if (agent.site) {
+            await this.siteRepository.update(agent.site.id, {
+              status: "offline" as any,
+            });
+          }
+
+          offlineCount++;
+          this.logger.warn(
+            `Agent ${agent.id} (site: ${agent.site?.name || "unknown"}) marked as OFFLINE - Last heartbeat: ${Math.floor(timeSinceLastHeartbeat / 1000)}s ago`
+          );
+        }
+      }
+
+      if (offlineCount > 0) {
+        this.logger.log(
+          `✅ Marked ${offlineCount} agent(s) as offline due to missed heartbeats`
+        );
+      }
+    } catch (error) {
+      this.logger.error("Error checking offline agents:", error.message);
     }
   }
 }

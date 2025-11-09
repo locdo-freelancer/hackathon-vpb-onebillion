@@ -186,4 +186,26 @@ export class SitesService {
 
     return { message: "Site deleted successfully" };
   }
+
+  async getAgentToken(id: string, userId: string) {
+    const site = await this.siteRepository.findOne({
+      where: { id },
+      relations: ["user"],
+    });
+
+    if (!site) {
+      throw new NotFoundException("Site not found");
+    }
+
+    if (site.user.id !== userId) {
+      throw new ForbiddenException("You do not have access to this site");
+    }
+
+    return {
+      siteId: site.id,
+      siteName: site.name,
+      agentToken: site.entity_token,
+      installCommand: `curl -sSL ${process.env.API_URL || "http://localhost:3001"}/api/downloads/agent/linux -o agent.py && python3 agent.py --server ${process.env.API_URL || "http://localhost:3001"} --token ${site.entity_token}`,
+    };
+  }
 }

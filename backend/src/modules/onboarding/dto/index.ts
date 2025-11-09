@@ -55,10 +55,3 @@ export class ValidateIPDto {
   @IsNotEmpty()
   ipAddress: string;
 }
-
-export class GenerateTokenDto {
-  @ApiProperty({ example: "linux" })
-  @IsString()
-  @IsIn(["linux", "windows", "docker", "macos"])
-  serverType: string;
-}

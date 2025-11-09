@@ -61,7 +61,7 @@ export class AgentsService {
   static async getAllAgents(params?: AgentQueryParams): Promise<Agent[]> {
     try {
       const queryParams = new URLSearchParams();
-      
+
       if (params?.status) {
         queryParams.append("status", params.status);
       }
@@ -77,9 +77,20 @@ export class AgentsService {
 
       const queryString = queryParams.toString();
       const endpoint = queryString ? `/agents?${queryString}` : "/agents";
-      
+
       const response = await apiClient.get(endpoint);
-      return response;
+
+      // Handle wrapped response: { success: true, data: [...] }
+      if (response.data && Array.isArray(response.data)) {
+        return response.data;
+      }
+
+      // Handle direct array response
+      if (Array.isArray(response)) {
+        return response;
+      }
+
+      return [];
     } catch (error: any) {
       console.error("Get agents error:", error);
       throw new Error(error.message || "Failed to fetch agents");
@@ -92,6 +103,12 @@ export class AgentsService {
   static async getAgentStats(): Promise<AgentStats> {
     try {
       const response = await apiClient.get("/agents/stats");
+
+      // Handle wrapped response
+      if (response.data) {
+        return response.data;
+      }
+
       return response;
     } catch (error: any) {
       console.error("Get agent stats error:", error);
@@ -102,10 +119,22 @@ export class AgentsService {
   /**
    * Get OS distribution for charts - GET /api/agents/os-distribution
    */
-  static async getOSDistribution(): Promise<{ os: string; count: number; percentage: number }[]> {
+  static async getOSDistribution(): Promise<
+    { os: string; count: number; percentage: number }[]
+  > {
     try {
       const response = await apiClient.get("/agents/os-distribution");
-      return response;
+
+      // Handle wrapped response
+      if (response.data && Array.isArray(response.data)) {
+        return response.data;
+      }
+
+      if (Array.isArray(response)) {
+        return response;
+      }
+
+      return [];
     } catch (error: any) {
       console.error("Get OS distribution error:", error);
       throw new Error(error.message || "Failed to fetch OS distribution");
@@ -118,6 +147,12 @@ export class AgentsService {
   static async getAgentById(id: string): Promise<Agent> {
     try {
       const response = await apiClient.get(`/agents/${id}`);
+
+      // Handle wrapped response
+      if (response.data) {
+        return response.data;
+      }
+
       return response;
     } catch (error: any) {
       console.error("Get agent error:", error);
@@ -131,6 +166,12 @@ export class AgentsService {
   static async getAgentMetrics(id: string): Promise<AgentMetrics> {
     try {
       const response = await apiClient.get(`/agents/${id}/metrics`);
+
+      // Handle wrapped response
+      if (response.data) {
+        return response.data;
+      }
+
       return response;
     } catch (error: any) {
       console.error("Get agent metrics error:", error);

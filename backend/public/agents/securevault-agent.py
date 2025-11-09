@@ -100,10 +100,9 @@ def send_heartbeat():
         }
 
         # Prepare request
-        url = urljoin(SERVER_URL, "/api/agent/check-in")
+        url = urljoin(SERVER_URL, "/api/agent-install/heartbeat")
         headers = {
             "Content-Type": "application/json",
-            "Authorization": f"Bearer {TOKEN}",
         }
         json_data = json.dumps(data).encode("utf-8")
 

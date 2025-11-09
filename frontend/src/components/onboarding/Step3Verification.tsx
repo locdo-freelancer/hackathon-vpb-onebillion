@@ -1,7 +1,7 @@
 // Step 3: Install Agent - Single Responsibility
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { SiteConfigData } from "@/types/onboarding.types";
 import { OnboardingService } from "@/lib/services/onboarding.service";
 import { AgentInstallService } from "@/lib/services/agent-install.service";
@@ -16,56 +16,33 @@ export const Step3Verification: React.FC<Step3VerificationProps> = ({
   onChange,
 }) => {
   const [copied, setCopied] = useState(false);
-  const [isGenerating, setIsGenerating] = useState(false);
   const [installCommands, setInstallCommands] = useState<any>(null);
   const [isLoadingCommands, setIsLoadingCommands] = useState(false);
-  const hasGeneratedToken = useRef(false);
-
-  // Generate install token when component mounts (only if not already generated)
-  useEffect(() => {
-    const generateToken = async () => {
-      // Prevent duplicate calls
-      if (hasGeneratedToken.current) {
-        return;
-      }
-
-      if (data.installToken && data.installToken !== "sv_abc123def456") {
-        return; // Token already generated
-      }
-
-      if (!data.serverType) {
-        return; // Server type not selected yet
-      }
-
-      hasGeneratedToken.current = true;
-      setIsGenerating(true);
-      try {
-        const response = await OnboardingService.generateInstallToken(
-          data.serverType
-        );
-
-        if (response.success && response.token) {
-          onChange({ installToken: response.token });
-        }
-      } catch (error) {
-        console.error("Failed to generate token:", error);
-        hasGeneratedToken.current = false; // Reset on error to allow retry
-      } finally {
-        setIsGenerating(false);
-      }
-    };
-
-    generateToken();
-  }, [data.serverType, data.installToken, onChange]);
 
   // Fetch install commands when token is ready
   useEffect(() => {
     const fetchCommands = async () => {
-      if (!data.installToken || !data.serverType || isGenerating) return;
-      if (data.installToken === "generating...") return;
+      // Token should already exist from completeOnboarding()
+      if (!data.installToken || !data.serverType) {
+        console.log("⚠️ Missing token or serverType:", {
+          token: data.installToken,
+          serverType: data.serverType,
+        });
+        return;
+      }
+
+      // Skip default placeholder token
+      if (data.installToken === "sv_abc123def456") {
+        console.log("⚠️ Still using default token, waiting for real token...");
+        return;
+      }
 
       setIsLoadingCommands(true);
       try {
+        console.log(
+          "✅ Fetching install commands with token:",
+          data.installToken
+        );
         const commands = await AgentInstallService.getInstallCommands(
           data.serverType as any,
           data.installToken
@@ -79,7 +56,7 @@ export const Step3Verification: React.FC<Step3VerificationProps> = ({
     };
 
     fetchCommands();
-  }, [data.installToken, data.serverType, isGenerating]);
+  }, [data.installToken, data.serverType]);
 
   // Get one-liner install command
   const getQuickInstallCommand = () => {
@@ -103,7 +80,7 @@ export const Step3Verification: React.FC<Step3VerificationProps> = ({
   const installCommand = getQuickInstallCommand();
 
   const handleCopy = async () => {
-    if (!installCommand || isGenerating || isLoadingCommands) return;
+    if (!installCommand || isLoadingCommands) return;
     if (installCommand === "Loading...") return;
 
     try {
@@ -128,19 +105,16 @@ export const Step3Verification: React.FC<Step3VerificationProps> = ({
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm font-medium text-gray-300">
                 Installation Command
-                {(isGenerating || isLoadingCommands) && (
+                {isLoadingCommands && (
                   <span className="ml-2 text-xs text-cyber-accent">
                     <i className="fas fa-spinner fa-spin mr-1" />
-                    {isGenerating
-                      ? "Generating token..."
-                      : "Loading commands..."}
+                    Loading commands...
                   </span>
                 )}
               </span>
               <button
                 onClick={handleCopy}
                 disabled={
-                  isGenerating ||
                   isLoadingCommands ||
                   !installCommand ||
                   installCommand === "Loading..."
@@ -162,7 +136,7 @@ export const Step3Verification: React.FC<Step3VerificationProps> = ({
             </div>
 
             {/* Skeleton or Command */}
-            {isGenerating ? (
+            {isLoadingCommands ? (
               <div className="space-y-2 animate-pulse">
                 <div className="h-4 bg-cyber-border/30 rounded w-3/4"></div>
                 <div className="h-4 bg-cyber-border/30 rounded w-full"></div>

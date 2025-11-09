@@ -56,15 +56,6 @@ export interface OnboardingApiResponse<T = any> {
 }
 
 /**
- * Generate Install Token Response
- * POST /api/onboarding/generate-token
- */
-export interface GenerateTokenResponseData {
-  success: boolean;
-  token: string;
-}
-
-/**
  * Validate Connectivity Response
  * POST /api/onboarding/validate-connectivity
  */

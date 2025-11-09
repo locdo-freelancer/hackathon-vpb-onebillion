@@ -2,13 +2,16 @@ import { Controller, Post, Body, Get, UseGuards } from "@nestjs/common";
 import { ApiTags, ApiBearerAuth } from "@nestjs/swagger";
 import { OnboardingService } from "./onboarding.service";
 import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
-import { ApiOperationDecorator, Roles, UserReq } from "../../../libs/decorators/src";
+import {
+  ApiOperationDecorator,
+  Roles,
+  UserReq,
+} from "../../../libs/decorators/src";
 import { Role, User } from "../../../libs/entities";
 import {
   OnboardingProgressDto,
   CompleteOnboardingDto,
   ValidateIPDto,
-  GenerateTokenDto,
 } from "./dto";
 
 @ApiTags("onboarding")
@@ -49,15 +52,6 @@ export class OnboardingController {
   })
   async validateIP(@Body() dto: ValidateIPDto) {
     return this.onboardingService.validateIP(dto.ipAddress);
-  }
-
-  @Post("generate-token")
-  @ApiOperationDecorator({
-    summary: "Generate install token",
-    description: "Generate agent installation token for server type",
-  })
-  async generateToken(@Body() dto: GenerateTokenDto, @UserReq() user: User) {
-    return this.onboardingService.generateInstallToken(user.id, dto.serverType);
   }
 
   @Get("validate-connectivity")

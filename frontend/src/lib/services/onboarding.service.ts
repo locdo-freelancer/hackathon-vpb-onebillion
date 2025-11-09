@@ -2,17 +2,12 @@
 import {
   SiteConfigData,
   OnboardingApiResponse,
-  GenerateTokenResponseData,
   ValidateConnectivityResponseData,
   CompleteOnboardingResponseData,
   SaveProgressResponseData,
   ValidateIpResponseData,
 } from "@/types/onboarding.types";
 import { apiClient } from "../api-client";
-import { MockOnboardingService } from "./onboarding.service.mock";
-
-// Toggle between mock and real API
-const USE_MOCK = false; // Set to true for mock data
 
 export class OnboardingService {
   /**
@@ -23,11 +18,7 @@ export class OnboardingService {
     data: Partial<SiteConfigData>,
     step: number
   ): Promise<{ success: boolean; message?: string }> {
-    if (USE_MOCK) {
-      return MockOnboardingService.saveProgress(data, step);
-    }
-
-    // Skip API call since backend doesn't implement saving
+    // Skip API call since backend doesn't implement actual saving
     // Just return success to avoid validation errors
     return {
       success: true,
@@ -67,13 +58,13 @@ export class OnboardingService {
   /**
    * Complete onboarding - POST /api/onboarding/complete
    */
-  static async completeOnboarding(
-    data: SiteConfigData
-  ): Promise<{ success: boolean; message?: string; site?: any }> {
-    if (USE_MOCK) {
-      return MockOnboardingService.completeOnboarding(data);
-    }
-
+  static async completeOnboarding(data: SiteConfigData): Promise<{
+    success: boolean;
+    message?: string;
+    site?: any;
+    installToken?: string;
+    siteId?: string;
+  }> {
     try {
       const response = (await apiClient.post("/onboarding/complete", {
         siteName: data.siteName,
@@ -84,8 +75,8 @@ export class OnboardingService {
         installToken: data.installToken || "",
       })) as OnboardingApiResponse<CompleteOnboardingResponseData>;
 
-      // API returns: { success: true, data: { success, message, site, agent }, timestamp }
-      const completionData = response.data;
+      // API returns: { success: true, data: { success, message, siteId, installToken }, timestamp }
+      const completionData = response.data as any;
 
       if (response.success && completionData) {
         return {
@@ -93,6 +84,8 @@ export class OnboardingService {
           message:
             completionData.message || "Onboarding completed successfully",
           site: completionData.site,
+          siteId: completionData.siteId,
+          installToken: completionData.installToken, // Real token from backend
         };
       }
 
@@ -119,10 +112,6 @@ export class OnboardingService {
   static async validateIP(
     ipAddress: string
   ): Promise<{ success: boolean; message?: string; isReachable?: boolean }> {
-    if (USE_MOCK) {
-      return MockOnboardingService.validateIP(ipAddress);
-    }
-
     try {
       const response = (await apiClient.post("/onboarding/validate-ip", {
         ipAddress,
@@ -159,48 +148,6 @@ export class OnboardingService {
   }
 
   /**
-   * Generate install token - POST /api/onboarding/generate-token
-   */
-  static async generateInstallToken(
-    serverType: string
-  ): Promise<{ success: boolean; token?: string; message?: string }> {
-    if (USE_MOCK) {
-      return MockOnboardingService.generateInstallToken(serverType);
-    }
-
-    try {
-      const response = (await apiClient.post("/onboarding/generate-token", {
-        serverType,
-      })) as OnboardingApiResponse<GenerateTokenResponseData>;
-
-      // API returns: { success: true, data: { success: true, token: "..." }, timestamp }
-      // response.data contains the GenerateTokenResponseData
-      const tokenData = response.data;
-
-      if (response.success && tokenData?.token) {
-        return {
-          success: true,
-          token: tokenData.token,
-          message: "Token generated successfully",
-        };
-      }
-
-      return {
-        success: false,
-        message: "Failed to generate token",
-      };
-    } catch (error) {
-      console.error("Generate token error:", error);
-      const message =
-        error instanceof Error ? error.message : "Failed to generate token";
-      return {
-        success: false,
-        message,
-      };
-    }
-  }
-
-  /**
    * Validate connectivity - GET /api/onboarding/validate-connectivity
    */
   static async validateConnectivity(): Promise<{
@@ -208,10 +155,6 @@ export class OnboardingService {
     agentAuthentication: "success" | "failed" | "pending" | "validating";
     initialDataSync: "success" | "failed" | "pending" | "validating";
   }> {
-    if (USE_MOCK) {
-      return MockOnboardingService.validateConnectivity();
-    }
-
     try {
       const response = (await apiClient.get(
         "/onboarding/validate-connectivity"
@@ -253,10 +196,6 @@ export class OnboardingService {
    * Get saved progress - GET /api/onboarding/progress
    */
   static async getProgress(): Promise<Partial<SiteConfigData> | null> {
-    if (USE_MOCK) {
-      return MockOnboardingService.getProgress();
-    }
-
     try {
       const response = await apiClient.get("/onboarding/progress");
 

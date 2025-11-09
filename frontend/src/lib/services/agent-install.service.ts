@@ -1,13 +1,33 @@
 // Agent Install Service - Handle agent installation API calls
 import { apiClient } from "../api-client";
-import type {
-  Platform,
-  AgentInstallApiResponse,
-  GetInstallCommandsResponseData,
-  CheckInstallStatusResponseData,
-} from "@/types/agent-install.types";
 
-export type { Platform };
+// Type definitions
+export type Platform = "linux" | "windows" | "docker" | "macos";
+
+interface AgentInstallApiResponse<T = any> {
+  success: boolean;
+  data: T;
+  timestamp: string;
+}
+
+interface GetInstallCommandsResponseData {
+  platform: Platform;
+  commands: Record<string, string>;
+  downloadUrl: string;
+}
+
+interface CheckInstallStatusResponseData {
+  totalSites: number;
+  connectedAgents: number;
+  isRegistered: boolean;
+  agents: Array<{
+    id: string;
+    siteName: string;
+    lastHeartbeat: string | null;
+    version: string | null;
+    osInfo: string | null;
+  }>;
+}
 
 export interface InstallCommands {
   platform: Platform;

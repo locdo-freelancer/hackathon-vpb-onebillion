@@ -51,46 +51,40 @@ export const useOnboarding = () => {
     }
   }, [currentStep]);
 
-  const completeOnboarding = useCallback(async () => {
-    setError("");
+  const completeOnboarding = useCallback(async (): Promise<boolean> => {
+    if (currentStep !== 2) return false;
+
     setIsLoading(true);
+    setError("");
 
     try {
-      // First validate that all required fields are filled
-      if (
-        !formData.siteName ||
-        !formData.ipAddress ||
-        !formData.port ||
-        !formData.serverType
-      ) {
-        setError("Please fill all required fields");
-        return false;
-      }
-
-      // Call backend API to complete onboarding
       const response = await OnboardingService.completeOnboarding(formData);
+      console.log("Complete onboarding response:", response);
 
       if (response.success) {
-        // Store the site ID and install token from backend response
-        if (response.site) {
-          console.log("✅ Site created:", response.site);
+        // Extract installToken from response - this is the REAL token from database
+        if (response.installToken) {
+          console.log("✅ Site created with token:", response.installToken);
+          updateFormData({ installToken: response.installToken });
+        } else {
+          console.warn("⚠️ No installToken in response:", response);
         }
 
+        console.log("Onboarding completed:", response.site);
+        setCurrentStep(3);
         return true;
       } else {
-        setError(response.message || "Failed to complete setup");
+        setError(response.message || "Failed to complete onboarding");
         return false;
       }
-    } catch (error) {
-      console.error("Complete onboarding error:", error);
-      const message =
-        error instanceof Error ? error.message : "An unexpected error occurred";
-      setError(message);
+    } catch (err) {
+      console.error("Failed to complete onboarding:", err);
+      setError("An error occurred during onboarding completion");
       return false;
     } finally {
       setIsLoading(false);
     }
-  }, [formData]);
+  }, [currentStep, formData, updateFormData]);
 
   return {
     currentStep,

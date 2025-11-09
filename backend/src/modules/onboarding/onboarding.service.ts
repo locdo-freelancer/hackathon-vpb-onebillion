@@ -86,21 +86,6 @@ export class OnboardingService {
     }
   }
 
-  async generateInstallToken(userId: string, serverType: string) {
-    try {
-      const token = crypto.randomBytes(32).toString("hex");
-      return {
-        success: true,
-        token,
-      };
-    } catch (error) {
-      return {
-        success: false,
-        message: "Failed to generate install token",
-      };
-    }
-  }
-
   async validateConnectivity(userId: string) {
     // Mock validation - in production, check actual connectivity
     await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulate validation time

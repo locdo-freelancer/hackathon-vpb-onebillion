@@ -72,4 +72,13 @@ export class SitesController {
   async remove(@Param("id") id: string, @UserReq() user: User) {
     return this.sitesService.remove(id, user.id);
   }
+
+  @Get(":id/agent-token")
+  @ApiOperationDecorator({
+    summary: "Get site agent token",
+    description: "Retrieve agent installation token for a specific site",
+  })
+  async getAgentToken(@Param("id") id: string, @UserReq() user: User) {
+    return this.sitesService.getAgentToken(id, user.id);
+  }
 }
