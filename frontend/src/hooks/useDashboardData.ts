@@ -157,7 +157,7 @@ export const useDashboardData = (): UseDashboardDataReturn => {
           },
           open: {
             count: Math.floor(incidentsStats.open * 0.6),
-            percentage: totalIncidents > 0 ? Math.round((incidentsStats.open * 0.6 / totalIncidents) * 100) : 0,
+            percentage: totalIncidents > 0 ? Math.round((incidentsStats.open * 0.6 / totalIncidents) * 100) : 0, 
           },
           meanTimeToResolve: "4.2 hours",
         },
