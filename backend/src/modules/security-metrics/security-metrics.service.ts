@@ -5,7 +5,7 @@ import {
   SecurityMetric,
   AlertThreshold,
   MetricType,
-} from "libs/entities/src/security-metric.entity";
+} from "../../../libs/entities/src/security-metric.entity";
 import {
   CreateSecurityMetricDto,
   UpdateSecurityMetricDto,

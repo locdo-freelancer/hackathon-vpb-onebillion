@@ -17,14 +17,14 @@ import {
   ApiBearerAuth,
   ApiQuery,
 } from "@nestjs/swagger";
-import { JwtAuthGuard } from "libs/guards/src";
+import { JwtAuthGuard } from "../../../libs/guards/src";
 import { SecurityMetricsService } from "./security-metrics.service";
 import {
   CreateSecurityMetricDto,
   UpdateSecurityMetricDto,
   SecurityMetricsFilterDto,
 } from "./dto";
-import { MetricType } from "libs/entities/src/security-metric.entity";
+import { MetricType } from "../../../libs/entities/src/security-metric.entity";
 
 @ApiTags("Security Metrics")
 @ApiBearerAuth()

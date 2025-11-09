@@ -17,7 +17,7 @@ import {
   ApiBearerAuth,
   ApiQuery,
 } from "@nestjs/swagger";
-import { JwtAuthGuard } from "libs/guards/src";
+import { JwtAuthGuard } from "../../../libs/guards/src";
 import { NotificationsService } from "./notifications.service";
 import {
   CreateNotificationDto,

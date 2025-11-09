@@ -10,7 +10,7 @@ import {
   RemediationStatus,
   RemediationPriority,
   RemediationType,
-} from "libs/entities/src/remediation-action.entity";
+} from "../../../../libs/entities/src/remediation-action.entity";
 
 export class RemediationActionsFilterDto {
   @ApiPropertyOptional({ description: "Filter by site ID" })

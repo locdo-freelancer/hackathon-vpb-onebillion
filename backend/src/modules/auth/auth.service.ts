@@ -10,7 +10,7 @@ import * as bcrypt from "bcrypt";
 import { RegisterUserDto } from "./dto/register-user.dto";
 import { LoginUserDto } from "./dto/login-user.dto";
 import { v4 as uuidv4 } from "uuid";
-import { User } from "libs/entities/src/user.entity";
+import { User } from "../../../libs/entities/src/user.entity";
 
 @Injectable()
 export class AuthService {

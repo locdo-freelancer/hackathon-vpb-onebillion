@@ -1,8 +1,8 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { Cron, CronExpression } from '@nestjs/schedule';
-import { InjectRepository } from '@nestjs/typeorm';
-import { AgentEntity, Site } from 'libs/entities';
-import { Repository, LessThan } from 'typeorm';
+import { Injectable, Logger } from "@nestjs/common";
+import { Cron, CronExpression } from "@nestjs/schedule";
+import { InjectRepository } from "@nestjs/typeorm";
+import { AgentEntity, Site } from "../../../libs/entities";
+import { Repository, LessThan } from "typeorm";
 
 @Injectable()
 export class AgentStatusTaskService {
@@ -13,12 +13,12 @@ export class AgentStatusTaskService {
     @InjectRepository(AgentEntity)
     private agentRepository: Repository<AgentEntity>,
     @InjectRepository(Site)
-    private siteRepository: Repository<Site>,
+    private siteRepository: Repository<Site>
   ) {}
 
   @Cron(CronExpression.EVERY_5_MINUTES)
   async handleCron() {
-    this.logger.log('Running agent status check...');
+    this.logger.log("Running agent status check...");
 
     const now = Date.now();
     const staleThreshold = now - this.STALE_THRESHOLD_MS;
@@ -30,7 +30,7 @@ export class AgentStatusTaskService {
           is_connected: 1,
           last_checkin: LessThan(staleThreshold),
         },
-        relations: ['site'],
+        relations: ["site"],
       });
 
       this.logger.log(`Found ${staleAgents.length} stale agent(s)`);
@@ -44,19 +44,19 @@ export class AgentStatusTaskService {
         // Update site status to Disconnected
         if (agent.site) {
           await this.siteRepository.update(agent.site.id, {
-            status: 'Disconnected',
+            status: "Disconnected",
             updatedAt: now,
           });
 
           this.logger.log(
-            `Marked agent ${agent.id} and site ${agent.site.id} as disconnected`,
+            `Marked agent ${agent.id} and site ${agent.site.id} as disconnected`
           );
         }
       }
 
-      this.logger.log('Agent status check completed');
+      this.logger.log("Agent status check completed");
     } catch (error) {
-      this.logger.error('Error during agent status check', error.stack);
+      this.logger.error("Error during agent status check", error.stack);
     }
   }
 }

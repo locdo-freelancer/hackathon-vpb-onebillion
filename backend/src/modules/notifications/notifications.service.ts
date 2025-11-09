@@ -4,7 +4,7 @@ import { Repository, SelectQueryBuilder, In } from "typeorm";
 import {
   Notification,
   NotificationPriority,
-} from "libs/entities/src/notification.entity";
+} from "../../../libs/entities/src/notification.entity";
 import {
   CreateNotificationDto,
   UpdateNotificationDto,

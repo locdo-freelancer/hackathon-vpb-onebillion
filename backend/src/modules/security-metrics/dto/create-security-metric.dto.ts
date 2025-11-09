@@ -11,7 +11,7 @@ import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import {
   MetricType,
   MetricCategory,
-} from "libs/entities/src/security-metric.entity";
+} from "../../../../libs/entities/src/security-metric.entity";
 
 export class CreateSecurityMetricDto {
   @ApiProperty({ description: "Site ID this metric belongs to" })

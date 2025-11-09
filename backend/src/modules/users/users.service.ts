@@ -1,4 +1,4 @@
-import { User } from "libs/entities";
+import { User } from "../../../libs/entities";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";

@@ -8,7 +8,7 @@ import { In, Repository } from "typeorm";
 import { CreateSiteDto } from "./dto/create-site.dto";
 import { UpdateSiteDto } from "./dto/update-site.dto";
 import * as crypto from "crypto";
-import { AgentEntity, Site, User } from "libs/entities";
+import { AgentEntity, Site, User } from "../../../libs/entities";
 
 @Injectable()
 export class SitesService {

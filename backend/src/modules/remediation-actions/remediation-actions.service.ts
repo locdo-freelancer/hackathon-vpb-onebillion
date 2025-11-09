@@ -8,7 +8,7 @@ import { Repository, SelectQueryBuilder } from "typeorm";
 import {
   RemediationAction,
   RemediationStatus,
-} from "libs/entities/src/remediation-action.entity";
+} from "../../../libs/entities/src/remediation-action.entity";
 import {
   CreateRemediationActionDto,
   UpdateRemediationActionDto,

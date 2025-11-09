@@ -11,7 +11,7 @@ import {
   NotificationType,
   NotificationPriority,
   NotificationChannel,
-} from "libs/entities/src/notification.entity";
+} from "../../../../libs/entities/src/notification.entity";
 
 export class NotificationsFilterDto {
   @ApiPropertyOptional({ description: "Filter by user ID" })

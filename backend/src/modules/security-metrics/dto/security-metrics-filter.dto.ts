@@ -10,7 +10,7 @@ import {
   MetricType,
   MetricCategory,
   AlertThreshold,
-} from "libs/entities/src/security-metric.entity";
+} from "../../../../libs/entities/src/security-metric.entity";
 
 export class SecurityMetricsFilterDto {
   @ApiPropertyOptional({ description: "Filter by site ID" })

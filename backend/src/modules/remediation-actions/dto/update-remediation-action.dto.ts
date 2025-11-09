@@ -2,7 +2,7 @@ import { PartialType } from "@nestjs/swagger";
 import { CreateRemediationActionDto } from "./create-remediation-action.dto";
 import { IsOptional, IsEnum, IsNumber, Min, Max } from "class-validator";
 import { ApiPropertyOptional } from "@nestjs/swagger";
-import { RemediationStatus } from "libs/entities/src/remediation-action.entity";
+import { RemediationStatus } from "../../../../libs/entities/src/remediation-action.entity";
 
 export class UpdateRemediationActionDto extends PartialType(
   CreateRemediationActionDto

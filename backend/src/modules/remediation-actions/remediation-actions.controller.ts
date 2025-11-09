@@ -17,14 +17,14 @@ import {
   ApiBearerAuth,
   ApiQuery,
 } from "@nestjs/swagger";
-import { JwtAuthGuard } from "libs/guards/src";
+import { JwtAuthGuard } from "../../../libs/guards/src";
 import { RemediationActionsService } from "./remediation-actions.service";
 import {
   CreateRemediationActionDto,
   UpdateRemediationActionDto,
   RemediationActionsFilterDto,
 } from "./dto";
-import { RemediationStatus } from "libs/entities/src/remediation-action.entity";
+import { RemediationStatus } from "../../../libs/entities/src/remediation-action.entity";
 
 @ApiTags("Remediation Actions")
 @ApiBearerAuth()
