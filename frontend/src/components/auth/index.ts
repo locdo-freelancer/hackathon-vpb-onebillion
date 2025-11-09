@@ -1,12 +1,12 @@
 /**
  * Auth Components - Organized Export Structure
- * 
+ *
  * SOLID Principles Applied:
  * - Single Responsibility: Each component has one clear purpose
  * - Open/Closed: Configuration-driven, extensible without modification
  * - Interface Segregation: Clean, minimal prop interfaces
  * - Dependency Inversion: Depends on config abstractions
- * 
+ *
  * Architecture:
  * Tier 1: Atomic Components (FormButton, FormCheckbox, InputLabel, etc.)
  * Tier 2: Input Components (EmailInput, PasswordInput)
@@ -27,7 +27,7 @@ export { EmailInput } from "./EmailInput";
 export { PasswordInput } from "./PasswordInput";
 
 // ===== Tier 3: Feature Components =====
-export { OAuthButtons } from "./OAuthButtons";
+// export { OAuthButtons } from "../../components/auth";
 export { MFAModal } from "./MFAModal";
 export { EmailVerification } from "./EmailVerification";
 
