@@ -6,7 +6,12 @@ import {
   IsObject,
 } from "class-validator";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { IncidentSeverity, IncidentStatus, IncidentType } from "@lib/entities";
+import {
+  IncidentSeverity,
+  IncidentStatus,
+  IncidentType,
+} from "../../../../libs/entities/src/incident.entity";
+
 
 export class CreateIncidentDto {
   @ApiProperty({ description: "Incident title" })

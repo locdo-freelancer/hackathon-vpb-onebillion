@@ -5,7 +5,7 @@ import {
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository, Between } from "typeorm";
-import { Vulnerability, SiteVulnerability, Site } from "@lib/entities";
+import { Vulnerability, SiteVulnerability, Site } from "../../../libs/entities";
 import {
   CreateVulnerabilityDto,
   CreateSiteVulnerabilityDto,

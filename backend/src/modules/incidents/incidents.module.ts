@@ -2,7 +2,7 @@ import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { IncidentsService } from "./incidents.service";
 import { IncidentsController } from "./incidents.controller";
-import { Incident, User, Site } from "@lib/entities";
+import { Incident, User, Site } from "../../../libs/entities";
 
 @Module({
   imports: [TypeOrmModule.forFeature([Incident, User, Site])],

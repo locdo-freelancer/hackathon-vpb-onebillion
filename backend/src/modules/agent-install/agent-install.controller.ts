@@ -2,8 +2,8 @@ import { Controller, Get, Param, UseGuards, Query } from "@nestjs/common";
 import { ApiTags, ApiBearerAuth } from "@nestjs/swagger";
 import { AgentInstallService } from "./agent-install.service";
 import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
-import { ApiOperationDecorator, UserReq } from "@lib/decorators";
-import { User } from "@lib/entities";
+import { ApiOperationDecorator, UserReq } from "../../../libs/decorators/src";
+import { User } from "../../../libs/entities";
 
 @ApiTags("agent-install")
 @ApiBearerAuth("JWT-auth")

@@ -11,9 +11,13 @@ import { ApiTags } from "@nestjs/swagger";
 import { AuthService } from "./auth.service";
 import { RegisterUserDto } from "./dto/register-user.dto";
 import { LoginUserDto } from "./dto/login-user.dto";
-import { Public, ApiOperationDecorator, UserReq } from "@lib/decorators";
+import {
+  Public,
+  ApiOperationDecorator,
+  UserReq,
+} from "../../../libs/decorators/src";
 import { JwtAuthGuard } from "./guards/jwt-auth.guard";
-import { User } from "@lib/entities";
+import { User } from "../../../libs/entities";
 
 @ApiTags("auth")
 @Controller("auth")

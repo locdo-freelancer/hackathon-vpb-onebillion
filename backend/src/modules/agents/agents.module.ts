@@ -2,7 +2,7 @@ import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { AgentsController } from "./agents.controller";
 import { AgentsService } from "./agents.service";
-import { AgentEntity, Site } from "@lib/entities";
+import { AgentEntity, Site } from "../../../libs/entities";
 
 @Module({
   imports: [TypeOrmModule.forFeature([AgentEntity, Site])],

@@ -25,10 +25,10 @@ import {
   IncidentsFilterDto,
   BulkActionDto,
 } from "./dto";
-import { JwtAuthGuard } from "@lib/guards";
-import { UserReq } from "@lib/decorators";
-import { User } from "@lib/entities";
-import { ApiOperationDecorator } from "@lib/decorators";
+import { JwtAuthGuard } from "../../../libs/guards/src";
+import { UserReq } from "../../../libs/decorators/src";
+import { User } from "../../../libs/entities";
+import { ApiOperationDecorator } from "../../../libs/decorators/src";
 
 @ApiTags("incidents")
 @ApiBearerAuth()

@@ -1,6 +1,10 @@
 import { IsOptional, IsString, IsEnum, IsDateString } from "class-validator";
 import { ApiPropertyOptional } from "@nestjs/swagger";
-import { IncidentSeverity, IncidentStatus, IncidentType } from "@lib/entities";
+import {
+  IncidentSeverity,
+  IncidentStatus,
+  IncidentType,
+} from "../../../../libs/entities/src/incident.entity";
 
 export class IncidentsFilterDto {
   @ApiPropertyOptional({

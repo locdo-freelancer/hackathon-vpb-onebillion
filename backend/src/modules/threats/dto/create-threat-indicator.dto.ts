@@ -8,7 +8,11 @@ import {
   Max,
 } from "class-validator";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { ThreatSeverity, ThreatStatus, ThreatType } from "@lib/entities";
+import {
+  ThreatSeverity,
+  ThreatStatus,
+  ThreatType,
+} from "../../../../libs/entities/src/threat-indicator.entity";
 
 export class CreateThreatIndicatorDto {
   @ApiProperty({

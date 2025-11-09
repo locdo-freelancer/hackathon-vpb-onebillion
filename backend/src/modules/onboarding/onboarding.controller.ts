@@ -2,8 +2,8 @@ import { Controller, Post, Body, Get, UseGuards } from "@nestjs/common";
 import { ApiTags, ApiBearerAuth } from "@nestjs/swagger";
 import { OnboardingService } from "./onboarding.service";
 import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
-import { ApiOperationDecorator, UserReq } from "@lib/decorators";
-import { User } from "@lib/entities";
+import { ApiOperationDecorator, UserReq } from "../../../libs/decorators/src";
+import { User } from "../../../libs/entities";
 import {
   OnboardingProgressDto,
   CompleteOnboardingDto,

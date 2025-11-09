@@ -9,7 +9,7 @@ import {
 import { ApiTags, ApiBearerAuth } from "@nestjs/swagger";
 import { AgentCommService } from "./agent-comm.service";
 import { AgentAuthGuard } from "./guards/agent-auth.guard";
-import { Public, ApiOperationDecorator } from "@lib/decorators";
+import { Public, ApiOperationDecorator } from "../../../libs/decorators/src";
 
 @ApiTags("agent")
 @ApiBearerAuth("Agent-Token")

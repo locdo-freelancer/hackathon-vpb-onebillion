@@ -8,7 +8,7 @@ import {
   IncidentType,
   User,
   Site,
-} from "@lib/entities";
+} from "../../../libs/entities";
 import {
   CreateIncidentDto,
   UpdateIncidentDto,

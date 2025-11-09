@@ -13,8 +13,8 @@ import { SitesService } from "./sites.service";
 import { CreateSiteDto } from "./dto/create-site.dto";
 import { UpdateSiteDto } from "./dto/update-site.dto";
 import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
-import { ApiOperationDecorator, UserReq } from "@lib/decorators";
-import { User } from "@lib/entities";
+import { ApiOperationDecorator, UserReq } from "../../../libs/decorators/src";
+import { User } from "../../../libs/entities/src/user.entity";
 
 @ApiTags("sites")
 @ApiBearerAuth("JWT-auth")

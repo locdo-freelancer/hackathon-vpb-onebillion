@@ -7,7 +7,7 @@ import {
   ThreatStatus,
   ThreatType,
   Site,
-} from "@lib/entities";
+} from "../../../libs/entities";
 import {
   CreateThreatIndicatorDto,
   UpdateThreatIndicatorDto,

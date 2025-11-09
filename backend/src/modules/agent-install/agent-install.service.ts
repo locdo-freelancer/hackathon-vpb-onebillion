@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { AgentEntity, Site } from "@lib/entities";
+import { AgentEntity, Site } from "../../../libs/entities";
 
 @Injectable()
 export class AgentInstallService {

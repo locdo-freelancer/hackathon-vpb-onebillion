@@ -9,9 +9,9 @@ import {
 } from "@nestjs/common";
 import { ApiTags, ApiBearerAuth } from "@nestjs/swagger";
 import { UsersService } from "./users.service";
-import { User } from "@lib/entities";
+import { User } from "../../../libs/entities";
 import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
-import { ApiOperationDecorator, UserReq } from "@lib/decorators";
+import { ApiOperationDecorator, UserReq } from "../../../libs/decorators/src";
 
 @ApiTags("users")
 @ApiBearerAuth("JWT-auth")

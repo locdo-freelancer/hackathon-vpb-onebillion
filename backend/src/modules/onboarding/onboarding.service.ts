@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { Site, AgentEntity } from "@lib/entities";
+import { Site, AgentEntity } from "../../../libs/entities";
 import * as crypto from "crypto";
 import * as dns from "dns";
 import { promisify } from "util";

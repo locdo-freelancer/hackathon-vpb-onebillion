@@ -19,7 +19,7 @@ import { RemediationActionsModule } from "./modules/remediation-actions/remediat
 import { SecurityMetricsModule } from "./modules/security-metrics/security-metrics.module";
 import { NotificationsModule } from "./modules/notifications/notifications.module";
 import { APP_PROVIDERS } from "./app.provider";
-import { LoggingMiddleware } from "@lib/middlewares";
+import { LoggingMiddleware } from "../libs/middlewares/src";
 
 @Module({
   imports: [

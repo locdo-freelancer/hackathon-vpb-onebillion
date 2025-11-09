@@ -13,7 +13,7 @@ import {
   Notification,
   Incident,
   ThreatIndicator,
-} from "@lib/entities";
+} from "../../libs/entities";
 
 @Module({
   imports: [
