@@ -3,18 +3,19 @@ import { ValidationPipe } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { AppModule } from "./app.module";
+import serverlessExpress from "@vendia/serverless-express";
+
+let server: any;
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
 
-  // Enable CORS
   app.enableCors({
     origin: true,
     credentials: true,
   });
 
-  // Global validation pipe
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -23,10 +24,8 @@ async function bootstrap() {
     })
   );
 
-  // API prefix
   app.setGlobalPrefix("api");
 
-  // Swagger Configuration
   const config = new DocumentBuilder()
     .setTitle("One Billion API")
     .setDescription(
@@ -63,11 +62,14 @@ async function bootstrap() {
     customCss: ".swagger-ui .topbar { display: none }",
   });
 
-  const port = configService.get<number>("PORT", 3001);
-  await app.listen(port);
-
-  console.log(`🚀 Application is running on: http://localhost:${port}`);
-  console.log(`📚 API Documentation: http://localhost:${port}/api/docs`);
+  await app.init();
+  const expressApp = app.getHttpAdapter().getInstance();
+  return serverlessExpress({ app: expressApp });
 }
 
-bootstrap();
+export default async function handler(req: any, res: any) {
+  if (!server) {
+    server = await bootstrap();
+  }
+  return server(req, res);
+}
