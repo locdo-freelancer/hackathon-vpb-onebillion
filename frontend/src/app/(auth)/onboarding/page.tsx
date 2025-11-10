@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { OnboardingLayout } from "@/components/onboarding/OnboardingLayout";
 import { ProgressIndicator } from "@/components/onboarding/ProgressIndicator";
@@ -14,8 +14,15 @@ import {
   TOTAL_STEPS,
 } from "@/config/onboarding.config";
 import { useOnboardingFlow } from "@/hooks/useOnboardingFlow";
+import { SitesService } from "@/lib/services/sites.service";
+import { AuthService } from "@/lib/services";
+import { useTranslations } from "@/hooks/useTranslations";
 
 export default function OnboardingPage() {
+  const { t: tOnboarding } = useTranslations("onboarding");
+  const { t: tAuth } = useTranslations("auth");
+  const router = useRouter();
+  const [isCheckingSites, setIsCheckingSites] = useState(true);
   const {
     currentStep,
     formData,
@@ -26,12 +33,54 @@ export default function OnboardingPage() {
     handleNext,
   } = useOnboardingFlow();
 
+  // Check if user already has sites and redirect to dashboard
+  useEffect(() => {
+    const checkSites = async () => {
+      try {
+        // Check if user is authenticated
+        if (!AuthService.isAuthenticated()) {
+          router.push("/login");
+          return;
+        }
+
+        // Check if user has sites
+        const sitesResponse = await SitesService.getAllSites();
+        if (sitesResponse.sites && sitesResponse.sites.length > 0) {
+          // User already has sites, redirect to dashboard
+          router.push("/dashboard");
+        } else {
+          setIsCheckingSites(false);
+        }
+      } catch (error) {
+        console.error("Error checking sites:", error);
+        // If error, allow onboarding to continue
+        setIsCheckingSites(false);
+      }
+    };
+
+    checkSites();
+  }, [router]);
+
   const renderStep = () => {
     const StepComponent = ONBOARDING_STEPS[currentStep - 1]?.component;
     return StepComponent ? (
       <StepComponent data={formData} onChange={updateFormData} />
     ) : null;
   };
+
+  // Show loading while checking sites
+  if (isCheckingSites) {
+    return (
+      <OnboardingLayout helpPanel={<HelpPanel currentStep={1} />}>
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center">
+            <i className="fas fa-spinner fa-spin text-4xl text-cyber-accent mb-4" />
+            <p className="text-gray-400">{tAuth("checkingAccount")}</p>
+          </div>
+        </div>
+      </OnboardingLayout>
+    );
+  }
 
   return (
     <OnboardingLayout helpPanel={<HelpPanel currentStep={currentStep} />}>
@@ -57,7 +106,7 @@ export default function OnboardingPage() {
           className="px-6 py-3 bg-cyber-dark hover:bg-cyber-card border border-cyber-border text-white rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <i className="fas fa-arrow-left mr-2" />
-          Previous
+          {tOnboarding("previous")}
         </button>
 
         <button
@@ -68,16 +117,16 @@ export default function OnboardingPage() {
           {isLoading ? (
             <>
               <i className="fas fa-spinner fa-spin mr-2" />
-              Processing...
+              {tOnboarding("processing")}
             </>
           ) : currentStep === 4 ? (
             <>
-              Complete Setup
+              {tOnboarding("completeSetup")}
               <i className="fas fa-check ml-2" />
             </>
           ) : (
             <>
-              Next
+              {tOnboarding("next")}
               <i className="fas fa-arrow-right ml-2" />
             </>
           )}
