@@ -54,9 +54,9 @@ import {
             connectionTimeoutMillis: 10000,
           },
           // Only use SSL for production (Aiven), not for localhost
-          ssl: isProduction ? {
+          ssl: {
             rejectUnauthorized: false,
-          } : false,
+          },
         };
       },
     }),
