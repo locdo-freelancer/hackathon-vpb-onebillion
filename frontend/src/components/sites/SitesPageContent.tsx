@@ -18,6 +18,7 @@ interface SitesPageContentProps {
   onEdit: (site: Site) => void;
   onView: (site: Site) => void;
   onDelete: (site: Site) => void;
+  onViewToken: (site: Site) => void;
 }
 
 /**
@@ -41,6 +42,7 @@ export const SitesPageContent: React.FC<SitesPageContentProps> = ({
   onEdit,
   onView,
   onDelete,
+  onViewToken,
 }) => {
   return (
     <>
@@ -65,6 +67,7 @@ export const SitesPageContent: React.FC<SitesPageContentProps> = ({
         onEdit={onEdit}
         onView={onView}
         onDelete={onDelete}
+        onViewToken={onViewToken}
       />
     </>
   );

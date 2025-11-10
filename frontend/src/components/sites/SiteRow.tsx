@@ -13,6 +13,7 @@ interface SiteRowProps {
   onEdit: (site: Site) => void;
   onView: (site: Site) => void;
   onDelete: (site: Site) => void;
+  onViewToken: (site: Site) => void;
 }
 
 /**
@@ -30,6 +31,7 @@ export const SiteRow: React.FC<SiteRowProps> = ({
   onEdit,
   onView,
   onDelete,
+  onViewToken,
 }) => {
   return (
     <tr className="hover:bg-slate-800/30 transition-colors">
@@ -107,6 +109,7 @@ export const SiteRow: React.FC<SiteRowProps> = ({
           onEdit={onEdit}
           onView={onView}
           onDelete={onDelete}
+          onViewToken={onViewToken}
         />
       </td>
     </tr>

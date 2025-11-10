@@ -50,7 +50,7 @@ export const useIncidentsData = (): UseIncidentsDataReturn => {
       setIsLoading(true);
       setError(null);
       
-      // Fetch incidents from API
+      // Fetch incidents from API (already unwrapped by apiClient)
       const response = await IncidentsService.getAllIncidents().catch(() => ({
         incidents: [],
         stats: {
@@ -162,7 +162,7 @@ export const useIncidentsData = (): UseIncidentsDataReturn => {
     }
 
     try {
-      const incident = await IncidentsService.getIncidentById(id);
+      const incident: any = await IncidentsService.getIncidentById(id);
       
       // Transform to IncidentDetail format
       const detail: IncidentDetail = {
@@ -177,40 +177,60 @@ export const useIncidentsData = (): UseIncidentsDataReturn => {
         affectedSystems: incident.affectedSystems,
         tags: incident.tags,
         description: incident.description,
+        sourceIP: incident.sourceIP,
+        destinationIP: incident.destinationIP,
+        protocol: incident.protocol,
         timeline: (incident.timeline || []).map((event: any) => ({
           id: `${event.timestamp}-${Math.random()}`,
           timestamp: event.timestamp,
           event: event.event,
           user: event.user || "System",
-          details: event.details,
+          details: event.details || event.description,
           action: event.event.toLowerCase().includes("created") ? "created" :
                   event.event.toLowerCase().includes("assigned") ? "assigned" :
                   event.event.toLowerCase().includes("updated") ? "updated" :
                   event.event.toLowerCase().includes("resolved") ? "resolved" : "updated",
         })),
-        mitreAttack: (incident.mitreAttack || []).map((technique: string) => ({
-          id: technique,
-          name: technique,
-          tactic: "Unknown",
-          description: "",
+        mitreAttack: (incident.mitreAttack || []).map((tech: any) => ({
+          id: tech.id || tech.technique || tech,
+          name: tech.technique || tech.name || tech,
+          tactic: tech.tactic || "Unknown",
+          description: tech.description || "",
         })),
-        relatedIncidents: (incident.relatedIncidents || []).map((relId: string) => ({
-          id: relId,
-          title: `Related Incident ${relId}`,
-          severity: "Medium" as const,
-          date: new Date().toISOString(),
-        })),
-        aiRecommendations: (incident.aiRecommendations || []).map((rec: string, idx: number) => ({
-          id: `rec-${idx}`,
-          title: rec,
-          description: rec,
-          confidence: 0.85,
-        })),
-        relatedIndicators: [],
-        recommendations: incident.aiRecommendations || [],
-        rawLogs: [],
-        externalReferences: [],
-        evidence: [],
+        relatedIncidents: (incident.relatedIncidents || []).map((relId: any) => {
+          if (typeof relId === 'string') {
+            return {
+              id: relId,
+              title: `Related Incident ${relId}`,
+              severity: "Medium" as const,
+              date: new Date().toISOString(),
+            };
+          }
+          return relId;
+        }),
+        aiRecommendations: (incident.aiRecommendations || []).map((rec: any, idx: number) => {
+          if (typeof rec === 'string') {
+            return {
+              id: `rec-${idx}`,
+              title: rec,
+              description: rec,
+              confidence: 0.85,
+            };
+          }
+          return {
+            id: rec.id || `rec-${idx}`,
+            title: rec.action || rec.title || rec,
+            description: rec.description || rec,
+            confidence: 0.85,
+          };
+        }),
+        relatedIndicators: incident.relatedIndicators || [],
+        recommendations: incident.recommendations || [],
+        rawLogs: incident.rawLogs || [],
+        externalReferences: incident.externalReferences || [],
+        evidence: incident.evidence || [],
+        fileHash: incident.fileHash,
+        ipReputation: incident.ipReputation,
       };
       
       setSelectedIncident(detail);

@@ -187,4 +187,25 @@ export class SitesService {
       throw new Error(error.message || "Failed to fetch site statistics");
     }
   }
+
+  /**
+   * Get agent token - GET /api/sites/:id/agent-token
+   */
+  static async getAgentToken(id: string): Promise<{
+    success: boolean;
+    data: {
+      siteId: string;
+      siteName: string;
+      agentToken: string;
+      installCommand: string;
+    };
+  }> {
+    try {
+      const response = await apiClient.get(`/sites/${id}/agent-token`);
+      return response;
+    } catch (error: any) {
+      console.error("Get agent token error:", error);
+      throw new Error(error.message || "Failed to fetch agent token");
+    }
+  }
 }

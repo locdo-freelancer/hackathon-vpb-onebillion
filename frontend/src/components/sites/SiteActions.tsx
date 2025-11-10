@@ -6,6 +6,7 @@ interface SiteActionsProps {
   onEdit: (site: Site) => void;
   onView: (site: Site) => void;
   onDelete: (site: Site) => void;
+  onViewToken: (site: Site) => void;
 }
 
 export const SiteActions: React.FC<SiteActionsProps> = ({
@@ -13,9 +14,17 @@ export const SiteActions: React.FC<SiteActionsProps> = ({
   onEdit,
   onView,
   onDelete,
+  onViewToken,
 }) => {
   return (
     <div className="flex items-center gap-2">
+      <button
+        onClick={() => onViewToken(site)}
+        className="p-2 text-gray-400 hover:text-green-400 transition-colors"
+        title="View agent token"
+      >
+        <i className="fas fa-key" />
+      </button>
       <button
         onClick={() => onEdit(site)}
         className="p-2 text-gray-400 hover:text-cyan-400 transition-colors"

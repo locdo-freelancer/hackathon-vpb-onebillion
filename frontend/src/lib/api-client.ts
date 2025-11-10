@@ -44,7 +44,15 @@ const checkResponse = async (response: Response, endpoint: string) => {
     }
   }
 
-  return response.json();
+  const jsonResponse = await response.json();
+  
+  // Unwrap response from backend format: { success, data, timestamp }
+  // If response has 'data' property, return it; otherwise return the whole response
+  if (jsonResponse && typeof jsonResponse === 'object' && 'data' in jsonResponse) {
+    return jsonResponse.data;
+  }
+  
+  return jsonResponse;
 };
 
 export const apiClient = {

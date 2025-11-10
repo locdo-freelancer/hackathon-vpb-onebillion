@@ -1,15 +1,17 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { DashboardSidebar, DashboardHeader } from "@/components/dashboard";
 import {
   SitesPageContent,
   SitesStatsFooter,
   SiteModal,
 } from "@/components/sites";
+import { AgentTokenModal } from "@/components/sites/AgentTokenModal";
 import { getNavItems, getDefaultUser } from "@/config/navigation.config";
 import { useSitesFlow } from "@/hooks/useSitesFlow";
 import { useAuthProtection } from "@/hooks/useAuthProtection";
+import type { Site } from "@/types/sites.types";
 
 /**
  * Sites Page
@@ -19,6 +21,9 @@ import { useAuthProtection } from "@/hooks/useAuthProtection";
  */
 export default function SitesPage() {
   useAuthProtection();
+  const [tokenModalOpen, setTokenModalOpen] = useState(false);
+  const [selectedSiteForToken, setSelectedSiteForToken] = useState<Site | null>(null);
+
   const {
     data,
     isLoading,
@@ -42,6 +47,11 @@ export default function SitesPage() {
     toggleAllSites,
     setIsModalOpen,
   } = useSitesFlow();
+
+  const handleViewToken = (site: Site) => {
+    setSelectedSiteForToken(site);
+    setTokenModalOpen(true);
+  };
 
   const user = getDefaultUser();
   const navItems = getNavItems("/sites");
@@ -82,6 +92,7 @@ export default function SitesPage() {
               onEdit={handleEditSite}
               onView={handleViewSite}
               onDelete={handleDeleteSite}
+              onViewToken={handleViewToken}
             />
 
             {/* Stats Footer */}
@@ -98,6 +109,16 @@ export default function SitesPage() {
         site={editingSite}
         onClose={() => setIsModalOpen(false)}
         onSave={handleSaveSite}
+      />
+
+      {/* Agent Token Modal */}
+      <AgentTokenModal
+        isOpen={tokenModalOpen}
+        site={selectedSiteForToken}
+        onClose={() => {
+          setTokenModalOpen(false);
+          setSelectedSiteForToken(null);
+        }}
       />
     </div>
   );

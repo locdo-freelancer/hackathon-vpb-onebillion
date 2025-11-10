@@ -176,16 +176,43 @@ Script này sẽ:
    - Time Range: Last 24 hours
    - Search: Nhập IP để tìm
 
-### Step 5: Dashboard Analytics
+### Step 5: Auto-Created Incidents
+
+**🎯 Tính năng tự động:** Khi có threat **CRITICAL** hoặc **HIGH** severity, hệ thống **tự động tạo Incident**!
+
+1. **Navigate** → Incidents page
+2. Xem incidents đã được tạo tự động:
+   - Mỗi threat High/Critical → 1 incident
+   - Status: OPEN
+   - AI Summary & Recommendations
+   - Timeline tự động
+   - MITRE ATT&CK mapping
+
+3. **Click vào incident** để xem:
+   - 📋 Full incident details
+   - 🤖 AI-generated summary
+   - ✅ Recommended actions (Block IP, Review logs, etc.)
+   - 📊 IP reputation data
+   - 🔗 Related threat indicators
+   - ⏰ Timeline of events
+   - 🎯 MITRE ATT&CK techniques
+
+4. **Incident Actions:**
+   - Assign to team member
+   - Add notes
+   - Update status (Open → In Progress → Resolved → Closed)
+   - Export report
+
+### Step 6: Dashboard Analytics
 
 1. **Navigate** → Dashboard
 2. Xem metrics:
    - 📊 Active Sites
    - 🔴 Critical Threats
-   - 🟡 Active Incidents
+   - 🟡 Active Incidents (auto-created from threats!)
    - ⚡ Recent Activities
 
-### Step 6: Agents Management
+### Step 7: Agents Management
 
 1. **Navigate** → Agents page
 2. Xem agent status:

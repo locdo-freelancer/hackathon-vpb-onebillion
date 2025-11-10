@@ -12,6 +12,7 @@ interface SitesTableProps {
   onEdit: (site: Site) => void;
   onView: (site: Site) => void;
   onDelete: (site: Site) => void;
+  onViewToken: (site: Site) => void;
 }
 
 /**
@@ -30,6 +31,7 @@ export const SitesTable: React.FC<SitesTableProps> = ({
   onEdit,
   onView,
   onDelete,
+  onViewToken,
 }) => {
   const allSelected =
     sites.length > 0 && selectedSites.length === sites.length;
@@ -80,6 +82,7 @@ export const SitesTable: React.FC<SitesTableProps> = ({
                   onEdit={onEdit}
                   onView={onView}
                   onDelete={onDelete}
+                  onViewToken={onViewToken}
                 />
               ))
             )}

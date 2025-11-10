@@ -35,11 +35,17 @@ export const IncidentOverviewCard: React.FC<IncidentOverviewCardProps> = ({
           <p className="text-sm text-gray-400 mb-1">Assignee</p>
           {assignee ? (
             <div className="flex items-center gap-2">
-              <img
-                src={assignee.avatar}
-                alt={assignee.name}
-                className="w-6 h-6 rounded-full"
-              />
+              {assignee.avatar ? (
+                <img
+                  src={assignee.avatar}
+                  alt={assignee.name}
+                  className="w-6 h-6 rounded-full"
+                />
+              ) : (
+                <div className="w-6 h-6 rounded-full bg-cyan-500 flex items-center justify-center text-xs text-white">
+                  {assignee.name.charAt(0).toUpperCase()}
+                </div>
+              )}
               <span className="text-white">{assignee.name}</span>
             </div>
           ) : (

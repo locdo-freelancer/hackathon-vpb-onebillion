@@ -24,23 +24,23 @@ Write-Host "Server: $ServerUrl" -ForegroundColor Yellow
 Write-Host "Token: $($Token.Substring(0, 16))...$($Token.Substring($Token.Length - 8))" -ForegroundColor Yellow
 Write-Host ""
 
-# Generate realistic attacker IPs
-$attackerIPs = @(
-    "203.0.113.42",      # Example IP 1
-    "198.51.100.88",     # Example IP 2
-    "192.0.2.156",       # Example IP 3
-    "45.76.123.45",      # Fake attacker
-    "185.220.101.67"     # Fake attacker
-)
+# Generate RANDOM attacker IPs each time
+function Get-RandomIP {
+    $octet1 = Get-Random -Minimum 1 -Maximum 255
+    $octet2 = Get-Random -Minimum 0 -Maximum 255
+    $octet3 = Get-Random -Minimum 0 -Maximum 255
+    $octet4 = Get-Random -Minimum 1 -Maximum 255
+    return "$octet1.$octet2.$octet3.$octet4"
+}
 
 $totalThreats = 5
 $successCount = 0
 
-Write-Host "Generating $totalThreats simulated threats..." -ForegroundColor Cyan
+Write-Host "Generating $totalThreats simulated threats with RANDOM IPs..." -ForegroundColor Cyan
 Write-Host ""
 
 for ($i = 0; $i -lt $totalThreats; $i++) {
-    $ip = $attackerIPs[$i]
+    $ip = Get-RandomIP
     $attempts = Get-Random -Minimum 5 -Maximum 25
     $severity = if ($attempts -gt 15) { "high" } elseif ($attempts -gt 10) { "medium" } else { "low" }
     

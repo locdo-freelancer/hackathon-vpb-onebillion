@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable, NotFoundException, Inject, forwardRef } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository, MoreThan } from "typeorm";
 import {
@@ -13,6 +13,7 @@ import {
   UpdateThreatIndicatorDto,
   ThreatsFilterDto,
 } from "./dto";
+import { IncidentsService } from "../incidents/incidents.service";
 
 @Injectable()
 export class ThreatsService {
@@ -20,7 +21,9 @@ export class ThreatsService {
     @InjectRepository(ThreatIndicator)
     private threatIndicatorsRepository: Repository<ThreatIndicator>,
     @InjectRepository(Site)
-    private sitesRepository: Repository<Site>
+    private sitesRepository: Repository<Site>,
+    @Inject(forwardRef(() => IncidentsService))
+    private incidentsService: IncidentsService
   ) {}
 
   async create(
@@ -41,7 +44,14 @@ export class ThreatsService {
       confidence: createThreatIndicatorDto.confidence || 50,
     });
 
-    return await this.threatIndicatorsRepository.save(threatIndicator);
+    const savedThreat = await this.threatIndicatorsRepository.save(threatIndicator);
+
+    // Auto-create incident for critical/high severity threats
+    if (savedThreat.severity === ThreatSeverity.CRITICAL || savedThreat.severity === ThreatSeverity.HIGH) {
+      await this.autoCreateIncident(savedThreat);
+    }
+
+    return savedThreat;
   }
 
   async findAll(filter: ThreatsFilterDto = {}) {
@@ -309,6 +319,118 @@ export class ThreatsService {
       return ThreatType.HASH;
     } else {
       return ThreatType.DOMAIN;
+    }
+  }
+
+  private async autoCreateIncident(threat: ThreatIndicator): Promise<void> {
+    try {
+      // Map threat type to incident type
+      const incidentTypeMap = {
+        [ThreatType.IP]: "brute_force",
+        [ThreatType.DOMAIN]: "phishing",
+        [ThreatType.URL]: "phishing",
+        [ThreatType.HASH]: "malware",
+      };
+
+      const incidentType = incidentTypeMap[threat.type] || "unauthorized_access";
+
+      // Create incident
+      const incidentData = {
+        title: `Security Incident: ${threat.indicator}`,
+        description: `Automated incident created from threat detection\n\nThreat Details:\n- Type: ${threat.type}\n- Severity: ${threat.severity}\n- Confidence: ${threat.confidence}%\n- Source: ${threat.indicator}\n- Detected: ${threat.first_seen}`,
+        ai_summary: `This incident was automatically generated from a ${threat.severity} severity threat detection. The system identified suspicious activity from ${threat.indicator} with ${threat.confidence}% confidence.`,
+        severity: threat.severity,
+        status: "open" as any,
+        type: incidentType as any,
+        source_ip: threat.indicator,
+        tags: [threat.type, "automated", threat.severity],
+        affected_systems: ["Production Server"],
+        ai_recommendations: [
+          {
+            action: "Block IP Address",
+            priority: "high",
+            description: `Immediately block the source ${threat.indicator} at the firewall level`,
+          },
+          {
+            action: "Review Logs",
+            priority: "medium",
+            description: "Analyze server logs for any successful authentication attempts",
+          },
+          {
+            action: "Enable Monitoring",
+            priority: "high",
+            description: "Increase monitoring for similar threats",
+          },
+        ],
+        ip_reputation: {
+          score: 95,
+          country: threat.country || "Unknown",
+          asn: threat.asn || "Unknown",
+          threat_level: threat.severity,
+          blacklisted: true,
+        },
+        mitre_attack: [
+          {
+            tactic: "Initial Access",
+            technique: "Valid Accounts",
+            id: "T1078",
+          },
+          {
+            tactic: "Credential Access",
+            technique: "Brute Force",
+            id: "T1110",
+          },
+        ],
+        timeline: [
+          {
+            timestamp: threat.first_seen,
+            event: "Threat Detected",
+            description: `Suspicious activity detected: ${threat.indicator}`,
+          },
+          {
+            timestamp: new Date(),
+            event: "Incident Created",
+            description: "Automated incident creation triggered",
+          },
+        ],
+        recommendations: [
+          `Immediately block ${threat.indicator}`,
+          "Review authentication logs for the past 24 hours",
+          "Enable MFA for all user accounts",
+          "Update firewall rules to prevent similar attacks",
+          "Monitor for related suspicious activity",
+        ],
+        evidence: [
+          {
+            type: "threat_detection",
+            description: "Threat indicator that triggered this incident",
+            data: {
+              id: threat.id,
+              indicator: threat.indicator,
+              type: threat.type,
+              severity: threat.severity,
+              confidence: threat.confidence,
+            },
+          },
+        ],
+      };
+
+      // Get user ID from threat's site or use system user
+      let userId = null;
+      if (threat.site) {
+        const site = await this.sitesRepository.findOne({
+          where: { id: threat.site.id },
+          relations: ["user"],
+        });
+        if (site && site.user) {
+          userId = site.user.id;
+        }
+      }
+
+      await this.incidentsService.create(incidentData as any, userId);
+      console.log(`✓ Auto-created incident for threat: ${threat.indicator}`);
+    } catch (error) {
+      console.error(`Failed to auto-create incident for threat ${threat.indicator}:`, error.message);
     }
   }
 }

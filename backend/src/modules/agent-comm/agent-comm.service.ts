@@ -5,6 +5,9 @@ import {
   Site,
   SiteStatus,
   ThreatIndicator,
+  ThreatSeverity,
+  Incident,
+  User,
 } from "../../../libs/entities";
 import { Repository } from "typeorm";
 import { ReportThreatDto } from "./dto/report-threat.dto";
@@ -20,7 +23,11 @@ export class AgentCommService {
     @InjectRepository(Site)
     private siteRepository: Repository<Site>,
     @InjectRepository(ThreatIndicator)
-    private threatRepository: Repository<ThreatIndicator>
+    private threatRepository: Repository<ThreatIndicator>,
+    @InjectRepository(Incident)
+    private incidentRepository: Repository<Incident>,
+    @InjectRepository(User)
+    private userRepository: Repository<User>
   ) {}
 
   async handleCheckIn(site: Site) {
@@ -94,6 +101,18 @@ export class AgentCommService {
           `Updated existing threat: ${indicator} from site ${site.name}`
         );
 
+        // Check if should create incident for updated threat (if severity increased to critical/high)
+        if ((severity === ThreatSeverity.CRITICAL || severity === ThreatSeverity.HIGH)) {
+          // Check if incident already exists for this threat
+          const existingIncident = await this.incidentRepository.findOne({
+            where: { source_ip: indicator },
+          });
+          
+          if (!existingIncident) {
+            await this.autoCreateIncident(threat, site);
+          }
+        }
+
         return {
           success: true,
           message: "Threat updated successfully",
@@ -131,6 +150,11 @@ export class AgentCommService {
           `New threat reported: ${indicator} (${type}) from site ${site.name}`
         );
 
+        // Auto-create incident for critical/high severity threats
+        if (severity === ThreatSeverity.CRITICAL || severity === ThreatSeverity.HIGH) {
+          await this.autoCreateIncident(threat, site);
+        }
+
         return {
           success: true,
           message: "Threat reported successfully",
@@ -144,6 +168,144 @@ export class AgentCommService {
         error
       );
       throw error;
+    }
+  }
+
+  private async autoCreateIncident(threat: ThreatIndicator, site: Site): Promise<void> {
+    try {
+      // Map threat type to incident type (matching IncidentType enum)
+      const incidentTypeMap: Record<string, string> = {
+        ip: "network_intrusion",
+        domain: "phishing",
+        url: "phishing",
+        hash: "malware",
+      };
+
+      const incidentType = incidentTypeMap[threat.type] || "suspicious_activity";
+
+      // Create incident
+      const incidentData = {
+        title: `Security Incident: ${threat.indicator}`,
+        description: `Automated incident created from threat detection\n\nThreat Details:\n- Type: ${threat.type}\n- Severity: ${threat.severity}\n- Confidence: ${threat.confidence}%\n- Source: ${threat.indicator}\n- Site: ${site.name}\n- Detected: ${threat.first_seen}`,
+        ai_summary: `This incident was automatically generated from a ${threat.severity} severity threat detection. The system identified suspicious activity from ${threat.indicator} with ${threat.confidence}% confidence on site ${site.name}.`,
+        severity: threat.severity,
+        status: "open" as any,
+        type: incidentType as any,
+        source_ip: threat.indicator,
+        tags: [...(threat.tags || []), "automated", threat.severity],
+        affected_systems: [site.name],
+        ai_recommendations: [
+          {
+            action: "Block IP Address",
+            priority: "high",
+            description: `Immediately block the source ${threat.indicator} at the firewall level`,
+          },
+          {
+            action: "Review Logs",
+            priority: "medium",
+            description: "Analyze server logs for any successful authentication attempts",
+          },
+          {
+            action: "Enable Monitoring",
+            priority: "high",
+            description: "Increase monitoring for similar threats",
+          },
+        ],
+        ip_reputation: {
+          score: 95,
+          country: threat.country || "Unknown",
+          asn: threat.asn || "Unknown",
+          threat_level: threat.severity,
+          blacklisted: true,
+        },
+        mitre_attack: [
+          {
+            tactic: "Initial Access",
+            technique: "Valid Accounts",
+            id: "T1078",
+          },
+          {
+            tactic: "Credential Access",
+            technique: "Brute Force",
+            id: "T1110",
+          },
+        ],
+        timeline: [
+          {
+            timestamp: threat.first_seen,
+            event: "Threat Detected",
+            description: `Suspicious activity detected: ${threat.indicator}`,
+          },
+          {
+            timestamp: new Date(),
+            event: "Incident Created",
+            description: "Automated incident creation triggered",
+          },
+        ],
+        recommendations: [
+          `Immediately block ${threat.indicator}`,
+          "Review authentication logs for the past 24 hours",
+          "Enable MFA for all user accounts",
+          "Update firewall rules to prevent similar attacks",
+          "Monitor for related suspicious activity",
+        ],
+        evidence: [
+          {
+            type: "threat_detection",
+            description: "Threat indicator that triggered this incident",
+            data: {
+              id: threat.id,
+              indicator: threat.indicator,
+              type: threat.type,
+              severity: threat.severity,
+              confidence: threat.confidence,
+            },
+          },
+        ],
+      };
+
+      // Get user from site
+      const siteWithUser = await this.siteRepository.findOne({
+        where: { id: site.id },
+        relations: ["user"],
+      });
+
+      const userId = siteWithUser?.user?.id || null;
+      const userEntity = userId ? await this.userRepository.findOne({ where: { id: userId } }) : undefined;
+
+      // Generate incident ID
+      const incidentCount = await this.incidentRepository.count();
+      const incident_id = `INC-${String(incidentCount + 1).padStart(6, '0')}`;
+
+      // Create incident directly in database
+      const incident = this.incidentRepository.create({
+        incident_id,
+        title: incidentData.title,
+        description: incidentData.description,
+        ai_summary: incidentData.ai_summary,
+        severity: incidentData.severity as any,
+        status: incidentData.status as any,
+        type: incidentData.type as any,
+        source_ip: incidentData.source_ip,
+        tags: incidentData.tags,
+        affected_systems: incidentData.affected_systems,
+        ai_recommendations: incidentData.ai_recommendations as any,
+        ip_reputation: incidentData.ip_reputation as any,
+        mitre_attack: incidentData.mitre_attack as any,
+        timeline: incidentData.timeline as any,
+        recommendations: incidentData.recommendations,
+        evidence: incidentData.evidence as any,
+        assignee: userEntity,
+        site: site,
+      });
+
+      await this.incidentRepository.save(incident);
+      this.logger.log(`✓ Auto-created incident ${incident_id} for threat: ${threat.indicator}`);
+    } catch (error) {
+      this.logger.error(
+        `Failed to auto-create incident for threat ${threat.indicator}:`,
+        error.message
+      );
     }
   }
 }
