@@ -54,11 +54,17 @@ export class ThreatsService {
     return savedThreat;
   }
 
-  async findAll(filter: ThreatsFilterDto = {}) {
+  async findAll(filter: ThreatsFilterDto = {}, userId?: string | number) {
     const queryBuilder = this.threatIndicatorsRepository
       .createQueryBuilder("indicator")
-      .leftJoinAndSelect("indicator.site", "site")
-      .orderBy("indicator.last_seen", "DESC");
+      .leftJoinAndSelect("indicator.site", "site");
+
+    // Filter by user's sites only
+    if (userId) {
+      queryBuilder.andWhere("site.userId = :userId", { userId });
+    }
+
+    queryBuilder.orderBy("indicator.last_seen", "DESC");
 
     // Apply filters
     if (filter.severity && filter.severity !== "all") {
@@ -104,7 +110,7 @@ export class ThreatsService {
     }
 
     const indicators = await queryBuilder.getMany();
-    const stats = await this.getStats();
+    const stats = await this.getStats(userId);
 
     // Transform for frontend compatibility
     const transformedIndicators = indicators.map((indicator) =>
@@ -187,9 +193,17 @@ export class ThreatsService {
     return { message: `${ids.length} indicators deleted successfully` };
   }
 
-  async getStats() {
-    const stats = await this.threatIndicatorsRepository
+  async getStats(userId?: string | number) {
+    const queryBuilder = this.threatIndicatorsRepository
       .createQueryBuilder("indicator")
+      .leftJoin("indicator.site", "site");
+
+    // Filter by user if provided
+    if (userId) {
+      queryBuilder.where("site.userId = :userId", { userId });
+    }
+
+    const stats = await queryBuilder
       .select([
         "COUNT(*) as total",
         `COUNT(CASE WHEN indicator.severity = '${ThreatSeverity.CRITICAL}' THEN 1 END) as critical`,

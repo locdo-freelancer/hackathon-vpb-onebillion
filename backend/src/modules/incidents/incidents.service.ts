@@ -63,6 +63,11 @@ export class IncidentsService {
       .leftJoinAndSelect("incident.site", "site")
       .orderBy("incident.createdAt", "DESC");
 
+    // Filter by user's sites only
+    if (userId) {
+      queryBuilder.andWhere("site.userId = :userId", { userId });
+    }
+
     // Apply filters
     if (filter.severity && filter.severity !== "all") {
       queryBuilder.andWhere("incident.severity = :severity", {
@@ -201,8 +206,16 @@ export class IncidentsService {
   }
 
   async getStats(userId: string) {
-    const stats = await this.incidentsRepository
+    const queryBuilder = this.incidentsRepository
       .createQueryBuilder("incident")
+      .leftJoin("incident.site", "site");
+
+    // Filter by user if provided
+    if (userId) {
+      queryBuilder.where("site.userId = :userId", { userId });
+    }
+
+    const stats = await queryBuilder
       .select([
         "COUNT(*) as total",
         `COUNT(CASE WHEN incident.status = '${IncidentStatus.OPEN}' THEN 1 END) as open`,

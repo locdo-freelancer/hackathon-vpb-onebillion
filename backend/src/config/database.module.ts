@@ -21,13 +21,12 @@ import {
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => {
-        const isProduction = configService
-          .get<string>("DB_HOST")
-          ?.includes("aivencloud.com");
+        const dbHost = configService.get<string>("DB_HOST");
+        const isProduction = dbHost?.includes("aivencloud.com");
 
         return {
           type: "postgres",
-          host: configService.get<string>("DB_HOST"),
+          host: dbHost,
           port: configService.get<number>("DB_PORT", 5432),
           username: configService.get<string>("DB_USERNAME"),
           password: configService.get<string>("DB_PASSWORD"),
@@ -54,10 +53,10 @@ import {
             idleTimeoutMillis: 30000,
             connectionTimeoutMillis: 10000,
           },
-          // Only use SSL for production (Aiven)
-          ssl: {
+          // Only use SSL for production (Aiven), not for localhost
+          ssl: isProduction ? {
             rejectUnauthorized: false,
-          },
+          } : false,
         };
       },
     }),

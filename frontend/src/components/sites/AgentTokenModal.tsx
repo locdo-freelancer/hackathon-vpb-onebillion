@@ -39,7 +39,10 @@ export const AgentTokenModal: React.FC<AgentTokenModalProps> = ({
     setLoading(true);
     try {
       const response = await SitesService.getAgentToken(site.id);
-      setTokenData(response.data);
+      console.log("Token response:", response);
+      // API already unwrapped, response IS the data
+      const data = response.data || response;
+      setTokenData(data);
     } catch (error) {
       console.error("Failed to fetch token:", error);
     } finally {

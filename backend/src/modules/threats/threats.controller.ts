@@ -57,8 +57,8 @@ export class ThreatsController {
     status: 200,
     description: "Threat indicators retrieved successfully",
   })
-  async findAll(@Query() filter: ThreatsFilterDto) {
-    return await this.threatsService.findAll(filter);
+  async findAll(@Query() filter: ThreatsFilterDto, @UserReq() user: User) {
+    return await this.threatsService.findAll(filter, user.id);
   }
 
   @Get("stats")
@@ -70,8 +70,8 @@ export class ThreatsController {
     status: 200,
     description: "Statistics retrieved successfully",
   })
-  async getStats() {
-    return await this.threatsService.getStats();
+  async getStats(@UserReq() user: User) {
+    return await this.threatsService.getStats(user.id);
   }
 
   @Get(":id")
