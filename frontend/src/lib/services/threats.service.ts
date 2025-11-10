@@ -122,7 +122,7 @@ export class ThreatsService {
   static async getThreatStats(): Promise<ThreatStats> {
     try {
       const response = await apiClient.get("/threats/stats");
-      return response;
+      return response.data || response;
     } catch (error: any) {
       console.error("Get threat stats error:", error);
       throw new Error(error.message || "Failed to fetch threat statistics");

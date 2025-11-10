@@ -120,7 +120,7 @@ export class IncidentsService {
   static async getIncidentStats(): Promise<IncidentStats> {
     try {
       const response = await apiClient.get("/incidents/stats");
-      return response;
+      return response.data || response;
     } catch (error: any) {
       console.error("Get incident stats error:", error);
       throw new Error(error.message || "Failed to fetch incident statistics");
