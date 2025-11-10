@@ -4,7 +4,6 @@ import React from "react";
 import Link from "next/link";
 import type { NavItem, User } from "@/types/dashboard.types";
 import { useLogout } from "@/hooks/useLogout";
-import { LanguageSwitcher } from "@/components/shared";
 import { useTranslations } from "@/hooks/useTranslations";
 
 interface DashboardSidebarProps {
@@ -18,7 +17,6 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
   user,
   onNavItemClick,
 }) => {
-  const { handleLogout } = useLogout();
   const { t } = useTranslations("auth");
 
   return (
@@ -71,20 +69,6 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
 
       {/* User Section - Fixed at bottom */}
       <div className="mt-auto p-6 space-y-3 border-t border-slate-800">
-        {/* Language Switcher */}
-        <div className="flex justify-center mb-2">
-          <LanguageSwitcher />
-        </div>
-
-        {/* Logout Button - Very visible */}
-        <button
-          onClick={handleLogout}
-          className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-lg bg-red-500/10 border-2 border-red-500/30 text-red-400 hover:text-white hover:bg-red-500/20 hover:border-red-500/50 transition-all duration-200 font-semibold"
-        >
-          <i className="fas fa-sign-out-alt text-lg" />
-          <span>{t("logout")}</span>
-        </button>
-
         {/* User Info */}
         <div className="flex items-center gap-3 p-3 bg-slate-950/50 rounded-lg border border-slate-800 hover:border-slate-700 transition-colors">
           <img

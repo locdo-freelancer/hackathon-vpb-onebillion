@@ -1,6 +1,7 @@
 import React from "react";
 import type { ThreatsStats } from "@/types/threats.types";
 import { getSeverityConfig } from "@/config/threat-severity.config";
+import { useTranslations } from "@/hooks/useTranslations";
 
 interface ThreatsStatsBarProps {
   stats: ThreatsStats;
@@ -28,6 +29,7 @@ const StatItem: React.FC<StatItemProps> = ({ label, value, color, icon }) => (
  * Dependency Inversion: Depends on ThreatsStats abstraction
  */
 export const ThreatsStatsBar: React.FC<ThreatsStatsBarProps> = ({ stats }) => {
+  const {t} = useTranslations("threats")
   const criticalConfig = getSeverityConfig("critical");
   const highConfig = getSeverityConfig("high");
   const mediumConfig = getSeverityConfig("medium");
@@ -37,28 +39,28 @@ export const ThreatsStatsBar: React.FC<ThreatsStatsBarProps> = ({ stats }) => {
     <div className="bg-slate-900/50 border border-slate-800 rounded-lg px-6 py-3 mb-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-6">
-          <StatItem label="Total" value={stats.total} color="text-white" icon="fa-shield-alt" />
+          <StatItem label={t("total")} value={stats.total} color="text-white" icon="fa-shield-alt" />
           <div className="w-px h-4 bg-slate-700" />
           <StatItem
-            label="Critical"
+            label={t("critical")}
             value={stats.critical}
             color={criticalConfig.textColor}
             icon={criticalConfig.icon}
           />
           <StatItem
-            label="High"
+            label={t("high")}
             value={stats.high}
             color={highConfig.textColor}
             icon={highConfig.icon}
           />
           <StatItem
-            label="Medium"
+            label={t("medium")}
             value={stats.medium}
             color={mediumConfig.textColor}
             icon={mediumConfig.icon}
           />
           <StatItem
-            label="Low"
+            label={t("low")}
             value={stats.low}
             color={lowConfig.textColor}
             icon={lowConfig.icon}
@@ -66,7 +68,7 @@ export const ThreatsStatsBar: React.FC<ThreatsStatsBarProps> = ({ stats }) => {
         </div>
         <div className="flex items-center gap-2">
           <i className="fas fa-ban text-red-400" />
-          <span className="text-sm text-gray-400">Blocked:</span>
+          <span className="text-sm text-gray-400">{t("blocked")}</span>
           <strong className="text-sm text-red-400">{stats.blocked}</strong>
         </div>
       </div>

@@ -51,7 +51,8 @@
     "viewAllThreats": "View All Threats",
     "active": "Active",
     "lastUpdated": "Last updated",
-    "search": "Search..."
+    "search": "Search...",
+    "export": "Export"
   },
   "auth": {
     "login": "Login",
@@ -99,7 +100,8 @@
     "affectedAssets": "Affected Assets",
     "mitreAttack": "MITRE ATT&CK",
     "indicators": "Threat Indicators",
-    "relatedIncidents": "Related Incidents"
+    "relatedIncidents": "Related Incidents",
+    "blocked": "Blocked"
   },
   "incidents": {
     "title": "Incident Management",
@@ -180,7 +182,8 @@
     "agentCount": "Agent Count",
     "zeroAgents": "0 agents",
     "oneToFiveAgents": "1-5 agents",
-    "fivePlusAgents": "5+ agents"
+    "fivePlusAgents": "5+ agents",
+    "warning": "Warning"
   },
   "actionConsole": {
     "title": "Action Console",

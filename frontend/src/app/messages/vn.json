@@ -3,8 +3,8 @@
     "dashboard": "Bảng điều khiển",
     "threats": "Mối đe dọa",
     "incidents": "Sự cố",
-    "agents": "Đại lý",
-    "sites": "Địa điểm",
+    "agents": "Tác nhân hệ thống",
+    "sites": "Khu vực giám sát",
     "actionConsole": "Bảng điều khiển hành động",
     "reports": "Báo cáo",
     "settings": "Cài đặt",
@@ -17,7 +17,7 @@
     "overview": "Tổng quan",
     "totalIncidents": "Tổng số sự cố",
     "activeSites": "Địa điểm hoạt động",
-    "agentsOnline": "Đại lý trực tuyến",
+    "agentsOnline": "tác nhân hệ thống trực tuyến",
     "criticalThreats": "Mối đe dọa nghiêm trọng",
     "recentIncidents": "Sự cố gần đây",
     "threatActivity": "Hoạt động mối đe dọa",
@@ -51,7 +51,8 @@
     "viewAllThreats": "Xem tất cả các mối đe dọa",
     "active": "Hoạt động",
     "lastUpdated": "Cập nhật lần cuối",
-    "search": "Tìm kiếm..."
+    "search": "Tìm kiếm...",
+    "export": "Xuất"
   },
   "auth": {
     "login": "Đăng nhập",
@@ -99,7 +100,8 @@
     "affectedAssets": "Tài sản bị ảnh hưởng",
     "mitreAttack": "MITRE ATT&CK",
     "indicators": "Chỉ báo mối đe dọa",
-    "relatedIncidents": "Sự cố liên quan"
+    "relatedIncidents": "Sự cố liên quan",
+    "blocked": "Đã chặn"
   },
   "incidents": {
     "title": "Quản lý sự cố",
@@ -123,8 +125,8 @@
     "aiRecommendations": "Đề xuất từ AI"
   },
   "agents": {
-    "title": "Quản lý đại lý",
-    "totalAgents": "Tổng số đại lý",
+    "title": "Quản lý tác nhân hệ thống",
+    "totalAgents": "Tổng số tác nhân hệ thống",
     "online": "Trực tuyến",
     "offline": "Ngoại tuyến",
     "warning": "Cảnh báo",
@@ -132,7 +134,7 @@
     "overview": "Tổng quan",
     "performance": "Chỉ số hiệu suất",
     "alerts": "Cảnh báo",
-    "search": "Tìm kiếm đại lý...",
+    "search": "Tìm kiếm tác nhân hệ thống...",
     "filter": "Lọc theo trạng thái",
     "hostname": "Tên máy chủ",
     "ipAddress": "Địa chỉ IP",
@@ -159,28 +161,29 @@
     "active": "Hoạt động"
   },
   "sites": {
-    "title": "Quản lý địa điểm",
-    "total": "Tổng số địa điểm",
+    "title": "Quản lý khu vực giám sát",
+    "total": "Tổng số khu vực giám sát",
     "active": "Hoạt động",
     "inactive": "Không hoạt động",
-    "search": "Tìm kiếm địa điểm...",
-    "addSite": "Thêm địa điểm",
+    "search": "Tìm kiếm khu vực giám sát...",
+    "addSite": "Thêm khu vực giám sát",
     "edit": "Chỉnh sửa",
     "delete": "Xóa",
     "name": "Tên",
     "location": "Vị trí",
-    "agents": "Đại lý",
+    "agents": "tác nhân hệ thống",
     "status": "Trạng thái",
     "lastUpdate": "Cập nhật cuối",
     "enableSelected": "Bật các mục đã chọn",
     "disableSelected": "Tắt các mục đã chọn",
     "deleteSelected": "Xóa các mục đã chọn",
     "bulkActions": "Hành động hàng loạt",
-    "filterSites": "Lọc địa điểm",
-    "agentCount": "Số lượng đại lý",
-    "zeroAgents": "0 đại lý",
-    "oneToFiveAgents": "1-5 đại lý",
-    "fivePlusAgents": "5+ đại lý"
+    "filterSites": "Lọc khu vực giám sát",
+    "agentCount": "Số lượng tác nhân hệ thống",
+    "zeroAgents": "0 tác nhân hệ thống",
+    "oneToFiveAgents": "1-5 tác nhân hệ thống",
+    "fivePlusAgents": "5+ tác nhân hệ thống",
+    "warning": "Cảnh báo"
   },
   "actionConsole": {
     "title": "Bảng điều khiển hành động",
