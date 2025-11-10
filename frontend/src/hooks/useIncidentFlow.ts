@@ -6,9 +6,10 @@ import { useIncidentsData } from "@/hooks/useIncidentsData";
 
 export interface AIRecommendation {
   id: string;
-  title: string;
+  action: string; // Backend format
+  priority: "critical" | "high" | "medium" | "low"; // Backend format
   description: string;
-  confidence: number;
+  reasoning?: string; // Backend format (optional)
   approved?: boolean;
 }
 
@@ -34,7 +35,16 @@ export const useIncidentFlow = (): IncidentFlow => {
 
   useEffect(() => {
     if (selectedIncident?.aiRecommendations) {
-      setAIRecommendations(selectedIncident.aiRecommendations);
+      // Map backend format to frontend format
+      const mappedRecommendations = selectedIncident.aiRecommendations.map((rec: any, index: number) => ({
+        id: rec.id || `rec-${index}`,
+        action: rec.action || rec.title || "Unknown Action", // Support both formats
+        priority: rec.priority || "medium",
+        description: rec.description || "",
+        reasoning: rec.reasoning,
+        approved: rec.approved,
+      }));
+      setAIRecommendations(mappedRecommendations);
     }
   }, [selectedIncident]);
 
@@ -42,12 +52,16 @@ export const useIncidentFlow = (): IncidentFlow => {
     setAIRecommendations((prev) =>
       prev.map((rec) => (rec.id === id ? { ...rec, approved: true } : rec))
     );
+    // TODO: Call API to save approval status
+    console.log("Approved recommendation:", id);
   };
 
   const handleDenyRecommendation = (id: string) => {
     setAIRecommendations((prev) =>
       prev.map((rec) => (rec.id === id ? { ...rec, approved: false } : rec))
     );
+    // TODO: Call API to save denial status
+    console.log("Denied recommendation:", id);
   };
 
   const handleEdit = () => {

@@ -5,11 +5,13 @@ import { AgentCommService } from "./agent-comm.service";
 import { AgentCommController } from "./agent-comm.controller";
 import { Site, AgentEntity, ThreatIndicator, Incident, User } from "../../../libs/entities";
 import { AgentBearerStrategy } from "./strategies/agent-bearer.strategy";
+import { IncidentsModule } from "../incidents/incidents.module";
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Site, AgentEntity, ThreatIndicator, Incident, User]),
     PassportModule,
+    IncidentsModule, // Import để sử dụng AIService
   ],
   controllers: [AgentCommController],
   providers: [AgentCommService, AgentBearerStrategy],

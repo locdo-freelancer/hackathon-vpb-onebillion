@@ -12,6 +12,7 @@ import {
 import { Repository } from "typeorm";
 import { ReportThreatDto } from "./dto/report-threat.dto";
 import { ThreatStatus } from "../../../libs/constant/src";
+import { AIService } from "../incidents/ai.service";
 
 @Injectable()
 export class AgentCommService {
@@ -27,7 +28,8 @@ export class AgentCommService {
     @InjectRepository(Incident)
     private incidentRepository: Repository<Incident>,
     @InjectRepository(User)
-    private userRepository: Repository<User>
+    private userRepository: Repository<User>,
+    private aiService: AIService
   ) {}
 
   async handleCheckIn(site: Site) {
@@ -173,6 +175,17 @@ export class AgentCommService {
 
   private async autoCreateIncident(threat: ThreatIndicator, site: Site): Promise<void> {
     try {
+      // Get AI-powered analysis
+      const aiAnalysis = await this.aiService.analyzeSecurityThreat({
+        indicator: threat.indicator,
+        type: threat.type,
+        severity: threat.severity,
+        confidence: threat.confidence,
+        description: threat.description,
+        intelligence: threat.intelligence,
+        siteName: site.name,
+      });
+
       // Map threat type to incident type (matching IncidentType enum)
       const incidentTypeMap: Record<string, string> = {
         ip: "network_intrusion",
@@ -183,34 +196,22 @@ export class AgentCommService {
 
       const incidentType = incidentTypeMap[threat.type] || "suspicious_activity";
 
-      // Create incident
+      // Create incident with AI-generated data
       const incidentData = {
         title: `Security Incident: ${threat.indicator}`,
-        description: `Automated incident created from threat detection\n\nThreat Details:\n- Type: ${threat.type}\n- Severity: ${threat.severity}\n- Confidence: ${threat.confidence}%\n- Source: ${threat.indicator}\n- Site: ${site.name}\n- Detected: ${threat.first_seen}`,
-        ai_summary: `This incident was automatically generated from a ${threat.severity} severity threat detection. The system identified suspicious activity from ${threat.indicator} with ${threat.confidence}% confidence on site ${site.name}.`,
+        description: `Automated incident created from threat detection\n\nThreat Details:\n- Type: ${threat.type}\n- Severity: ${threat.severity}\n- Confidence: ${threat.confidence}%\n- Source: ${threat.indicator}\n- Site: ${site.name}\n- Detected: ${threat.first_seen}\n\n**AI Analysis Summary:**\n${aiAnalysis.summary}\n\n**Risk Assessment:**\n${aiAnalysis.risk_assessment}`,
+        ai_summary: aiAnalysis.summary,
         severity: threat.severity,
         status: "open" as any,
         type: incidentType as any,
         source_ip: threat.indicator,
-        tags: [...(threat.tags || []), "automated", threat.severity],
+        tags: [...(threat.tags || []), "automated", threat.severity, "ai-analyzed"],
         affected_systems: [site.name],
-        ai_recommendations: [
-          {
-            action: "Block IP Address",
-            priority: "high",
-            description: `Immediately block the source ${threat.indicator} at the firewall level`,
-          },
-          {
-            action: "Review Logs",
-            priority: "medium",
-            description: "Analyze server logs for any successful authentication attempts",
-          },
-          {
-            action: "Enable Monitoring",
-            priority: "high",
-            description: "Increase monitoring for similar threats",
-          },
-        ],
+        ai_recommendations: aiAnalysis.recommendations.map(rec => ({
+          action: rec.action,
+          priority: rec.priority,
+          description: rec.description,
+        })),
         ip_reputation: {
           score: 95,
           country: threat.country || "Unknown",
@@ -218,18 +219,15 @@ export class AgentCommService {
           threat_level: threat.severity,
           blacklisted: true,
         },
-        mitre_attack: [
-          {
-            tactic: "Initial Access",
-            technique: "Valid Accounts",
-            id: "T1078",
-          },
-          {
-            tactic: "Credential Access",
-            technique: "Brute Force",
-            id: "T1110",
-          },
-        ],
+        mitre_attack: aiAnalysis.mitre_techniques.length > 0 
+          ? aiAnalysis.mitre_techniques
+          : [
+              {
+                tactic: "Initial Access",
+                technique: "Valid Accounts",
+                id: "T1078",
+              },
+            ],
         timeline: [
           {
             timestamp: threat.first_seen,
@@ -238,17 +236,16 @@ export class AgentCommService {
           },
           {
             timestamp: new Date(),
+            event: "AI Analysis Complete",
+            description: "Threat analyzed using Google Gemini AI",
+          },
+          {
+            timestamp: new Date(),
             event: "Incident Created",
             description: "Automated incident creation triggered",
           },
         ],
-        recommendations: [
-          `Immediately block ${threat.indicator}`,
-          "Review authentication logs for the past 24 hours",
-          "Enable MFA for all user accounts",
-          "Update firewall rules to prevent similar attacks",
-          "Monitor for related suspicious activity",
-        ],
+        recommendations: aiAnalysis.recommendations.map(rec => rec.action),
         evidence: [
           {
             type: "threat_detection",
@@ -259,6 +256,16 @@ export class AgentCommService {
               type: threat.type,
               severity: threat.severity,
               confidence: threat.confidence,
+            },
+          },
+          {
+            type: "ai_analysis",
+            description: "AI-powered security analysis",
+            data: {
+              model: "Google Gemini AI",
+              timestamp: new Date(),
+              summary: aiAnalysis.summary,
+              risk_assessment: aiAnalysis.risk_assessment,
             },
           },
         ],
