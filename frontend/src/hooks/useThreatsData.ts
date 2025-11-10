@@ -58,23 +58,22 @@ export const useThreatsData = (): UseThreatsDataReturn => {
       setError(null);
 
       // Fetch threats from API - response format: { success, data: { indicators, stats }, timestamp }
+      // apiClient automatically unwraps to: { indicators, stats }
       const response = await ThreatsService.getAllThreats().catch(() => ({
-        data: {
-          indicators: [],
-          stats: {
-            total: 0,
-            critical: 0,
-            high: 0,
-            medium: 0,
-            low: 0,
-            blocked: 0,
-            active: 0,
-          },
+        indicators: [],
+        stats: {
+          total: 0,
+          critical: 0,
+          high: 0,
+          medium: 0,
+          low: 0,
+          blocked: 0,
+          active: 0,
         },
       }));
 
-      // Extract data from response wrapper
-      const responseData = response.data || response;
+      // Response is already unwrapped by apiClient
+      const responseData = response;
 
       // Helper functions for icon mapping (Single Responsibility)
       const getIconForType = (type: string): string => {
