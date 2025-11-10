@@ -6,8 +6,7 @@ import type {
   IncidentDetail,
   IncidentsStats,
 } from "@/types/incidents.types";
-import { fetchIncidentsData } from "@/data/mock-incident";
-import { fetchIncidentDetail } from "@/data/mock-incident-detail";
+import { IncidentsService } from "@/lib/services";
 
 export interface UseIncidentsDataReturn {
   data: IncidentsData | null;
@@ -50,7 +49,54 @@ export const useIncidentsData = (): UseIncidentsDataReturn => {
     try {
       setIsLoading(true);
       setError(null);
-      const incidentsData = await fetchIncidentsData();
+      
+      // Fetch incidents from API
+      const response = await IncidentsService.getAllIncidents().catch(() => ({
+        incidents: [],
+        stats: {
+          total: 0,
+          open: 0,
+          investigating: 0,
+          resolved: 0,
+          closed: 0,
+          critical: 0,
+          high: 0,
+          medium: 0,
+          low: 0,
+        },
+      }));
+
+      const incidentsData: IncidentsData = {
+        incidents: (response.incidents || []).map((incident: any) => ({
+          id: incident.id,
+          incidentId: incident.incidentId || `INC-${incident.id.slice(0, 6)}`,
+          title: incident.title,
+          severity: incident.severity,
+          status: incident.status,
+          type: incident.type,
+          dateCreated: incident.dateCreated || incident.createdAt,
+          assignee: incident.assignee,
+          affectedSystems: incident.affectedSystems || [],
+          tags: incident.tags || [],
+          description: incident.description,
+          timeline: incident.timeline,
+          mitreAttack: incident.mitreAttack,
+          aiRecommendations: incident.aiRecommendations,
+          relatedIncidents: incident.relatedIncidents,
+        })),
+        stats: response.stats || {
+          total: 0,
+          open: 0,
+          investigating: 0,
+          resolved: 0,
+          closed: 0,
+          critical: 0,
+          high: 0,
+          medium: 0,
+          low: 0,
+        },
+      };
+
       setData(incidentsData);
     } catch (err) {
       setError(
@@ -116,7 +162,57 @@ export const useIncidentsData = (): UseIncidentsDataReturn => {
     }
 
     try {
-      const detail = await fetchIncidentDetail(id);
+      const incident = await IncidentsService.getIncidentById(id);
+      
+      // Transform to IncidentDetail format
+      const detail: IncidentDetail = {
+        id: incident.id,
+        incidentId: incident.incidentId,
+        title: incident.title,
+        severity: incident.severity,
+        status: incident.status,
+        type: incident.type,
+        dateCreated: incident.dateCreated,
+        assignee: incident.assignee,
+        affectedSystems: incident.affectedSystems,
+        tags: incident.tags,
+        description: incident.description,
+        timeline: (incident.timeline || []).map((event: any) => ({
+          id: `${event.timestamp}-${Math.random()}`,
+          timestamp: event.timestamp,
+          event: event.event,
+          user: event.user || "System",
+          details: event.details,
+          action: event.event.toLowerCase().includes("created") ? "created" :
+                  event.event.toLowerCase().includes("assigned") ? "assigned" :
+                  event.event.toLowerCase().includes("updated") ? "updated" :
+                  event.event.toLowerCase().includes("resolved") ? "resolved" : "updated",
+        })),
+        mitreAttack: (incident.mitreAttack || []).map((technique: string) => ({
+          id: technique,
+          name: technique,
+          tactic: "Unknown",
+          description: "",
+        })),
+        relatedIncidents: (incident.relatedIncidents || []).map((relId: string) => ({
+          id: relId,
+          title: `Related Incident ${relId}`,
+          severity: "Medium" as const,
+          date: new Date().toISOString(),
+        })),
+        aiRecommendations: (incident.aiRecommendations || []).map((rec: string, idx: number) => ({
+          id: `rec-${idx}`,
+          title: rec,
+          description: rec,
+          confidence: 0.85,
+        })),
+        relatedIndicators: [],
+        recommendations: incident.aiRecommendations || [],
+        rawLogs: [],
+        externalReferences: [],
+        evidence: [],
+      };
+      
       setSelectedIncident(detail);
     } catch (err) {
       console.error("Failed to fetch incident detail:", err);

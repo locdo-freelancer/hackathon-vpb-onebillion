@@ -5,8 +5,7 @@ import type {
   ThreatsFilter,
   ThreatDetail,
 } from "@/types/threats.types";
-import { fetchThreatsData } from "@/data/mock-threat";
-import { fetchThreatDetail } from "@/data/mock-threat-detail";
+import { ThreatsService } from "@/lib/services";
 
 export interface UseThreatsDataReturn {
   data: ThreatsData | null;
@@ -55,7 +54,72 @@ export const useThreatsData = (): UseThreatsDataReturn => {
     try {
       setIsLoading(true);
       setError(null);
-      const threatsData = await fetchThreatsData();
+      
+      // Fetch threats from API - response already has indicators and stats
+      const response = await ThreatsService.getAllThreats().catch(() => ({
+        indicators: [],
+        stats: {
+          total: 0,
+          critical: 0,
+          high: 0,
+          medium: 0,
+          low: 0,
+          blocked: 0,
+          active: 0,
+        },
+      }));
+
+      // Helper to get icon based on threat type
+      const getIconForType = (type: string) => {
+        const iconMap: Record<string, string> = {
+          ip: "🌐",
+          domain: "🔗",
+          url: "🔗",
+          hash: "🔒",
+          email: "📧",
+          malware: "🦠",
+        };
+        return iconMap[type.toLowerCase()] || "⚠️";
+      };
+
+      const getIconColor = (severity: string) => {
+        const colorMap: Record<string, string> = {
+          critical: "#dc2626",
+          high: "#f59e0b",
+          medium: "#eab308",
+          low: "#22c55e",
+        };
+        return colorMap[severity.toLowerCase()] || "#6b7280";
+      };
+
+      const threatsData: ThreatsData = {
+        indicators: (response.indicators || []).map((threat: any) => ({
+          id: threat.id,
+          indicator: threat.indicator,
+          type: threat.type,
+          severity: threat.severity,
+          firstSeen: threat.firstSeen || threat.createdAt,
+          lastSeen: threat.lastSeen || threat.updatedAt,
+          occurrences: threat.occurrences || 1,
+          status: threat.status,
+          country: threat.country || "Unknown",
+          countryCode: threat.countryCode || "XX",
+          description: threat.description || "",
+          tags: threat.tags || [],
+          confidence: threat.confidence || 0.75,
+          icon: getIconForType(threat.type),
+          iconColor: getIconColor(threat.severity),
+        })),
+        stats: response.stats || {
+          total: 0,
+          critical: 0,
+          high: 0,
+          medium: 0,
+          low: 0,
+          blocked: 0,
+        },
+      };
+
       setData(threatsData);
     } catch (err) {
       setError(
@@ -116,7 +180,35 @@ export const useThreatsData = (): UseThreatsDataReturn => {
     }
 
     try {
-      const detail = await fetchThreatDetail(id);
+      const threat = await ThreatsService.getThreatById(id);
+      
+      // Transform to ThreatDetail format
+      const detail: ThreatDetail = {
+        id: threat.id,
+        indicator: threat.indicator,
+        type: threat.type,
+        severity: threat.severity,
+        confidence: threat.confidence,
+        firstSeen: threat.firstSeen,
+        lastSeen: threat.lastSeen,
+        status: threat.status,
+        country: threat.country,
+        countryCode: threat.countryCode,
+        countryFlag: threat.countryFlag,
+        description: threat.description,
+        tags: threat.tags,
+        sources: threat.sources,
+        malwareFamily: threat.malwareFamily,
+        icon: threat.icon,
+        iconColor: threat.iconColor,
+        enrichment: {
+          tags: threat.tags || [],
+          malwareFamily: threat.malwareFamily,
+        },
+        intelligence: [],
+        relatedIndicators: [],
+      };
+      
       setSelectedThreat(detail);
     } catch (err) {
       console.error("Failed to fetch threat detail:", err);

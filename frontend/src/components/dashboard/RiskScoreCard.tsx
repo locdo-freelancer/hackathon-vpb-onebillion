@@ -1,6 +1,9 @@
 import React from "react";
 import type { RiskScore, RiskMetrics } from "@/types/dashboard.types";
-import { getRiskScoreIconConfig, getMetricsConfig } from "@/config/risk-score.config";
+import {
+  getRiskScoreIconConfig,
+  getMetricsConfig,
+} from "@/config/risk-score.config";
 import { RiskMetricCard } from "./RiskMetricCard";
 import { RiskScoreTrend } from "./RiskScoreTrend";
 import { RiskLevelBar } from "./RiskLevelBar";
@@ -12,7 +15,7 @@ interface RiskScoreCardProps {
 
 /**
  * Risk Score Card Component
- * 
+ *
  * SOLID Principles Applied:
  * - Single Responsibility: Only manages risk score card layout
  * - Open/Closed: New metrics added via config, not code modification
@@ -41,7 +44,9 @@ export const RiskScoreCard: React.FC<RiskScoreCardProps> = ({
             <div
               className={`${iconConfig.size} ${iconConfig.bg} rounded-lg flex items-center justify-center ${iconConfig.shadow}`}
             >
-              <i className={`${iconConfig.icon} ${iconConfig.iconSize} text-white`} />
+              <i
+                className={`${iconConfig.icon} ${iconConfig.iconSize} text-white`}
+              />
             </div>
             <div>
               <p className="text-sm text-gray-400 uppercase tracking-wide">
@@ -55,7 +60,12 @@ export const RiskScoreCard: React.FC<RiskScoreCardProps> = ({
 
           {/* Score Display with Trend (LSP - composed components) */}
           <div className="flex items-end gap-4 mt-6">
-            <div className="text-6xl font-bold text-white">{score}</div>
+            <div className="text-6xl font-bold text-white">
+              {isNaN(score) || score === null || score === undefined
+                ? 0
+                : score}
+            </div>
+
             <div className="mb-2">
               <span className="text-2xl text-gray-400">/{maxScore}</span>
               <RiskScoreTrend direction={trend.direction} value={trend.value} />

@@ -76,12 +76,24 @@ export const useDashboardData = (): UseDashboardDataReturn => {
         })),
       ]);
 
-      // Calculate metrics from fetched data
-      const totalIncidents = incidentsStats.total;
-      const criticalWeight = incidentsStats.critical * 10;
-      const highWeight = incidentsStats.high * 5;
-      const threatWeight = threatsStats.active * 2;
-      const agentWeight = agentsStats.offlineAgents * 3;
+      // Calculate metrics from fetched data with safe number conversions
+      const totalIncidents = Number(incidentsStats?.total) || 0;
+      const criticalIncidents = Number(incidentsStats?.critical) || 0;
+      const highIncidents = Number(incidentsStats?.high) || 0;
+      const mediumIncidents = Number(incidentsStats?.medium) || 0;
+      const lowIncidents = Number(incidentsStats?.low) || 0;
+      const openIncidents = Number(incidentsStats?.open) || 0;
+      
+      const totalThreats = Number(threatsStats?.total) || 0;
+      const activeThreats = Number(threatsStats?.active) || 0;
+      const blockedThreats = Number(threatsStats?.blocked) || 0;
+      
+      const offlineAgents = Number(agentsStats?.offlineAgents) || 0;
+      
+      const criticalWeight = criticalIncidents * 10;
+      const highWeight = highIncidents * 5;
+      const threatWeight = activeThreats * 2;
+      const agentWeight = offlineAgents * 3;
       const totalWeight = criticalWeight + highWeight + threatWeight + agentWeight;
       const riskScoreValue = Math.min(100, Math.max(0, 100 - totalWeight));
       
@@ -91,7 +103,7 @@ export const useDashboardData = (): UseDashboardDataReturn => {
       else if (riskScoreValue >= 40) riskLevel = "HIGH";
       else riskLevel = "CRITICAL";
 
-      const resolvedCount = totalIncidents - incidentsStats.open;
+      const resolvedCount = totalIncidents - openIncidents;
 
       // Generate mock trend data for charts
       const trendData = [];
@@ -109,14 +121,14 @@ export const useDashboardData = (): UseDashboardDataReturn => {
       // Transform to DashboardData format
       const dashboardData: DashboardData = {
         stats: {
-          totalSites: sitesData.totalSites,
-          activeSites: sitesData.activeSites,
-          totalAgents: agentsStats.totalAgents,
-          onlineAgents: agentsStats.onlineAgents,
-          totalIncidents: incidentsStats.total,
-          criticalIncidents: incidentsStats.critical,
-          totalThreats: threatsStats.total,
-          blockedThreats: threatsStats.blocked,
+          totalSites: Number(sitesData?.totalSites) || 0,
+          activeSites: Number(sitesData?.activeSites) || 0,
+          totalAgents: Number(agentsStats?.totalAgents) || 0,
+          onlineAgents: Number(agentsStats?.onlineAgents) || 0,
+          totalIncidents,
+          criticalIncidents,
+          totalThreats,
+          blockedThreats,
         },
         recentIncidents: [],
         riskScore: {
@@ -130,17 +142,17 @@ export const useDashboardData = (): UseDashboardDataReturn => {
           lastUpdated: new Date().toISOString(),
         },
         riskMetrics: {
-          critical: incidentsStats.critical,
-          warnings: incidentsStats.high,
-          informational: incidentsStats.medium + incidentsStats.low,
+          critical: criticalIncidents,
+          warnings: highIncidents,
+          informational: mediumIncidents + lowIncidents,
         },
         threats: [],
         incidentStats: {
           total: totalIncidents,
-          critical: incidentsStats.critical,
-          high: incidentsStats.high,
-          medium: incidentsStats.medium,
-          low: incidentsStats.low,
+          critical: criticalIncidents,
+          high: highIncidents,
+          medium: mediumIncidents,
+          low: lowIncidents,
           trend: {
             value: 5.2,
             direction: "up",
@@ -152,18 +164,18 @@ export const useDashboardData = (): UseDashboardDataReturn => {
             percentage: totalIncidents > 0 ? Math.round((resolvedCount / totalIncidents) * 100) : 0,
           },
           inProgress: {
-            count: Math.floor(incidentsStats.open * 0.4),
-            percentage: totalIncidents > 0 ? Math.round((incidentsStats.open * 0.4 / totalIncidents) * 100) : 0,
+            count: Math.floor(openIncidents * 0.4),
+            percentage: totalIncidents > 0 ? Math.round((openIncidents * 0.4 / totalIncidents) * 100) : 0,
           },
           open: {
-            count: Math.floor(incidentsStats.open * 0.6),
-            percentage: totalIncidents > 0 ? Math.round((incidentsStats.open * 0.6 / totalIncidents) * 100) : 0, 
+            count: Math.floor(openIncidents * 0.6),
+            percentage: totalIncidents > 0 ? Math.round((openIncidents * 0.6 / totalIncidents) * 100) : 0, 
           },
           meanTimeToResolve: "4.2 hours",
         },
         severityChart: {
           labels: ["Critical", "High", "Medium", "Low"],
-          values: [incidentsStats.critical, incidentsStats.high, incidentsStats.medium, incidentsStats.low],
+          values: [criticalIncidents, highIncidents, mediumIncidents, lowIncidents],
           colors: ["#ef4444", "#f97316", "#eab308", "#22c55e"],
         },
         trendsChart: [

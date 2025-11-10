@@ -95,7 +95,7 @@ export const IncidentSummaryCard: React.FC<IncidentSummaryCardProps> = ({
               <div className={`w-3 h-3 ${item.color} rounded-full`} />
               <span className="text-xs text-gray-400">{item.label}</span>
             </div>
-            <p className="text-2xl font-bold text-white">{item.count}</p>
+            <p className="text-2xl font-bold text-white">{item.count ?? 0}</p>
           </div>
         ))}
       </div>
