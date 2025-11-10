@@ -21,20 +21,29 @@ export class AuthService {
         password: credentials.password,
       });
 
+      console.log("Login API response:", response);
+
       // Backend returns: { success: true, data: { access_token, user } }
-      if (response.data?.access_token) {
-        localStorage.setItem("token", response.data.access_token);
+      // apiClient should unwrap to just the data object: { access_token, user }
+      
+      // Check both unwrapped and non-unwrapped formats for compatibility
+      const token = response.access_token || response.data?.access_token;
+      const user = response.user || response.data?.user;
+
+      if (token && user) {
+        localStorage.setItem("token", token);
         return {
           success: true,
-          token: response.data.access_token,
+          token: token,
           user: {
-            id: response.data.user.id,
-            email: response.data.user.email,
-            name: response.data.user.full_name,
+            id: user.id,
+            email: user.email,
+            name: user.full_name,
           },
         };
       }
 
+      console.error("Invalid response structure:", response);
       return {
         success: false,
         message: "Login failed. Invalid response from server.",
@@ -75,14 +84,16 @@ export class AuthService {
       });
 
       // Backend returns: { success: true, data: { message, user } }
-      if (response.data?.user) {
+      // apiClient already unwraps to just the data object
+      // So response = { message, user }
+      if (response.user) {
         return {
           success: true,
-          message: response.data.message || "Registration successful",
+          message: response.message || "Registration successful",
           user: {
-            id: response.data.user.id,
-            email: response.data.user.email,
-            name: response.data.user.full_name,
+            id: response.user.id,
+            email: response.user.email,
+            name: response.user.full_name,
           },
         };
       }
