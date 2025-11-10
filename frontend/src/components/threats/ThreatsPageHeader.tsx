@@ -1,4 +1,8 @@
+"use client";
+
 import React from "react";
+import { LanguageSwitcher } from "@/components/shared";
+import { useTranslations } from "@/hooks/useTranslations";
 
 interface ThreatsPageHeaderProps {
   searchQuery: string;
@@ -6,33 +10,33 @@ interface ThreatsPageHeaderProps {
   onExport: () => void;
 }
 
-/**
- * Presentational component for Threats page header
- * Open/Closed Principle: Can be extended without modifying
- */
 export const ThreatsPageHeader: React.FC<ThreatsPageHeaderProps> = ({
   searchQuery,
   onSearch,
   onExport,
 }) => {
+  const { t } = useTranslations();
   return (
     <div className="border-b border-slate-800 bg-slate-900/50 backdrop-blur-xl">
       <div className="px-8 py-6 flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-white">
-            Threat Intelligence
+            {t("threats.title")}
           </h2>
           <p className="text-sm text-gray-400 mt-1">
-            Monitor and analyze threat indicators across your network
+            {t("common.monitorThreats")}
           </p>
         </div>
 
         <div className="flex items-center gap-4">
+          {/* Language Switcher */}
+          <LanguageSwitcher />
+
           {/* Search Input */}
           <div className="relative">
             <input
               type="text"
-              placeholder="Search indicators..."
+              placeholder={t("threats.search")}
               value={searchQuery}
               onChange={(e) => onSearch(e.target.value)}
               className="w-64 px-4 py-2 bg-slate-950 border border-slate-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 transition-colors"
@@ -46,7 +50,7 @@ export const ThreatsPageHeader: React.FC<ThreatsPageHeaderProps> = ({
             className="px-4 py-2 bg-cyan-500 text-white rounded-lg hover:bg-cyan-600 transition-colors"
           >
             <i className="fas fa-download mr-2" />
-            Export
+            {t("threats.export")}
           </button>
         </div>
       </div>

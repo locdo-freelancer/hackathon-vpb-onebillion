@@ -14,6 +14,7 @@ import {
 } from "@/config/password-strength.config";
 import { InputLabel } from "./InputLabel";
 import { PasswordStrengthBar } from "./PasswordStrengthBar";
+import { useTranslations } from "@/hooks/useTranslations";
 
 interface PasswordInputProps {
   id: string;
@@ -32,8 +33,9 @@ export const PasswordInput: React.FC<PasswordInputProps> = ({
   placeholder = "••••••••",
   required = false,
   showStrengthIndicator = false,
-  label = "Password",
+  label = "password",
 }) => {
+  const { t } = useTranslations("auth");
   const [showPassword, setShowPassword] = useState(false);
 
   // Calculate password strength using config
@@ -44,7 +46,7 @@ export const PasswordInput: React.FC<PasswordInputProps> = ({
   return (
     <div>
       <InputLabel htmlFor={id} required={required}>
-        {label}
+        {t(label)}
       </InputLabel>
       <div className="relative">
         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">

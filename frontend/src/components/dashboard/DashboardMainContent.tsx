@@ -26,15 +26,6 @@ interface DashboardMainContentProps {
   resolutionStats: ResolutionStats;
 }
 
-/**
- * Dashboard Main Content Component
- * 
- * SOLID Principles Applied:
- * - Single Responsibility: Only manages main content layout and composition
- * - Open/Closed: New sections added via new components, not modification
- * - Liskov Substitution: Each card component is interchangeable
- * - Dependency Inversion: Depends on abstract component interfaces
- */
 export const DashboardMainContent: React.FC<DashboardMainContentProps> = ({
   riskScore,
   riskMetrics,

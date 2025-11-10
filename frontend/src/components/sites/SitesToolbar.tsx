@@ -2,6 +2,7 @@ import React from "react";
 import type { SitesFilter } from "@/types/sites.types";
 import { FilterMenu } from "./FilterMenu";
 import { BulkActionsMenu } from "./BulkActionsMenu";
+import { useTranslations } from "@/hooks/useTranslations";
 
 interface SitesToolbarProps {
   selectedCount: number;
@@ -24,6 +25,7 @@ export const SitesToolbar: React.FC<SitesToolbarProps> = ({
   onDeleteSelected,
   onExport,
 }) => {
+  const { t } = useTranslations();
   return (
     <div className="mb-6 flex items-center justify-between">
       {/* Left Section */}
@@ -33,7 +35,7 @@ export const SitesToolbar: React.FC<SitesToolbarProps> = ({
           className="px-4 py-2 bg-linear-to-r from-cyan-500 to-cyan-600 text-white font-medium rounded-lg hover:shadow-lg hover:shadow-cyan-500/20 transition-all"
         >
           <i className="fas fa-plus mr-2" />
-          Add New Site
+          {t("sites.addSite")}
         </button>
 
         <BulkActionsMenu
@@ -53,7 +55,7 @@ export const SitesToolbar: React.FC<SitesToolbarProps> = ({
           className="px-4 py-2 bg-slate-900 border border-slate-800 text-gray-300 rounded-lg hover:border-cyan-500/50 transition-colors"
         >
           <i className="fas fa-download mr-2" />
-          Export
+          {t("common.export")}
         </button>
       </div>
     </div>

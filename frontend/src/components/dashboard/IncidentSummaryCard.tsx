@@ -1,5 +1,6 @@
 import React from "react";
 import type { IncidentStats, ResolutionStats } from "@/types/dashboard.types";
+import { useTranslations } from "@/hooks/useTranslations";
 
 interface IncidentSummaryCardProps {
   stats: IncidentStats;
@@ -12,28 +13,30 @@ export const IncidentSummaryCard: React.FC<IncidentSummaryCardProps> = ({
   resolution,
   onExport,
 }) => {
+  const { t } = useTranslations("dashboard");
+
   const severityBreakdown = [
-    { label: "Critical", count: stats.critical, color: "bg-red-500" },
-    { label: "High", count: stats.high, color: "bg-yellow-500" },
-    { label: "Medium", count: stats.medium, color: "bg-blue-500" },
-    { label: "Low", count: stats.low, color: "bg-green-500" },
+    { label: t("critical"), count: stats.critical, color: "bg-red-500" },
+    { label: t("high"), count: stats.high, color: "bg-yellow-500" },
+    { label: t("medium"), count: stats.medium, color: "bg-blue-500" },
+    { label: t("low"), count: stats.low, color: "bg-green-500" },
   ];
 
   const resolutionData = [
     {
-      label: "Resolved",
+      label: t("resolved"),
       ...resolution.resolved,
       color: "bg-green-500",
       textColor: "text-green-400",
     },
     {
-      label: "In Progress",
+      label: t("inProgress"),
       ...resolution.inProgress,
       color: "bg-blue-500",
       textColor: "text-blue-400",
     },
     {
-      label: "Open",
+      label: t("open"),
       ...resolution.open,
       color: "bg-yellow-500",
       textColor: "text-yellow-400",
@@ -46,7 +49,7 @@ export const IncidentSummaryCard: React.FC<IncidentSummaryCardProps> = ({
       <div className="flex items-center justify-between mb-6">
         <div>
           <h3 className="text-lg font-semibold text-white">
-            Incident Summary
+            {t("incidentSummary")}
           </h3>
           <p className="text-sm text-gray-400">Last 24 hours overview</p>
         </div>
@@ -62,7 +65,7 @@ export const IncidentSummaryCard: React.FC<IncidentSummaryCardProps> = ({
       {/* Total Incidents */}
       <div className="bg-slate-950/50 border border-slate-800 rounded-lg p-4 mb-6">
         <div className="flex items-center justify-between mb-3">
-          <span className="text-sm text-gray-400">Total Incidents</span>
+          <span className="text-sm text-gray-400">{t("totalIncidents")}</span>
           <span className="text-2xl font-bold text-white">{stats.total}</span>
         </div>
         <div className="flex items-center gap-2 text-xs">
@@ -73,13 +76,11 @@ export const IncidentSummaryCard: React.FC<IncidentSummaryCardProps> = ({
           />
           <span
             className={
-              stats.trend.direction === "up"
-                ? "text-red-400"
-                : "text-green-400"
+              stats.trend.direction === "up" ? "text-red-400" : "text-green-400"
             }
           >
             {stats.trend.direction === "up" ? "+" : "-"}
-            {stats.trend.value}% from yesterday
+            {stats.trend.value}% {t("fromYesterday")}
           </span>
         </div>
       </div>
@@ -103,7 +104,7 @@ export const IncidentSummaryCard: React.FC<IncidentSummaryCardProps> = ({
       {/* Resolution Status */}
       <div className="border-t border-slate-800 pt-4">
         <h4 className="text-sm font-semibold text-white mb-3">
-          Resolution Status
+          {t("resolutionStatus")}
         </h4>
 
         <div className="space-y-3">
@@ -129,7 +130,7 @@ export const IncidentSummaryCard: React.FC<IncidentSummaryCardProps> = ({
       {/* Mean Time to Resolve */}
       <div className="mt-6 pt-4 border-t border-slate-800">
         <div className="flex items-center justify-between text-sm">
-          <span className="text-gray-400">Mean Time to Resolve</span>
+          <span className="text-gray-400">{t("meanTimeToResolve")}</span>
           <span className="text-white font-semibold">
             {resolution.meanTimeToResolve}
           </span>

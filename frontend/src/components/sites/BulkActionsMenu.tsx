@@ -1,3 +1,4 @@
+import { useTranslations } from "@/hooks/useTranslations";
 import React, { useState, useRef, useEffect } from "react";
 
 interface BulkAction {
@@ -21,6 +22,7 @@ export const BulkActionsMenu: React.FC<BulkActionsMenuProps> = ({
   onDisableSelected,
   onDeleteSelected,
 }) => {
+  const { t } = useTranslations("sites");
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -43,7 +45,7 @@ export const BulkActionsMenu: React.FC<BulkActionsMenuProps> = ({
   const actions: BulkAction[] = [
     {
       id: "enable",
-      label: "Enable Selected",
+      label: t("enableSelected"),
       icon: "fas fa-check-circle",
       color: "text-green-400",
       action: () => {
@@ -53,7 +55,7 @@ export const BulkActionsMenu: React.FC<BulkActionsMenuProps> = ({
     },
     {
       id: "disable",
-      label: "Disable Selected",
+      label: t("disableSelected"),
       icon: "fas fa-times-circle",
       color: "text-yellow-400",
       action: () => {
@@ -63,7 +65,7 @@ export const BulkActionsMenu: React.FC<BulkActionsMenuProps> = ({
     },
     {
       id: "delete",
-      label: "Delete Selected",
+      label: t("deleteSelected"),
       icon: "fas fa-trash",
       color: "text-red-400",
       action: () => {
@@ -85,7 +87,7 @@ export const BulkActionsMenu: React.FC<BulkActionsMenuProps> = ({
         }`}
       >
         <i className="fas fa-layer-group" />
-        <span>Bulk Actions</span>
+        <span>{t("bulkActions")}</span>
         {selectedCount > 0 && (
           <span className="ml-1 px-2 py-0.5 bg-cyan-500/20 text-cyan-400 text-xs font-semibold rounded-full">
             {selectedCount}
@@ -100,9 +102,9 @@ export const BulkActionsMenu: React.FC<BulkActionsMenuProps> = ({
             <button
               key={action.id}
               onClick={action.action}
-              className={`w-full px-4 py-3 text-left text-sm hover:bg-slate-800/50 transition-colors flex items-center gap-3 ${action.color} ${
-                action.id === "delete" ? "border-t border-slate-800" : ""
-              }`}
+              className={`w-full px-4 py-3 text-left text-sm hover:bg-slate-800/50 transition-colors flex items-center gap-3 ${
+                action.color
+              } ${action.id === "delete" ? "border-t border-slate-800" : ""}`}
             >
               <i className={action.icon} />
               {action.label}

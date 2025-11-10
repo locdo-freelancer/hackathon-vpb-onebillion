@@ -6,9 +6,12 @@ import { IncidentsFilters, IncidentsTable } from "@/components/incidents";
 import { getNavItems, getDefaultUser } from "@/config/navigation.config";
 import { useIncidentsFlow } from "@/hooks/useIncidentsFlow";
 import { useAuthProtection } from "@/hooks/useAuthProtection";
+import { LanguageSwitcher } from "@/components/shared";
+import { useTranslations } from "@/hooks/useTranslations";
 
 export default function IncidentsPage() {
   useAuthProtection();
+  const { t } = useTranslations();
   const {
     searchQuery,
     filteredIncidents,
@@ -38,19 +41,22 @@ export default function IncidentsPage() {
           <div className="px-8 py-6 flex items-center justify-between">
             <div>
               <h2 className="text-2xl font-bold text-white">
-                Security Incidents
+                {t("incidents.title")}
               </h2>
               <p className="text-sm text-gray-400 mt-1">
-                Monitor and manage security incidents across your infrastructure
+                {t("common.monitorIncidents")}
               </p>
             </div>
 
             <div className="flex items-center gap-4">
+              {/* Language Switcher */}
+              <LanguageSwitcher />
+              
               {/* Search Input */}
               <div className="relative">
                 <input
                   type="text"
-                  placeholder="Search incidents..."
+                  placeholder={t("incidents.search")}
                   value={searchQuery}
                   onChange={(e) => handleSearch(e.target.value)}
                   className="w-64 px-4 py-2 bg-slate-950 border border-slate-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 transition-colors"
@@ -64,7 +70,7 @@ export default function IncidentsPage() {
                 className="px-4 py-2 bg-cyan-500 text-white rounded-lg hover:bg-cyan-600 transition-colors"
               >
                 <i className="fas fa-plus mr-2" />
-                New Incident
+                {t("incidents.newIncident")}
               </button>
             </div>
           </div>

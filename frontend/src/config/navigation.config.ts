@@ -1,3 +1,5 @@
+import { useTranslations } from "@/hooks/useTranslations";
+
 export interface NavItem {
   icon: string;
   label: string;
@@ -7,52 +9,54 @@ export interface NavItem {
 }
 
 export const getNavItems = (currentPath: string): NavItem[] => {
+  const { t } = useTranslations("nav");
+
   return [
     {
       icon: "fas fa-gauge-high",
-      label: "Dashboard",
+      label: t("dashboard"),
       href: "/dashboard",
       active: currentPath === "/dashboard",
     },
     {
       icon: "fas fa-shield-virus",
-      label: "Threats",
+      label: t("threats"),
       href: "/threats",
       active: currentPath === "/threats",
     },
     {
       icon: "fas fa-server",
-      label: "Sites",
+      label: t("sites"),
       href: "/sites",
       active: currentPath === "/sites",
     },
     {
       icon: "fas fa-desktop",
-      label: "Agents",
+      label: t("agents"),
       href: "/agents",
       active: currentPath === "/agents",
     },
     {
       icon: "fas fa-exclamation-triangle",
-      label: "Incidents",
+      label: t("incidents"),
       href: "/incidents",
       active: currentPath === "/incidents" || currentPath.startsWith("/incidents/"),
     },
     {
       icon: "fas fa-bolt",
-      label: "Action Console",
+      label: t("actionConsole"),
       href: "/action-console",
       active: currentPath === "/action-console",
     },
     {
       icon: "fas fa-chart-line",
-      label: "Reports",
+      label: t("reports"),
       href: "#",
       active: false,
     },
     {
       icon: "fas fa-cog",
-      label: "Settings",
+      label: t("settings"),
       href: "#",
       active: false,
     },

@@ -1,5 +1,6 @@
 import React from "react";
 import type { ThreatsFilter } from "@/types/threats.types";
+import { useTranslations } from "@/hooks/useTranslations";
 
 interface ThreatsFiltersProps {
   filter: ThreatsFilter;
@@ -12,15 +13,17 @@ export const ThreatsFilters: React.FC<ThreatsFiltersProps> = ({
   onFilterChange,
   onApply,
 }) => {
+  const { t } = useTranslations();
+  
   return (
     <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
-      <h3 className="text-lg font-semibold text-white mb-4">Filters</h3>
+      <h3 className="text-lg font-semibold text-white mb-4">{t("common.filter")}</h3>
 
       <div className="grid grid-cols-6 gap-4">
         {/* Severity Filter */}
         <div>
           <label className="block text-sm font-medium text-gray-400 mb-2">
-            Severity
+            {t("threats.severity")}
           </label>
           <select
             value={filter.severity}
@@ -31,18 +34,18 @@ export const ThreatsFilters: React.FC<ThreatsFiltersProps> = ({
             }
             className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-white focus:outline-none focus:border-cyan-500"
           >
-            <option value="all">All</option>
-            <option value="critical">Critical</option>
-            <option value="high">High</option>
-            <option value="medium">Medium</option>
-            <option value="low">Low</option>
+            <option value="all">{t("common.all")}</option>
+            <option value="critical">{t("dashboard.critical")}</option>
+            <option value="high">{t("dashboard.high")}</option>
+            <option value="medium">{t("dashboard.medium")}</option>
+            <option value="low">{t("dashboard.low")}</option>
           </select>
         </div>
 
         {/* Type Filter */}
         <div>
           <label className="block text-sm font-medium text-gray-400 mb-2">
-            Type
+            {t("threats.type")}
           </label>
           <select
             value={filter.type}
@@ -51,44 +54,44 @@ export const ThreatsFilters: React.FC<ThreatsFiltersProps> = ({
             }
             className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-white focus:outline-none focus:border-cyan-500"
           >
-            <option value="all">All</option>
-            <option value="ip">IP Address</option>
-            <option value="domain">Domain</option>
-            <option value="url">URL</option>
-            <option value="hash">File Hash</option>
+            <option value="all">{t("common.all")}</option>
+            <option value="ip">{t("common.ipAddress")}</option>
+            <option value="domain">{t("common.domain")}</option>
+            <option value="url">{t("common.url")}</option>
+            <option value="hash">{t("common.fileHash")}</option>
           </select>
         </div>
 
         {/* Country Filter */}
         <div>
           <label className="block text-sm font-medium text-gray-400 mb-2">
-            Country
+            {t("common.country")}
           </label>
           <select
             value={filter.country}
             onChange={(e) => onFilterChange({ country: e.target.value })}
             className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-white focus:outline-none focus:border-cyan-500"
           >
-            <option value="">All</option>
-            <option value="US">United States</option>
-            <option value="CN">China</option>
-            <option value="RU">Russia</option>
-            <option value="IR">Iran</option>
-            <option value="KP">North Korea</option>
-            <option value="BR">Brazil</option>
-            <option value="UA">Ukraine</option>
-            <option value="NG">Nigeria</option>
+            <option value="">{t("common.all")}</option>
+            <option value="US">{t("common.unitedStates")}</option>
+            <option value="CN">{t("common.china")}</option>
+            <option value="RU">{t("common.russia")}</option>
+            <option value="IR">{t("common.iran")}</option>
+            <option value="KP">{t("common.northKorea")}</option>
+            <option value="BR">{t("common.brazil")}</option>
+            <option value="UA">{t("common.ukraine")}</option>
+            <option value="NG">{t("common.nigeria")}</option>
           </select>
         </div>
 
         {/* IP Range Filter */}
         <div>
           <label className="block text-sm font-medium text-gray-400 mb-2">
-            IP Range
+            {t("common.ipRange")}
           </label>
           <input
             type="text"
-            placeholder="e.g. 192.168.1.0/24"
+            placeholder={t("common.ipRangePlaceholder")}
             value={filter.ipRange}
             onChange={(e) => onFilterChange({ ipRange: e.target.value })}
             className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500"
@@ -98,7 +101,7 @@ export const ThreatsFilters: React.FC<ThreatsFiltersProps> = ({
         {/* Time Range Filter */}
         <div>
           <label className="block text-sm font-medium text-gray-400 mb-2">
-            Time Range
+            {t("common.timeRange")}
           </label>
           <select
             value={filter.timeRange}
@@ -109,10 +112,10 @@ export const ThreatsFilters: React.FC<ThreatsFiltersProps> = ({
             }
             className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-white focus:outline-none focus:border-cyan-500"
           >
-            <option value="24h">Last 24 hours</option>
-            <option value="7d">Last 7 days</option>
-            <option value="30d">Last 30 days</option>
-            <option value="90d">Last 90 days</option>
+            <option value="24h">{t("common.last24Hours")}</option>
+            <option value="7d">{t("common.last7Days")}</option>
+            <option value="30d">{t("common.last30Days")}</option>
+            <option value="90d">{t("common.last90Days")}</option>
           </select>
         </div>
 
@@ -123,7 +126,7 @@ export const ThreatsFilters: React.FC<ThreatsFiltersProps> = ({
             className="w-full px-4 py-2 bg-cyan-500 text-white rounded-lg hover:bg-cyan-600 transition-colors"
           >
             <i className="fas fa-filter mr-2" />
-            Apply
+            {t("common.apply")}
           </button>
         </div>
       </div>

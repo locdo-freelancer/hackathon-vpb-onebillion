@@ -4,6 +4,8 @@ import React from "react";
 import Link from "next/link";
 import type { NavItem, User } from "@/types/dashboard.types";
 import { useLogout } from "@/hooks/useLogout";
+import { LanguageSwitcher } from "@/components/shared";
+import { useTranslations } from "@/hooks/useTranslations";
 
 interface DashboardSidebarProps {
   navItems: NavItem[];
@@ -17,6 +19,7 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
   onNavItemClick,
 }) => {
   const { handleLogout } = useLogout();
+  const { t } = useTranslations("auth");
 
   return (
     <aside className="w-64 border-r border-slate-800 bg-slate-900/50 backdrop-blur-xl flex flex-col">
@@ -27,8 +30,8 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
             <i className="fas fa-shield-halved text-lg text-white" />
           </div>
           <div>
-            <h1 className="text-lg font-bold text-white">SecureVault</h1>
-            <p className="text-xs text-gray-400">Cybersecurity</p>
+            <h1 className="text-lg font-bold text-white">{t("secureVault")}</h1>
+            <p className="text-xs text-gray-400">{t("cybersecurity")}</p>
           </div>
         </div>
 
@@ -68,13 +71,18 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
 
       {/* User Section - Fixed at bottom */}
       <div className="mt-auto p-6 space-y-3 border-t border-slate-800">
+        {/* Language Switcher */}
+        <div className="flex justify-center mb-2">
+          <LanguageSwitcher />
+        </div>
+
         {/* Logout Button - Very visible */}
         <button
           onClick={handleLogout}
           className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-lg bg-red-500/10 border-2 border-red-500/30 text-red-400 hover:text-white hover:bg-red-500/20 hover:border-red-500/50 transition-all duration-200 font-semibold"
         >
           <i className="fas fa-sign-out-alt text-lg" />
-          <span>Logout</span>
+          <span>{t("logout")}</span>
         </button>
 
         {/* User Info */}
