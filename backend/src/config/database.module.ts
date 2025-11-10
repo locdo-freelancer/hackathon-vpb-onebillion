@@ -45,7 +45,7 @@ import {
             Incident,
             ThreatIndicator,
           ],
-          synchronize: configService.get<string>("NODE_ENV") === "development",
+          synchronize: false,
           logging: configService.get<string>("NODE_ENV") === "development",
           // Connection pool settings
           extra: {
@@ -55,11 +55,9 @@ import {
             connectionTimeoutMillis: 10000,
           },
           // Only use SSL for production (Aiven)
-          ...(isProduction && {
-            ssl: {
-              rejectUnauthorized: false,
-            },
-          }),
+          ssl: {
+            rejectUnauthorized: false,
+          },
         };
       },
     }),
