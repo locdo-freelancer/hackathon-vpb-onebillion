@@ -11,16 +11,6 @@ interface AgentCardProps {
   onClick: (agent: Agent) => void;
 }
 
-/**
- * Agent Card Component
- * 
- * SOLID Principles Applied:
- * - Single Responsibility: Only manages card layout and composition
- * - Open/Closed: New info rows or status types added via config
- * - Dependency Inversion: Depends on abstract config, not concrete colors
- * - Liskov Substitution: Atomic components are interchangeable
- * - Interface Segregation: Each atomic component has minimal focused props
- */
 export const AgentCard: React.FC<AgentCardProps> = ({ agent, onClick }) => {
   // Get heartbeat label and value based on status
   const getHeartbeatLabel = () =>

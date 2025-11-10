@@ -1,27 +1,24 @@
 import React from "react";
 import type { RiskLevel } from "@/config/risk-score.config";
 import { getRiskLevelConfig } from "@/config/risk-score.config";
+import { useTranslations } from "@/hooks/useTranslations";
 
 interface RiskLevelBarProps {
   level: RiskLevel;
   scorePercentage: number;
 }
 
-/**
- * Risk Level Progress Bar Component
- * Single Responsibility: Renders risk level indicator bar
- * Interface Segregation: Only needs level and percentage
- */
 export const RiskLevelBar: React.FC<RiskLevelBarProps> = ({
   level,
   scorePercentage,
 }) => {
+  const {t} = useTranslations("dashboard")
   const levelConfig = getRiskLevelConfig(level);
 
   return (
     <div className="mt-6 space-y-2">
       <div className="flex items-center justify-between text-sm">
-        <span className="text-gray-400">Risk Level</span>
+        <span className="text-gray-400">{t("risk")}</span>
         <span className={`${levelConfig.color} font-semibold`}>{level}</span>
       </div>
       <div className="w-full bg-slate-950 rounded-full h-2">

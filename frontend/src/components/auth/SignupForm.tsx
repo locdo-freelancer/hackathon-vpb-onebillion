@@ -17,6 +17,7 @@ import {
 } from "@/config/auth-validation.config";
 import { AuthService } from "@/lib/services/auth.service";
 import { SignupCredentials } from "@/types/auth.types";
+import { useTranslations } from "@/hooks/useTranslations";
 
 interface SignupFormProps {
   onSuccess: () => void;
@@ -27,6 +28,7 @@ export const SignupForm: React.FC<SignupFormProps> = ({
   onSuccess,
   onToggleLogin,
 }) => {
+  const { t } = useTranslations("auth");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -86,11 +88,9 @@ export const SignupForm: React.FC<SignupFormProps> = ({
     <>
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-white mb-2">
-          Create an account
+          {t("createAnAccount")}
         </h2>
-        <p className="text-gray-400 text-sm">
-          Join millions managing their finances smarter
-        </p>
+        <p className="text-gray-400 text-sm">{t("slogan")}</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -115,24 +115,25 @@ export const SignupForm: React.FC<SignupFormProps> = ({
           id="confirm-password"
           value={confirmPassword}
           onChange={setConfirmPassword}
-          label="Confirm Password"
-          placeholder="Confirm password"
+          label={t('confirmPassword')}
+          placeholder={t('confirmPassword')}
           required
           showStrengthIndicator={false}
         />
 
         <FormButton type="submit" isLoading={isLoading} variant="primary">
-          {isLoading ? "Creating account..." : "Create account"}
+          {isLoading ? t("creatingAccountButton") : t("createAccountButton")}
         </FormButton>
       </form>
 
       <p className="text-center text-sm text-gray-400 mt-6">
-        Already have an account?
+        {t("haveAnAccount")}
+
         <button
           onClick={onToggleLogin}
           className="text-cyber-accent hover:text-cyan-400 font-medium transition-colors ml-1"
         >
-          Sign in
+          {t("login")}
         </button>
       </p>
     </>

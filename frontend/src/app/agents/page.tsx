@@ -11,20 +11,11 @@ import {
 import { getNavItems, getDefaultUser } from "@/config/navigation.config";
 import { useAgentsFlow } from "@/hooks/useAgentsFlow";
 import { useAuthProtection } from "@/hooks/useAuthProtection";
+import { useTranslations } from "@/hooks/useTranslations";
 
-/**
- * Agents Page Component
- * 
- * SOLID Principles Applied:
- * - Single Responsibility: Only handles page composition and layout
- * - Open/Closed: New sections added via new components, not page modification
- * - Liskov Substitution: Page-level components (Content, Sidebar) are interchangeable
- * - Dependency Inversion: Depends on abstract hook interface, not concrete implementation
- * 
- * Reduced from 105 lines to ~55 lines by extracting layout logic to composition components
- */
 export default function AgentsPage() {
   useAuthProtection();
+  const { t } = useTranslations();
   const {
     activeTab,
     filteredAgents,
@@ -46,8 +37,8 @@ export default function AgentsPage() {
 
       <div className="flex-1 flex flex-col overflow-hidden">
         <DashboardHeader
-          title="Agent Management"
-          subtitle="Monitor and manage all security agents deployed across your infrastructure"
+          title={t("agents.title")}
+          subtitle={t("common.monitorAgents")}
         />
 
         <main className="flex-1 overflow-y-auto p-8">

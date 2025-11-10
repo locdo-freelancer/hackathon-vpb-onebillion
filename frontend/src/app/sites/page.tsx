@@ -12,6 +12,7 @@ import { getNavItems, getDefaultUser } from "@/config/navigation.config";
 import { useSitesFlow } from "@/hooks/useSitesFlow";
 import { useAuthProtection } from "@/hooks/useAuthProtection";
 import type { Site } from "@/types/sites.types";
+import { useTranslations } from "@/hooks/useTranslations";
 
 /**
  * Sites Page
@@ -24,6 +25,7 @@ export default function SitesPage() {
   const [tokenModalOpen, setTokenModalOpen] = useState(false);
   const [selectedSiteForToken, setSelectedSiteForToken] = useState<Site | null>(null);
 
+  const { t } = useTranslations();
   const {
     data,
     isLoading,
@@ -71,8 +73,8 @@ export default function SitesPage() {
         <div className="flex-1 flex flex-col">
           {/* Header */}
           <DashboardHeader
-            title="Sites Management"
-            subtitle="Monitor and manage your protected sites"
+            title={t("sites.title")}
+            subtitle={t("common.monitorSites")}
           />
 
           {/* Sites Content */}

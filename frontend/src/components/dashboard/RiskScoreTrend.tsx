@@ -1,3 +1,4 @@
+import { useTranslations } from "@/hooks/useTranslations";
 import React from "react";
 
 interface RiskScoreTrendProps {
@@ -14,6 +15,7 @@ export const RiskScoreTrend: React.FC<RiskScoreTrendProps> = ({
   direction,
   value,
 }) => {
+  const {t} = useTranslations("dashboard")
   const isImproving = direction === "down";
   const colorClass = isImproving ? "text-green-400" : "text-red-400";
 
@@ -22,7 +24,7 @@ export const RiskScoreTrend: React.FC<RiskScoreTrendProps> = ({
       <i className={`fas fa-arrow-${direction} ${colorClass}`} />
       <span className={`text-sm font-medium ${colorClass}`}>
         {isImproving ? "-" : "+"}
-        {Math.abs(value)} from yesterday
+        {Math.abs(value)} {t("fromYesterday")}
       </span>
     </div>
   );

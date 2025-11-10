@@ -3,6 +3,7 @@ import type { ThreatIndicator } from "@/types/threats.types";
 import { ThreatRow } from "./ThreatRow";
 import { ThreatCheckbox } from "./ThreatCheckbox";
 import { ThreatsEmptyState } from "./ThreatsEmptyState";
+import { useTranslations } from "@/hooks/useTranslations";
 
 interface ThreatsTableProps {
   threats: ThreatIndicator[];
@@ -13,14 +14,6 @@ interface ThreatsTableProps {
   totalCount: number;
 }
 
-/**
- * Threats Table Component
- * Single Responsibility: Render table structure and iterate over threats
- * Open/Closed: Uses composition for extensibility
- * Liskov Substitution: Can be replaced with any compatible table component
- * Interface Segregation: Clean props interface - data and handlers
- * Dependency Inversion: Depends on ThreatIndicator abstraction
- */
 export const ThreatsTable: React.FC<ThreatsTableProps> = ({
   threats,
   selectedIds,
@@ -29,6 +22,7 @@ export const ThreatsTable: React.FC<ThreatsTableProps> = ({
   onThreatClick,
   totalCount,
 }) => {
+  const { t } = useTranslations();
   const allSelected = threats.length > 0 && selectedIds.length === threats.length;
 
   return (
@@ -37,11 +31,11 @@ export const ThreatsTable: React.FC<ThreatsTableProps> = ({
       <div className="p-6 border-b border-slate-800">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-semibold text-white">
-            Threat Indicators
+            {t("threats.indicators")}
           </h3>
           <div className="flex items-center gap-4">
             <span className="text-sm text-gray-400">
-              {totalCount.toLocaleString()} indicators found
+              {totalCount.toLocaleString()} {t("common.indicatorsFound")}
             </span>
             <div className="flex items-center gap-2">
               <button className="p-2 text-gray-400 hover:text-white transition-colors">
@@ -68,25 +62,25 @@ export const ThreatsTable: React.FC<ThreatsTableProps> = ({
                 />
               </th>
               <th className="px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">
-                Indicator
+                {t("common.indicator")}
               </th>
               <th className="px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">
-                Type
+                {t("threats.type")}
               </th>
               <th className="px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">
-                Severity
+                {t("threats.severity")}
               </th>
               <th className="px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">
-                Confidence
+                {t("common.confidence")}
               </th>
               <th className="px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">
-                Country
+                {t("common.country")}
               </th>
               <th className="px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">
-                First Seen
+                {t("common.firstSeen")}
               </th>
               <th className="px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">
-                Actions
+                {t("common.actions")}
               </th>
             </tr>
           </thead>

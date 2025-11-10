@@ -10,12 +10,20 @@ One Billion là một nền tảng banking hiện đại được xây dựng ch
 
 ### ✨ Features
 
+- 🌐 **Multi-Language Support** ⭐ NEW!
+  - English ↔ Vietnamese switching
+  - Real-time language updates
+  - Persistent language preference
+  - 127+ translation keys
+  - [Quick Start Guide](I18N_QUICK_START.md) | [Full Documentation](I18N_GUIDE.md)
+
 - 🔐 **Authentication System**
   - Login/Signup với validation
   - Email verification
   - MFA (Multi-Factor Authentication)
   - OAuth (Google, GitHub, Microsoft)
   - Password strength indicator
+  - Auth routing protection
 
 - 🎯 **Onboarding Wizard** (4 Steps)
   - Step 1: Site Details (Server Name, IP, Port, Domain)
@@ -27,6 +35,7 @@ One Billion là một nền tảng banking hiện đại được xây dựng ch
   - Welcome screen
   - Quick actions
   - Financial overview (Coming soon)
+  - Multi-language support
 
 ---
 

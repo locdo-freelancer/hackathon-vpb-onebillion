@@ -42,3 +42,8 @@ export { MetricCard } from "./cards/MetricCard";
 export { LoadingState } from "./states/LoadingState";
 export { ErrorState } from "./states/ErrorState";
 export { EmptyState } from "./states/EmptyState";
+
+// ============================================
+// LANGUAGE SWITCHER
+// ============================================
+export { LanguageSwitcher } from "./LanguageSwitcher";

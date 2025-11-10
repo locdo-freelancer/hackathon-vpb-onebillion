@@ -13,8 +13,9 @@ import { FormButton } from "./FormButton";
 import { FormCheckbox } from "./FormCheckbox";
 import { FormError } from "./FormError";
 import { validateEmail } from "@/config/auth-validation.config";
-import { AuthService } from "@/lib/services/auth.service";
+import { useTranslations } from "@/hooks/useTranslations";
 import { LoginCredentials } from "@/types/auth.types";
+import { AuthService } from "@/lib/services";
 
 interface LoginFormProps {
   onSuccess: (requiresMFA: boolean, userId?: string) => void;
@@ -25,6 +26,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
   onSuccess,
   onToggleSignup,
 }) => {
+  const { t } = useTranslations("auth");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
@@ -78,8 +80,10 @@ export const LoginForm: React.FC<LoginFormProps> = ({
   return (
     <>
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-white mb-2">Welcome back</h2>
-        <p className="text-gray-400 text-sm">Access your financial dashboard</p>
+        <h2 className="text-2xl font-bold text-white mb-2">
+          {t("welcomeBack")}
+        </h2>
+        <p className="text-gray-400 text-sm">{t("accessDashboard")}</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -100,7 +104,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
             id="remember-me"
             checked={rememberMe}
             onChange={setRememberMe}
-            label="Remember me"
+            label={t("rememberMe")}
           />
           <button
             type="button"
@@ -111,22 +115,22 @@ export const LoginForm: React.FC<LoginFormProps> = ({
             }}
             className="text-sm text-cyber-accent hover:text-cyan-400 transition-colors"
           >
-            Forgot password?
+            {t("forgotPassword")}
           </button>
         </div>
 
         <FormButton type="submit" isLoading={isLoading} variant="primary">
-          {isLoading ? "Signing in..." : "Sign in"}
+          {isLoading ? t("loginingButton") : t("loginButton")}
         </FormButton>
       </form>
 
       <p className="text-center text-sm text-gray-400 mt-6">
-        Don't have an account?
+        {t("noAccount")}
         <button
           onClick={onToggleSignup}
           className="text-cyber-accent hover:text-cyan-400 font-medium transition-colors ml-1"
         >
-          Sign up
+          {t("signUpHere")}
         </button>
       </p>
     </>
