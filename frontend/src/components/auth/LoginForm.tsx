@@ -16,6 +16,7 @@ import { validateEmail } from "@/config/auth-validation.config";
 import { useTranslations } from "@/hooks/useTranslations";
 import { LoginCredentials } from "@/types/auth.types";
 import { AuthService } from "@/lib/services";
+import { SitesService } from "@/lib/services/sites.service";
 
 interface LoginFormProps {
   onSuccess: (requiresMFA: boolean, userId?: string) => void;
@@ -62,8 +63,21 @@ export const LoginForm: React.FC<LoginFormProps> = ({
 
       if (response.success && response.token) {
         // Token already stored in AuthService.login()
-        // Redirect to dashboard
-        window.location.href = "/dashboard";
+        // Check if user has sites
+        try {
+          const sitesResponse = await SitesService.getAllSites();
+          
+          // If user has sites, redirect to dashboard, otherwise to onboarding
+          if (sitesResponse.sites && sitesResponse.sites.length > 0) {
+            window.location.href = "/dashboard";
+          } else {
+            window.location.href = "/onboarding";
+          }
+        } catch (error) {
+          // If there's an error fetching sites, default to onboarding
+          console.error("Error checking sites:", error);
+          window.location.href = "/onboarding";
+        }
       } else {
         // Show error message
         setError(response.message || "Login failed. Please try again.");

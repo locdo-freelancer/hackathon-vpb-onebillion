@@ -1,9 +1,10 @@
 // Help Panel - Single Responsibility: Display contextual help
 import React from "react";
+import { useTranslations } from "@/hooks/useTranslations";
 
 interface HelpContent {
-  title: string;
-  description: string;
+  titleKey: string;
+  descriptionKey: string;
 }
 
 interface HelpPanelProps {
@@ -13,89 +14,78 @@ interface HelpPanelProps {
 const HELP_CONTENT: Record<number, HelpContent[]> = {
   1: [
     {
-      title: "Site Name",
-      description:
-        "Choose a descriptive name to easily identify this server in your monitoring dashboard.",
+      titleKey: "siteNameHelp",
+      descriptionKey: "siteNameHelpText",
     },
     {
-      title: "IP Address",
-      description:
-        "Enter the primary IP address of your server. This will be used to establish monitoring connection.",
+      titleKey: "ipAddressHelp",
+      descriptionKey: "ipAddressHelpText",
     },
     {
-      title: "Domain Name",
-      description:
-        "Optional: If your server has a domain name, you can provide it for easier reference.",
+      titleKey: "domainNameHelp",
+      descriptionKey: "domainNameHelpText",
     },
   ],
   2: [
     {
-      title: "Server Type",
-      description:
-        "Currently supporting Windows Server environments. The agent is optimized for Windows Server 2016, 2019, 2022, and Windows 10/11.",
+      titleKey: "serverTypeHelp",
+      descriptionKey: "serverTypeHelpText",
     },
     {
-      title: "Windows Compatibility",
-      description:
-        "Our Windows agent supports all modern Windows versions and provides real-time monitoring, security scanning, and threat detection.",
+      titleKey: "windowsCompatibility",
+      descriptionKey: "windowsCompatibilityText",
     },
     {
-      title: "System Requirements",
-      description:
-        "Minimum requirements: Windows Server 2016+ or Windows 10/11, 2GB RAM, 1GB free disk space, and PowerShell 5.1 or later.",
+      titleKey: "systemRequirements",
+      descriptionKey: "systemRequirementsText",
     },
   ],
   3: [
     {
-      title: "Installation Command",
-      description:
-        "Copy the command and run it on your server with root privileges. The agent will auto-configure and connect.",
+      titleKey: "installationCommand",
+      descriptionKey: "installationCommandText",
     },
     {
-      title: "Firewall Configuration",
-      description:
-        "Ensure your server can reach *.securevault.com on port 443 for secure communication.",
+      titleKey: "firewallConfiguration",
+      descriptionKey: "firewallConfigurationText",
     },
     {
-      title: "Installation Time",
-      description:
-        "The installation typically takes 30-60 seconds. You'll see confirmation when it's complete.",
+      titleKey: "installationTime",
+      descriptionKey: "installationTimeText",
     },
   ],
   4: [
     {
-      title: "Validation Steps",
-      description:
-        "We automatically verify network connectivity, agent authentication, and data synchronization.",
+      titleKey: "validationSteps",
+      descriptionKey: "validationStepsText",
     },
     {
-      title: "Troubleshooting",
-      description:
-        "If validation fails, check your firewall settings and ensure the agent installation completed successfully.",
+      titleKey: "troubleshooting",
+      descriptionKey: "troubleshootingText",
     },
     {
-      title: "Next Steps",
-      description:
-        "Once validation is complete, you can access your monitoring dashboard and start tracking server metrics.",
+      titleKey: "nextSteps",
+      descriptionKey: "nextStepsText",
     },
   ],
 };
 
 export const HelpPanel: React.FC<HelpPanelProps> = ({ currentStep }) => {
+  const { t } = useTranslations("onboarding");
   const content = HELP_CONTENT[currentStep] || [];
 
   return (
     <div className="p-6">
       <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
         <i className="fas fa-lightbulb text-cyber-accent" />
-        Help & Tips
+        {t("helpAndTips")}
       </h3>
 
       <div className="space-y-4">
         {content.map((item, index) => (
           <div key={index} className="bg-cyber-dark/50 rounded-lg p-4">
-            <h4 className="font-medium text-white mb-2">{item.title}</h4>
-            <p className="text-sm text-gray-400">{item.description}</p>
+            <h4 className="font-medium text-white mb-2">{t(item.titleKey)}</h4>
+            <p className="text-sm text-gray-400">{t(item.descriptionKey)}</p>
           </div>
         ))}
       </div>

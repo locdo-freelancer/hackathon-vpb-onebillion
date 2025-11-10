@@ -1,5 +1,6 @@
 // Progress Indicator - Single Responsibility: Display progress steps
 import React from "react";
+import { useTranslations } from "@/hooks/useTranslations";
 
 interface ProgressStep {
   number: number;
@@ -19,6 +20,8 @@ export const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
   totalSteps,
   stepTitles,
 }) => {
+  const { t } = useTranslations("onboarding");
+  
   const steps: ProgressStep[] = stepTitles.map((title, index) => ({
     number: index + 1,
     title,
@@ -29,9 +32,9 @@ export const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
   return (
     <div className="mb-8">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-2xl font-bold text-white">Site Configuration</h2>
+        <h2 className="text-2xl font-bold text-white">{t("siteConfiguration")}</h2>
         <span className="text-sm text-gray-400">
-          Step {currentStep} of {totalSteps}
+          {t("step")} {currentStep} {t("of")} {totalSteps}
         </span>
       </div>
 

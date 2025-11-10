@@ -3,6 +3,7 @@
 
 import React from "react";
 import { SiteConfigData } from "@/types/onboarding.types";
+import { useTranslations } from "@/hooks/useTranslations";
 
 interface Step1PersonalInfoProps {
   data: SiteConfigData;
@@ -13,17 +14,19 @@ export const Step1PersonalInfo: React.FC<Step1PersonalInfoProps> = ({
   data,
   onChange,
 }) => {
+  const { t } = useTranslations("onboarding");
+  
   return (
     <div className="space-y-6 max-w-2xl">
       <div className="bg-cyber-card border border-cyber-border rounded-xl p-6">
         <h3 className="text-lg font-semibold text-white mb-4">
-          Basic Information
+          {t("basicInformation")}
         </h3>
 
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
-              Site Name <span className="text-red-400">*</span>
+              {t("siteName")} <span className="text-red-400">*</span>
             </label>
             <input
               type="text"
@@ -38,7 +41,7 @@ export const Step1PersonalInfo: React.FC<Step1PersonalInfoProps> = ({
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
-                IP Address <span className="text-red-400">*</span>
+                {t("ipAddress")} <span className="text-red-400">*</span>
               </label>
               <input
                 type="text"
@@ -52,7 +55,7 @@ export const Step1PersonalInfo: React.FC<Step1PersonalInfoProps> = ({
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
-                Port <span className="text-red-400">*</span>
+                {t("port")} <span className="text-red-400">*</span>
               </label>
               <input
                 type="number"
@@ -69,7 +72,7 @@ export const Step1PersonalInfo: React.FC<Step1PersonalInfoProps> = ({
 
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
-              Domain Name <span className="text-gray-500">(Optional)</span>
+              {t("domainName")} <span className="text-gray-500">({t("optional")})</span>
             </label>
             <input
               type="text"
@@ -86,10 +89,9 @@ export const Step1PersonalInfo: React.FC<Step1PersonalInfoProps> = ({
         <div className="flex items-start gap-3">
           <i className="fas fa-info-circle text-cyber-accent mt-1" />
           <div className="text-sm">
-            <p className="text-white font-medium mb-1">Configuration Help</p>
+            <p className="text-white font-medium mb-1">{t("configurationHelp")}</p>
             <p className="text-gray-300">
-              Enter your server details to begin monitoring. You can update
-              these settings later from your dashboard.
+              {t("configurationHelpText")}
             </p>
           </div>
         </div>

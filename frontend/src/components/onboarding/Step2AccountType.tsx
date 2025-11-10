@@ -3,6 +3,7 @@
 
 import React from "react";
 import { SiteConfigData } from "@/types/onboarding.types";
+import { useTranslations } from "@/hooks/useTranslations";
 
 interface Step2AccountTypeProps {
   data: SiteConfigData;
@@ -11,29 +12,31 @@ interface Step2AccountTypeProps {
 
 interface ServerTypeOption {
   id: "windows";
-  name: string;
+  nameKey: string;
   icon: string;
-  description: string;
+  descriptionKey: string;
 }
-
-const SERVER_TYPES: ServerTypeOption[] = [
-  {
-    id: "windows",
-    name: "Windows Server",
-    icon: "fa-brands fa-windows",
-    description: "Windows Server 2016, 2019, 2022, Windows 10, Windows 11",
-  },
-];
 
 export const Step2AccountType: React.FC<Step2AccountTypeProps> = ({
   data,
   onChange,
 }) => {
+  const { t } = useTranslations("onboarding");
+  
+  const SERVER_TYPES: ServerTypeOption[] = [
+    {
+      id: "windows",
+      nameKey: "windowsServer",
+      icon: "fa-brands fa-windows",
+      descriptionKey: "windowsDescription",
+    },
+  ];
+  
   return (
     <div className="space-y-6 max-w-2xl">
       <div className="bg-cyber-card border border-cyber-border rounded-xl p-6">
         <h3 className="text-lg font-semibold text-white mb-4">
-          Select Server Type
+          {t("selectServerType")}
         </h3>
 
         <div className="grid grid-cols-1 gap-4">
@@ -50,8 +53,8 @@ export const Step2AccountType: React.FC<Step2AccountTypeProps> = ({
               <div className="flex items-center gap-3">
                 <i className={`${type.icon} text-2xl text-cyber-accent`} />
                 <div className="flex-1">
-                  <h4 className="font-semibold text-white">{type.name}</h4>
-                  <p className="text-sm text-gray-400">{type.description}</p>
+                  <h4 className="font-semibold text-white">{t(type.nameKey)}</h4>
+                  <p className="text-sm text-gray-400">{t(type.descriptionKey)}</p>
                 </div>
                 {data.serverType === type.id && (
                   <i className="fas fa-check-circle text-cyber-accent text-xl" />
@@ -66,10 +69,9 @@ export const Step2AccountType: React.FC<Step2AccountTypeProps> = ({
         <div className="flex items-start gap-3">
           <i className="fas fa-info-circle text-cyber-accent mt-1" />
           <div className="text-sm">
-            <p className="text-white font-medium mb-1">Windows Server Support</p>
+            <p className="text-white font-medium mb-1">{t("windowsServerSupport")}</p>
             <p className="text-gray-300">
-              Our agent is optimized for Windows environments, supporting Windows Server 2016+ and Windows 10/11. 
-              The agent provides comprehensive monitoring and security features for Windows systems.
+              {t("windowsSupportText")}
             </p>
           </div>
         </div>
