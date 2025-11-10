@@ -5,8 +5,7 @@ import type {
   ThreatsFilter,
   ThreatDetail,
 } from "@/types/threats.types";
-import { fetchThreatsData } from "@/data/mock-threat";
-import { fetchThreatDetail } from "@/data/mock-threat-detail";
+import { ThreatsService } from "@/lib/services";
 
 export interface UseThreatsDataReturn {
   data: ThreatsData | null;
@@ -37,7 +36,9 @@ export const useThreatsData = (): UseThreatsDataReturn => {
   const [data, setData] = useState<ThreatsData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
-  const [selectedThreat, setSelectedThreat] = useState<ThreatDetail | null>(null);
+  const [selectedThreat, setSelectedThreat] = useState<ThreatDetail | null>(
+    null
+  );
   const [selectedIndicators, setSelectedIndicators] = useState<string[]>([]);
 
   const [filter, setFilterState] = useState<ThreatsFilter>({
@@ -55,9 +56,27 @@ export const useThreatsData = (): UseThreatsDataReturn => {
     try {
       setIsLoading(true);
       setError(null);
-      const threatsData = await fetchThreatsData();
+
+      // Fetch from real API
+      const response = await ThreatsService.getAllThreats();
+
+      // Transform API response to match ThreatsData type
+      const threatsData: ThreatsData = {
+        indicators: response.indicators || [],
+        stats: response.stats || {
+          total: 0,
+          critical: 0,
+          high: 0,
+          medium: 0,
+          low: 0,
+          blocked: 0,
+          active: 0,
+        },
+      };
+
       setData(threatsData);
     } catch (err) {
+      console.error("Failed to fetch threats:", err);
       setError(
         err instanceof Error ? err : new Error("Failed to fetch threats data")
       );
@@ -74,17 +93,26 @@ export const useThreatsData = (): UseThreatsDataReturn => {
   const filteredIndicators =
     data?.indicators.filter((indicator) => {
       // Severity filter
-      if (appliedFilter.severity !== "all" && indicator.severity !== appliedFilter.severity) {
+      if (
+        appliedFilter.severity !== "all" &&
+        indicator.severity !== appliedFilter.severity
+      ) {
         return false;
       }
 
       // Type filter
-      if (appliedFilter.type !== "all" && indicator.type !== appliedFilter.type) {
+      if (
+        appliedFilter.type !== "all" &&
+        indicator.type !== appliedFilter.type
+      ) {
         return false;
       }
 
       // Country filter
-      if (appliedFilter.country && indicator.countryCode !== appliedFilter.country) {
+      if (
+        appliedFilter.country &&
+        indicator.countryCode !== appliedFilter.country
+      ) {
         return false;
       }
 
@@ -116,10 +144,40 @@ export const useThreatsData = (): UseThreatsDataReturn => {
     }
 
     try {
-      const detail = await fetchThreatDetail(id);
+      // Fetch detailed threat info from API
+      const threat = await ThreatsService.getThreatById(id);
+
+      // Transform to ThreatDetail format
+      const detail: ThreatDetail = {
+        id: threat.id,
+        indicator: threat.indicator,
+        description: threat.description,
+        type: threat.type,
+        severity: threat.severity,
+        confidence: threat.confidence,
+        country: threat.country || "Unknown",
+        countryCode: threat.countryCode || "",
+        countryFlag: threat.countryFlag || "",
+        firstSeen: threat.firstSeen,
+        lastSeen: threat.lastSeen,
+        status: threat.status,
+        icon: threat.icon,
+        iconColor: threat.iconColor,
+        enrichment: {
+          asn: undefined,
+          isp: undefined,
+          organization: undefined,
+          tags: threat.tags || [],
+          malwareFamily: threat.malwareFamily,
+        },
+        intelligence: [],
+        relatedIndicators: [],
+      };
+
       setSelectedThreat(detail);
     } catch (err) {
       console.error("Failed to fetch threat detail:", err);
+      setSelectedThreat(null);
     }
   };
 

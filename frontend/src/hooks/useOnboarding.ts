@@ -65,7 +65,15 @@ export const useOnboarding = () => {
         // Extract installToken from response - this is the REAL token from database
         if (response.installToken) {
           console.log("✅ Site created with token:", response.installToken);
-          updateFormData({ installToken: response.installToken });
+
+          // Update formData immediately with the new token
+          const updatedData = {
+            ...formData,
+            installToken: response.installToken,
+          };
+          setFormData(updatedData);
+
+          console.log("Updated formData with token:", updatedData.installToken);
         } else {
           console.warn("⚠️ No installToken in response:", response);
         }
@@ -84,7 +92,7 @@ export const useOnboarding = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [currentStep, formData, updateFormData]);
+  }, [currentStep, formData]);
 
   return {
     currentStep,

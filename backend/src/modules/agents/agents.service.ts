@@ -68,15 +68,22 @@ export class AgentsService {
     const online = agents.filter((a) => a.is_connected === 1).length;
     const offline = agents.filter((a) => a.is_connected === 0).length;
 
+    // Count agents by OS type
+    const byOS = agents.reduce(
+      (acc, agent) => {
+        const osType = this.getOSType(agent.os_info);
+        acc[osType] = (acc[osType] || 0) + 1;
+        return acc;
+      },
+      { linux: 0, windows: 0, docker: 0, macos: 0 } as Record<string, number>
+    );
+
     return {
-      total,
-      online,
-      offline,
-      updating: 0,
-      avgResponseTime: "245ms",
-      dataTransferred: "2.4 GB",
-      threatsBlocked: 156,
-      updatesAvailable: 3,
+      totalAgents: total,
+      onlineAgents: online,
+      offlineAgents: offline,
+      updatingAgents: 0,
+      byOS,
     };
   }
 

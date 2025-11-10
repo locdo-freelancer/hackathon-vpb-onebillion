@@ -1,0 +1,36 @@
+# Ubuntu container for testing SSH attack detection
+FROM ubuntu:22.04
+
+# Install SSH server and Python
+RUN apt-get update && \
+  apt-get install -y openssh-server python3 python3-pip curl sudo && \
+  apt-get clean && \
+  rm -rf /var/lib/apt/lists/*
+
+# Configure SSH
+RUN mkdir /var/run/sshd && \
+  echo 'root:testpassword123' | chpasswd && \
+  sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config && \
+  sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config && \
+  echo "UsePAM yes" >> /etc/ssh/sshd_config
+
+# Create test user
+RUN useradd -m -s /bin/bash testuser && \
+  echo 'testuser:testpass123' | chpasswd
+
+# Copy agent
+COPY agent/securevault-agent.py /opt/securevault-agent.py
+RUN chmod +x /opt/securevault-agent.py
+
+# Copy attack test script
+COPY docker/attack.sh /opt/attack.sh
+RUN chmod +x /opt/attack.sh
+
+# Expose SSH port
+EXPOSE 22
+
+# Start script
+COPY docker/start-agent-test.sh /start.sh
+RUN chmod +x /start.sh
+
+CMD ["/start.sh"]

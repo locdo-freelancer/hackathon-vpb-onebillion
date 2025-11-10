@@ -22,6 +22,12 @@ export const Step3Verification: React.FC<Step3VerificationProps> = ({
   // Fetch install commands when token is ready
   useEffect(() => {
     const fetchCommands = async () => {
+      console.log("🔍 Step3 useEffect triggered:", {
+        installToken: data.installToken,
+        serverType: data.serverType,
+        isDefault: data.installToken === "sv_abc123def456",
+      });
+
       // Token should already exist from completeOnboarding()
       if (!data.installToken || !data.serverType) {
         console.log("⚠️ Missing token or serverType:", {
@@ -34,6 +40,7 @@ export const Step3Verification: React.FC<Step3VerificationProps> = ({
       // Skip default placeholder token
       if (data.installToken === "sv_abc123def456") {
         console.log("⚠️ Still using default token, waiting for real token...");
+        console.log("Full data object:", data);
         return;
       }
 
@@ -47,6 +54,7 @@ export const Step3Verification: React.FC<Step3VerificationProps> = ({
           data.serverType as any,
           data.installToken
         );
+        console.log("✅ Commands fetched:", commands);
         setInstallCommands(commands);
       } catch (error) {
         console.error("Failed to fetch install commands:", error);

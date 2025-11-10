@@ -26,13 +26,22 @@ export const useOnboardingFlow = () => {
       return;
     }
 
-    if (currentStep === 4) {
+    // Complete onboarding after Step 2 to get install token before Step 3
+    if (currentStep === 2) {
       const success = await completeOnboarding();
       if (success) {
-        markStepComplete(4);
-        markOnboardingComplete();
-        router.push("/dashboard");
+        markStepComplete(2);
+        // Token is now in formData, Step 3 will have it
+        return;
       }
+      return;
+    }
+
+    if (currentStep === 4) {
+      // Just mark as complete and redirect
+      markStepComplete(4);
+      markOnboardingComplete();
+      router.push("/dashboard");
       return;
     }
 
