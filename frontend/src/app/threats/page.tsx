@@ -8,9 +8,11 @@ import {
   ThreatDetailDrawer,
 } from "@/components/threats";
 import { useThreatsPage } from "@/hooks/useThreatsPage";
+import { useAuthProtection } from "@/hooks/useAuthProtection";
 import { getNavItems, getDefaultUser } from "@/config/navigation.config";
 
 export default function ThreatsPage() {
+  useAuthProtection();
   const {
     threats,
     selectedThreat,

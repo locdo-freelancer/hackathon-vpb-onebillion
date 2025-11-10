@@ -9,6 +9,7 @@ import {
 } from "@/components/sites";
 import { getNavItems, getDefaultUser } from "@/config/navigation.config";
 import { useSitesFlow } from "@/hooks/useSitesFlow";
+import { useAuthProtection } from "@/hooks/useAuthProtection";
 
 /**
  * Sites Page
@@ -17,6 +18,7 @@ import { useSitesFlow } from "@/hooks/useSitesFlow";
  * Dependency Inversion: Depends on useSitesFlow abstraction
  */
 export default function SitesPage() {
+  useAuthProtection();
   const {
     data,
     isLoading,

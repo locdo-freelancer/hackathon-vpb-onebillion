@@ -10,6 +10,7 @@ import {
 } from "@/components/action-console";
 import { useActionConsole } from "@/hooks/useActionConsole";
 import { getNavItems, getDefaultUser } from "@/config/navigation.config";
+import { useAuthProtection } from "@/hooks/useAuthProtection";
 
 /**
  * Action Console Page - SOLID Principles Applied
@@ -21,6 +22,7 @@ import { getNavItems, getDefaultUser } from "@/config/navigation.config";
  * Dependency Inversion: Depends on abstractions (hooks/components), not concrete implementations
  */
 export default function ActionConsolePage() {
+  useAuthProtection();
   // Dependency Injection: Business logic injected via hook
   const {
     data,

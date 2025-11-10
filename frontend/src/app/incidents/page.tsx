@@ -5,8 +5,10 @@ import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
 import { IncidentsFilters, IncidentsTable } from "@/components/incidents";
 import { getNavItems, getDefaultUser } from "@/config/navigation.config";
 import { useIncidentsFlow } from "@/hooks/useIncidentsFlow";
+import { useAuthProtection } from "@/hooks/useAuthProtection";
 
 export default function IncidentsPage() {
+  useAuthProtection();
   const {
     searchQuery,
     filteredIncidents,

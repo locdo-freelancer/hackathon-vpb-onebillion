@@ -10,6 +10,7 @@ import {
 } from "@/components/agents";
 import { getNavItems, getDefaultUser } from "@/config/navigation.config";
 import { useAgentsFlow } from "@/hooks/useAgentsFlow";
+import { useAuthProtection } from "@/hooks/useAuthProtection";
 
 /**
  * Agents Page Component
@@ -23,6 +24,7 @@ import { useAgentsFlow } from "@/hooks/useAgentsFlow";
  * Reduced from 105 lines to ~55 lines by extracting layout logic to composition components
  */
 export default function AgentsPage() {
+  useAuthProtection();
   const {
     activeTab,
     filteredAgents,
