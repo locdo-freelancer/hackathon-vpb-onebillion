@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import type { TimeSeriesData } from "@/types/dashboard.types";
+import { useTranslations } from "@/hooks/useTranslations";
 
 interface TrendsChartProps {
   data: TimeSeriesData[];
@@ -10,6 +11,7 @@ interface TrendsChartProps {
 type TimeRange = "7D" | "30D";
 
 export const TrendsChart: React.FC<TrendsChartProps> = ({ data }) => {
+  const {t} = useTranslations("dashboard")
   const chartRef = useRef<HTMLDivElement>(null);
   const [timeRange, setTimeRange] = useState<TimeRange>("7D");
 
@@ -74,7 +76,7 @@ export const TrendsChart: React.FC<TrendsChartProps> = ({ data }) => {
     <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h3 className="text-lg font-semibold text-white">Attack Trends</h3>
+          <h3 className="text-lg font-semibold text-white">{t("attackTrends")}</h3>
           <p className="text-sm text-gray-400">Last 7 days activity</p>
         </div>
         <div className="flex items-center gap-2">

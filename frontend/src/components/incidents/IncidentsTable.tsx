@@ -1,6 +1,7 @@
 import React from "react";
 import type { Incident } from "@/types/incidents.types";
 import { IncidentRow } from "./IncidentRow";
+import { useTranslations } from "@/hooks/useTranslations";
 
 interface IncidentsTableProps {
   incidents: Incident[];
@@ -19,6 +20,7 @@ export const IncidentsTable: React.FC<IncidentsTableProps> = ({
   onIncidentClick,
   totalCount,
 }) => {
+  const { t } = useTranslations();
   const allSelected = incidents.length > 0 && selectedIds.length === incidents.length;
 
   return (
@@ -26,10 +28,10 @@ export const IncidentsTable: React.FC<IncidentsTableProps> = ({
       {/* Header */}
       <div className="p-6 border-b border-slate-800">
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold text-white">Security Incidents</h3>
+          <h3 className="text-lg font-semibold text-white">{t("incidents.title")}</h3>
           <div className="flex items-center gap-4">
             <span className="text-sm text-gray-400">
-              {totalCount} incidents found
+              {totalCount} {t("common.incidentsFound")}
             </span>
             <div className="flex items-center gap-2">
               <button className="p-2 text-gray-400 hover:text-white transition-colors">
@@ -57,28 +59,28 @@ export const IncidentsTable: React.FC<IncidentsTableProps> = ({
                 />
               </th>
               <th className="px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">
-                ID
+                {t("incidents.id")}
               </th>
               <th className="px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">
-                Severity
+                {t("incidents.severity")}
               </th>
               <th className="px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">
-                Status
+                {t("incidents.status")}
               </th>
               <th className="px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">
-                Date
+                {t("common.date")}
               </th>
               <th className="px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">
-                Type
+                {t("common.type")}
               </th>
               <th className="px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">
-                AI Summary
+                {t("common.aiSummary")}
               </th>
               <th className="px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">
-                Assignee
+                {t("incidents.assignee")}
               </th>
               <th className="px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">
-                Actions
+                {t("common.actions")}
               </th>
             </tr>
           </thead>
@@ -88,7 +90,7 @@ export const IncidentsTable: React.FC<IncidentsTableProps> = ({
                 <td colSpan={9} className="px-6 py-12 text-center">
                   <div className="text-gray-400">
                     <i className="fas fa-exclamation-triangle text-4xl mb-4 opacity-50" />
-                    <p className="text-sm">No incidents found</p>
+                    <p className="text-sm">{t("common.noIncidentsFound")}</p>
                   </div>
                 </td>
               </tr>

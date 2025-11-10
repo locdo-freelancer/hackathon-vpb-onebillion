@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef } from "react";
 import type { OSDistribution } from "@/types/agents.types";
+import { useTranslations } from "@/hooks/useTranslations";
 
 interface OSDistributionChartProps {
   data: OSDistribution[];
@@ -10,6 +11,7 @@ interface OSDistributionChartProps {
 export const OSDistributionChart: React.FC<OSDistributionChartProps> = ({
   data,
 }) => {
+  const { t } = useTranslations("agents");
   const chartRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -69,7 +71,7 @@ export const OSDistributionChart: React.FC<OSDistributionChartProps> = ({
   return (
     <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
       <h3 className="text-lg font-semibold text-white mb-4">
-        OS Distribution
+        {t("OSDistribution")}
       </h3>
       <div ref={chartRef} style={{ height: "300px" }} />
     </div>

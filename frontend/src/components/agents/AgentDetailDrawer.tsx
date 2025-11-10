@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import type { Agent } from "@/types/agents.types";
+import { useTranslations } from "@/hooks/useTranslations";
 
 interface AgentDetailDrawerProps {
   agent: Agent | null;
@@ -12,6 +13,7 @@ export const AgentDetailDrawer: React.FC<AgentDetailDrawerProps> = ({
   isOpen,
   onClose,
 }) => {
+  const { t } = useTranslations();
   // Close on Escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -47,7 +49,7 @@ export const AgentDetailDrawer: React.FC<AgentDetailDrawerProps> = ({
       >
         {/* Header */}
         <div className="p-6 border-b border-slate-800 flex items-center justify-between">
-          <h3 className="text-xl font-bold text-white">Agent Details</h3>
+          <h3 className="text-xl font-bold text-white">{t("agents.agentDetails")}</h3>
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-white transition-colors"
@@ -76,7 +78,7 @@ export const AgentDetailDrawer: React.FC<AgentDetailDrawerProps> = ({
           {/* Status */}
           <div className="bg-slate-950/50 rounded-lg p-4 mb-6">
             <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-400">Status</span>
+              <span className="text-sm text-gray-400">{t("sites.status")}</span>
               <span
                 className={`px-3 py-1 rounded-full text-xs font-semibold ${
                   agent.status === "online"
@@ -94,24 +96,24 @@ export const AgentDetailDrawer: React.FC<AgentDetailDrawerProps> = ({
           {/* Basic Info */}
           <div className="space-y-3 mb-6">
             <h5 className="text-sm font-semibold text-white">
-              Basic Information
+              {t("agents.basicInformation")}
             </h5>
             <div className="bg-slate-950/50 rounded-lg p-4 space-y-3">
               <div className="flex justify-between">
-                <span className="text-sm text-gray-400">Operating System</span>
+                <span className="text-sm text-gray-400">{t("agents.operatingSystem")}</span>
                 <span className="text-sm text-white">{agent.os}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-sm text-gray-400">Agent Version</span>
+                <span className="text-sm text-gray-400">{t("agents.version")}</span>
                 <span className="text-sm text-white">{agent.version}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-sm text-gray-400">Last Heartbeat</span>
+                <span className="text-sm text-gray-400">{t("agents.lastSeen")}</span>
                 <span className="text-sm text-white">{agent.lastHeartbeat}</span>
               </div>
               {agent.siteName && (
                 <div className="flex justify-between">
-                  <span className="text-sm text-gray-400">Site</span>
+                  <span className="text-sm text-gray-400">{t("common.site")}</span>
                   <span className="text-sm text-white">{agent.siteName}</span>
                 </div>
               )}
@@ -122,12 +124,12 @@ export const AgentDetailDrawer: React.FC<AgentDetailDrawerProps> = ({
           {agent.status === "online" && agent.cpuUsage !== undefined && (
             <div className="space-y-3 mb-6">
               <h5 className="text-sm font-semibold text-white">
-                Performance Metrics
+                {t("agents.performance")}
               </h5>
               <div className="bg-slate-950/50 rounded-lg p-4 space-y-4">
                 <div>
                   <div className="flex justify-between mb-2">
-                    <span className="text-sm text-gray-400">CPU Usage</span>
+                    <span className="text-sm text-gray-400">{t("agents.cpuUsage")}</span>
                     <span className="text-sm text-white">{agent.cpuUsage}%</span>
                   </div>
                   <div className="w-full bg-slate-900 rounded-full h-2">
@@ -146,7 +148,7 @@ export const AgentDetailDrawer: React.FC<AgentDetailDrawerProps> = ({
 
                 <div>
                   <div className="flex justify-between mb-2">
-                    <span className="text-sm text-gray-400">Memory Usage</span>
+                    <span className="text-sm text-gray-400">{t("agents.memoryUsage")}</span>
                     <span className="text-sm text-white">45%</span>
                   </div>
                   <div className="w-full bg-slate-900 rounded-full h-2">
@@ -159,7 +161,7 @@ export const AgentDetailDrawer: React.FC<AgentDetailDrawerProps> = ({
 
                 <div>
                   <div className="flex justify-between mb-2">
-                    <span className="text-sm text-gray-400">Disk Usage</span>
+                    <span className="text-sm text-gray-400">{t("agents.diskUsage")}</span>
                     <span className="text-sm text-white">67%</span>
                   </div>
                   <div className="w-full bg-slate-900 rounded-full h-2">
@@ -177,11 +179,11 @@ export const AgentDetailDrawer: React.FC<AgentDetailDrawerProps> = ({
           {agent.status === "updating" && agent.updateProgress !== undefined && (
             <div className="space-y-3 mb-6">
               <h5 className="text-sm font-semibold text-white">
-                Update Progress
+                {t("agents.updateProgress")}
               </h5>
               <div className="bg-slate-950/50 rounded-lg p-4">
                 <div className="flex justify-between mb-2">
-                  <span className="text-sm text-gray-400">Progress</span>
+                  <span className="text-sm text-gray-400">{t("common.progress")}</span>
                   <span className="text-sm text-yellow-400">
                     {agent.updateProgress}%
                   </span>
@@ -198,19 +200,19 @@ export const AgentDetailDrawer: React.FC<AgentDetailDrawerProps> = ({
 
           {/* Actions */}
           <div className="space-y-3">
-            <h5 className="text-sm font-semibold text-white">Actions</h5>
+            <h5 className="text-sm font-semibold text-white">{t("common.actions")}</h5>
             <div className="space-y-2">
               <button className="w-full px-4 py-3 bg-slate-950/50 hover:bg-slate-950 border border-slate-800 hover:border-cyan-500/50 text-white text-sm rounded-lg transition-colors flex items-center gap-3">
                 <i className="fas fa-sync-alt" />
-                Restart Agent
+                {t("agents.restartAgent")}
               </button>
               <button className="w-full px-4 py-3 bg-slate-950/50 hover:bg-slate-950 border border-slate-800 hover:border-cyan-500/50 text-white text-sm rounded-lg transition-colors flex items-center gap-3">
                 <i className="fas fa-download" />
-                Update Agent
+                {t("agents.updateAgent")}
               </button>
               <button className="w-full px-4 py-3 bg-slate-950/50 hover:bg-slate-950 border border-slate-800 hover:border-red-500/50 text-red-400 text-sm rounded-lg transition-colors flex items-center gap-3">
                 <i className="fas fa-trash" />
-                Remove Agent
+                {t("agents.removeAgent")}
               </button>
             </div>
           </div>

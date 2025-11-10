@@ -1,5 +1,6 @@
 import React from "react";
 import type { AgentMetrics } from "@/types/agents.types";
+import { useTranslations } from "@/hooks/useTranslations";
 
 interface AgentMetricsCardProps {
   metrics: AgentMetrics;
@@ -8,24 +9,26 @@ interface AgentMetricsCardProps {
 export const AgentMetricsCard: React.FC<AgentMetricsCardProps> = ({
   metrics,
 }) => {
+  const { t } = useTranslations("agents");
+
   const metricsData = [
     {
-      label: "Avg Response Time",
+      label: t("avgResponseTime"),
       value: metrics.avgResponseTime,
       color: "text-white",
     },
     {
-      label: "Data Transferred",
+      label: t("dataTransferred"),
       value: metrics.dataTransferred,
       color: "text-white",
     },
     {
-      label: "Threats Blocked",
+      label: t("threatsBlocked"),
       value: metrics.threatsBlocked.toString(),
       color: "text-green-400",
     },
     {
-      label: "Updates Available",
+      label: t("updatesAvailable"),
       value: metrics.updatesAvailable.toString(),
       color: "text-yellow-400",
     },
@@ -33,7 +36,9 @@ export const AgentMetricsCard: React.FC<AgentMetricsCardProps> = ({
 
   return (
     <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
-      <h3 className="text-lg font-semibold text-white mb-4">Agent Metrics</h3>
+      <h3 className="text-lg font-semibold text-white mb-4">
+        {t("agentMetrics")}
+      </h3>
 
       <div className="space-y-4">
         {metricsData.map((metric, index) => (

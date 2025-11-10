@@ -2,12 +2,14 @@
 
 import React, { useEffect, useRef } from "react";
 import type { ChartData } from "@/types/dashboard.types";
+import { useTranslations } from "@/hooks/useTranslations";
 
 interface SeverityChartProps {
   data: ChartData;
 }
 
 export const SeverityChart: React.FC<SeverityChartProps> = ({ data }) => {
+  const { t } = useTranslations("dashboard");
   const chartRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -21,12 +23,7 @@ export const SeverityChart: React.FC<SeverityChartProps> = ({ data }) => {
           labels: data.labels,
           values: data.values,
           marker: {
-            colors: data.colors || [
-              "#ef4444",
-              "#eab308",
-              "#3b82f6",
-              "#22c55e",
-            ],
+            colors: data.colors || ["#ef4444", "#eab308", "#3b82f6", "#22c55e"],
           },
           textinfo: "label+percent" as const,
           textfont: {
@@ -75,9 +72,9 @@ export const SeverityChart: React.FC<SeverityChartProps> = ({ data }) => {
       <div className="flex items-center justify-between mb-4">
         <div>
           <h3 className="text-lg font-semibold text-white">
-            Severity Distribution
+            {t("severityDistribution")}
           </h3>
-          <p className="text-sm text-gray-400">Threats by severity level</p>
+          <p className="text-sm text-gray-400"> {t("threatBySeverityLevel")}</p>
         </div>
         <button className="text-gray-400 hover:text-white transition-colors">
           <i className="fas fa-ellipsis-v" />

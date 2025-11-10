@@ -2,6 +2,8 @@
 
 import React from "react";
 import { useLogout } from "@/hooks/useLogout";
+import { LanguageSwitcher } from "@/components/shared";
+import { useTranslations } from "@/hooks/useTranslations";
 
 interface DashboardHeaderProps {
   title: string;
@@ -17,6 +19,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   onSearch,
 }) => {
   const { handleLogout } = useLogout();
+  const { t } = useTranslations("auth");
 
   return (
     <header className="border-b border-slate-800 bg-slate-900/50 backdrop-blur-xl">
@@ -29,11 +32,13 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
 
         {/* Actions Section */}
         <div className="flex items-center gap-4">
+          {/* Language Switcher */}
+          <LanguageSwitcher />
           {/* Search */}
           <div className="relative">
             <input
               type="text"
-              placeholder="Search..."
+              placeholder={t("search")}
               onChange={(e) => onSearch?.(e.target.value)}
               className="w-64 px-4 py-2 bg-slate-950 border border-slate-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 transition-colors"
             />
@@ -52,10 +57,10 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
           <button
             onClick={handleLogout}
             className="flex items-center gap-2 px-4 py-2 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 hover:bg-red-500/20 hover:text-white transition-all duration-200"
-            title="Logout"
+            title={t("logout")}
           >
             <i className="fas fa-sign-out-alt" />
-            <span className="font-medium">Logout</span>
+            <span className="font-medium">{t("logout")}</span>
           </button>
         </div>
       </div>

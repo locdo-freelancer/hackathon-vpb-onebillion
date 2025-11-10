@@ -1,6 +1,7 @@
 import React from "react";
 import type { AvailableAction } from "@/types/action-console.types";
 import { getCategoryColor, getImpactColor } from "@/utils/color.util";
+import { useTranslations } from "@/hooks/useTranslations";
 
 interface AvailableActionCardProps {
   action: AvailableAction;
@@ -11,6 +12,7 @@ export const AvailableActionCard: React.FC<AvailableActionCardProps> = ({
   action,
   onExecute,
 }) => {
+  const { t } = useTranslations();
   const impactColors = getImpactColor(action.impact);
   const categoryColors = getCategoryColor(action.category);
 
@@ -33,7 +35,7 @@ export const AvailableActionCard: React.FC<AvailableActionCardProps> = ({
                 className={`inline-flex items-center px-2 py-0.5 rounded text-xs ${impactColors.bg} ${impactColors.text}`}
               >
                 {action.impact.charAt(0).toUpperCase() + action.impact.slice(1)}{" "}
-                Impact
+                {t("common.impact")}
               </span>
               <span
                 className={`inline-flex items-center px-2 py-0.5 rounded text-xs ${categoryColors.bg} ${categoryColors.text}`}
@@ -50,7 +52,7 @@ export const AvailableActionCard: React.FC<AvailableActionCardProps> = ({
         className={`w-full px-4 py-2.5 ${impactColors.btnBg} ${impactColors.text} border ${impactColors.border} rounded-lg ${impactColors.btnHover} transition-colors font-medium`}
       >
         <i className="fas fa-play mr-2" />
-        Execute Action
+        {t("actionConsole.execute")}
       </button>
     </div>
   );

@@ -2,11 +2,12 @@ import React from "react";
 import type { RiskScore, RiskMetrics } from "@/types/dashboard.types";
 import {
   getRiskScoreIconConfig,
-  getMetricsConfig,
+  useRiskMetricsConfig,
 } from "@/config/risk-score.config";
 import { RiskMetricCard } from "./RiskMetricCard";
 import { RiskScoreTrend } from "./RiskScoreTrend";
 import { RiskLevelBar } from "./RiskLevelBar";
+import { useTranslations } from "@/hooks/useTranslations";
 
 interface RiskScoreCardProps {
   riskScore: RiskScore;
@@ -26,10 +27,11 @@ export const RiskScoreCard: React.FC<RiskScoreCardProps> = ({
   riskScore,
   metrics,
 }) => {
+  const { t } = useTranslations("dashboard");
   const { score, maxScore, level, trend, lastUpdated } = riskScore;
   const scorePercentage = (score / maxScore) * 100;
   const iconConfig = getRiskScoreIconConfig();
-  const metricsConfig = getMetricsConfig();
+  const metricsConfig = useRiskMetricsConfig();
 
   return (
     <div className="bg-linear-to-br from-slate-900 to-slate-950 border border-slate-800 rounded-xl p-8 relative overflow-hidden">
@@ -50,10 +52,10 @@ export const RiskScoreCard: React.FC<RiskScoreCardProps> = ({
             </div>
             <div>
               <p className="text-sm text-gray-400 uppercase tracking-wide">
-                Global Risk Score
+                {t("globalRiskScore")}
               </p>
               <p className="text-xs text-gray-500">
-                Last updated: {lastUpdated}
+                {t("lastUpdated")}: {lastUpdated}
               </p>
             </div>
           </div>

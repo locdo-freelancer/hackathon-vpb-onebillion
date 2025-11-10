@@ -3,6 +3,7 @@ import type { Site } from "@/types/sites.types";
 import { SiteRow } from "./SiteRow";
 import { SiteCheckbox } from "./SiteCheckbox";
 import { SitesEmptyState } from "./SitesEmptyState";
+import { useTranslations } from "@/hooks/useTranslations";
 
 interface SitesTableProps {
   sites: Site[];
@@ -14,14 +15,6 @@ interface SitesTableProps {
   onDelete: (site: Site) => void;
 }
 
-/**
- * Sites Table Component
- * Single Responsibility: Render table structure and iterate over sites
- * Open/Closed: Open for extension (new columns), uses composition pattern
- * Liskov Substitution: Can be replaced with any compatible table component
- * Interface Segregation: Clean props interface - sites data and handlers
- * Dependency Inversion: Depends on Site abstraction, not concrete implementation
- */
 export const SitesTable: React.FC<SitesTableProps> = ({
   sites,
   selectedSites,
@@ -31,6 +24,7 @@ export const SitesTable: React.FC<SitesTableProps> = ({
   onView,
   onDelete,
 }) => {
+  const { t } = useTranslations();
   const allSelected =
     sites.length > 0 && selectedSites.length === sites.length;
 
@@ -48,22 +42,22 @@ export const SitesTable: React.FC<SitesTableProps> = ({
                 />
               </th>
               <th className="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                Site Name
+                {t("sites.name")}
               </th>
               <th className="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                IP Address
+                {t("common.ipAddress")}
               </th>
               <th className="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                Domain
+                {t("common.domain")}
               </th>
               <th className="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                Agents
+                {t("sites.agents")}
               </th>
               <th className="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                Status
+                {t("sites.status")}
               </th>
               <th className="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                Actions
+                {t("common.actions")}
               </th>
             </tr>
           </thead>

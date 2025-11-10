@@ -1,5 +1,6 @@
 import React from "react";
 import type { Threat } from "@/types/dashboard.types";
+import { useTranslations } from "@/hooks/useTranslations";
 
 interface ActiveThreatsCardProps {
   threats: Threat[];
@@ -43,6 +44,7 @@ export const ActiveThreatsCard: React.FC<ActiveThreatsCardProps> = ({
   onInvestigate,
   onViewAll,
 }) => {
+  const { t } = useTranslations("dashboard");
   const activeCount = threats.filter(
     (t) => t.severity === "CRITICAL" || t.severity === "HIGH"
   ).length;
@@ -52,13 +54,15 @@ export const ActiveThreatsCard: React.FC<ActiveThreatsCardProps> = ({
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h3 className="text-lg font-semibold text-white">Active Threats</h3>
+          <h3 className="text-lg font-semibold text-white">
+            {t("activeThreats")}
+          </h3>
           <p className="text-sm text-gray-400">
-            Requires immediate attention
+            {t("requiresImmediateAttention")}
           </p>
         </div>
         <span className="px-3 py-1 bg-red-500/20 text-red-400 text-sm font-medium rounded-full">
-          {activeCount} Active
+          {activeCount} {t("active")}
         </span>
       </div>
 
@@ -91,9 +95,7 @@ export const ActiveThreatsCard: React.FC<ActiveThreatsCardProps> = ({
                 </span>
               </div>
 
-              <p className="text-sm text-gray-300 mb-2">
-                {threat.description}
-              </p>
+              <p className="text-sm text-gray-300 mb-2">{threat.description}</p>
 
               <div className="flex items-center justify-between text-xs text-gray-500">
                 <span>{threat.timestamp}</span>
@@ -101,7 +103,7 @@ export const ActiveThreatsCard: React.FC<ActiveThreatsCardProps> = ({
                   onClick={() => onInvestigate?.(threat.id)}
                   className="text-cyan-400 hover:text-cyan-300 transition-colors"
                 >
-                  Investigate →
+                  {t("investigate")} →
                 </button>
               </div>
             </div>
@@ -114,7 +116,7 @@ export const ActiveThreatsCard: React.FC<ActiveThreatsCardProps> = ({
         onClick={onViewAll}
         className="w-full mt-4 py-2 text-sm text-cyan-400 hover:text-cyan-300 font-medium transition-colors"
       >
-        View All Threats →
+        {t("viewAllThreats")} →
       </button>
     </div>
   );
