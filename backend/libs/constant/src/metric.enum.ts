@@ -2,6 +2,7 @@ export enum MetricType {
   SECURITY_SCORE = "security_score",
   VULNERABILITY_COUNT = "vulnerability_count",
   THREAT_COUNT = "threat_count",
+  ATTACK_COUNT = "attack_count",
   INCIDENT_COUNT = "incident_count",
   PATCH_COMPLIANCE = "patch_compliance",
   RESPONSE_TIME = "response_time",

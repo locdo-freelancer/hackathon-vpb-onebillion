@@ -1,29 +1,26 @@
 export enum NotificationType {
-  INFO = "info",
-  WARNING = "warning",
-  ERROR = "error",
-  SUCCESS = "success",
-  ALERT = "alert",
-  SECURITY = "security",
-  SYSTEM = "system",
   INCIDENT = "incident",
-  PENDING = "pending",
+  THREAT = "threat",
+  VULNERABILITY = "vulnerability",
+  SECURITY_METRIC = "security_metric",
+  REMEDIATION = "remediation",
+  SYSTEM = "system",
+  ALERT = "alert",
+  WARNING = "warning",
+  INFO = "info",
 }
 
 export enum NotificationPriority {
   LOW = "low",
   MEDIUM = "medium",
   HIGH = "high",
-  URGENT = "urgent",
   CRITICAL = "critical",
 }
 
 export enum NotificationChannel {
-  IN_APP = "in_app",
   EMAIL = "email",
   SMS = "sms",
-  PUSH = "push",
+  IN_APP = "in_app",
   WEBHOOK = "webhook",
   SLACK = "slack",
-  TEAMS = "teams",
 }
