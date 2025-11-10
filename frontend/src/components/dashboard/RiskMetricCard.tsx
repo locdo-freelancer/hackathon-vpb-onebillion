@@ -24,7 +24,7 @@ export const RiskMetricCard: React.FC<RiskMetricCardProps> = ({
           <i className={`${config.icon} ${config.iconColor}`} />
         </div>
         <div>
-          <p className="text-2xl font-bold text-white">{value}</p>
+          <p className="text-2xl font-bold text-white">{value ?? 0}</p>
           <p className="text-xs text-gray-400">{config.label}</p>
         </div>
       </div>
