@@ -66,14 +66,33 @@ export const Step3Verification: React.FC<Step3VerificationProps> = ({
     fetchCommands();
   }, [data.installToken, data.serverType]);
 
-  // Get one-liner install command
+  // Get one-liner install command based on platform
   const getQuickInstallCommand = () => {
     if (!installCommands) return "Loading...";
 
     const { download, configure } = installCommands.commands;
     if (!download || !configure) return "Loading...";
 
-    // Extract the direct run command (skip install.sh, use agent.py directly)
+    // For Windows, show PowerShell command
+    if (data.serverType === "windows") {
+      // Extract PowerShell download command
+      const downloadCmd = download
+        .split("\n")
+        .find((line: string) => line.includes("Invoke-WebRequest"));
+      
+      // Extract run command
+      const runCmd = configure
+        .split("\n")
+        .find((line: string) => line.includes("python agent.py"));
+      
+      if (downloadCmd && runCmd) {
+        return `${downloadCmd}; ${runCmd}`;
+      }
+      
+      return configure;
+    }
+
+    // For other platforms (Linux/macOS)
     const directRunMatch = configure.match(/python3 agent\.py[^\n]+/);
     if (directRunMatch) {
       const downloadCmd = download
@@ -164,16 +183,19 @@ export const Step3Verification: React.FC<Step3VerificationProps> = ({
               </div>
               <div>
                 <p className="text-white font-medium">
-                  Run the command above on your server
+                  {data.serverType === "windows" 
+                    ? "Open PowerShell as Administrator and run the command above"
+                    : "Run the command above on your server"}
                 </p>
                 <p className="text-gray-400">
-                  This will download and install the SecureVault agent
+                  {data.serverType === "windows"
+                    ? "This will download and run the SecureVault agent on Windows"
+                    : "This will download and install the SecureVault agent"}
                 </p>
               </div>
             </div>
 
             <div className="flex items-start gap-3 text-sm">
-              ```
               <div className="w-6 h-6 bg-cyber-border rounded-full flex items-center justify-center mt-0.5">
                 <span className="text-gray-500 font-bold text-xs">2</span>
               </div>

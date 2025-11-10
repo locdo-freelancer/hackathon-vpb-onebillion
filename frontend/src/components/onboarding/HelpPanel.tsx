@@ -30,19 +30,19 @@ const HELP_CONTENT: Record<number, HelpContent[]> = {
   ],
   2: [
     {
-      title: "Server Types",
+      title: "Server Type",
       description:
-        "Select the operating system or platform. This ensures the correct agent is installed with proper configurations.",
+        "Currently supporting Windows Server environments. The agent is optimized for Windows Server 2016, 2019, 2022, and Windows 10/11.",
     },
     {
-      title: "Linux Servers",
+      title: "Windows Compatibility",
       description:
-        "Supports Ubuntu, CentOS, Debian, RHEL and other major Linux distributions.",
+        "Our Windows agent supports all modern Windows versions and provides real-time monitoring, security scanning, and threat detection.",
     },
     {
-      title: "Docker Containers",
+      title: "System Requirements",
       description:
-        "For container-based deployments, we provide a Docker image for easy installation.",
+        "Minimum requirements: Windows Server 2016+ or Windows 10/11, 2GB RAM, 1GB free disk space, and PowerShell 5.1 or later.",
     },
   ],
   3: [

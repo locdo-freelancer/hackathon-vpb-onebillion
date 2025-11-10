@@ -14,7 +14,7 @@ export interface SiteConfigData {
   domainName: string;
 
   // Step 2: Server Type
-  serverType: "linux" | "windows" | "docker" | "macos" | "";
+  serverType: "windows" | "";
 
   // Step 3: Agent Installation
   installToken: string;

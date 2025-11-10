@@ -28,7 +28,8 @@ export const ThreatDetailDrawer: React.FC<ThreatDetailDrawerProps> = ({
     };
   }, [isOpen, onClose]);
 
-  if (!threat) return null;
+  // Don't render if drawer is closed or threat is null
+  if (!isOpen || !threat) return null;
 
   return (
     <>
@@ -62,16 +63,16 @@ export const ThreatDetailDrawer: React.FC<ThreatDetailDrawerProps> = ({
             {/* Main Info Card */}
             <div className="bg-slate-950/50 border border-slate-800 rounded-lg p-4">
               <div className="flex items-center justify-between mb-4">
-                <SeverityBadge severity={threat.severity.toUpperCase() as "CRITICAL" | "HIGH" | "MEDIUM" | "LOW"} />
+                <SeverityBadge severity={(threat.severity || 'low').toUpperCase() as "CRITICAL" | "HIGH" | "MEDIUM" | "LOW"} />
                 <div className="flex items-center gap-2 text-sm text-gray-400">
                   <i className="fas fa-clock" />
-                  <span>{threat.firstSeen}</span>
+                  <span>{threat.firstSeen || 'Unknown'}</span>
                 </div>
               </div>
               <h4 className="text-lg font-semibold text-white mb-2 break-all">
-                {threat.indicator}
+                {threat.indicator || 'N/A'}
               </h4>
-              <p className="text-sm text-gray-400">{threat.description}</p>
+              <p className="text-sm text-gray-400">{threat.description || 'No description available'}</p>
             </div>
 
             {/* Enrichment Data */}
@@ -100,10 +101,10 @@ export const ThreatDetailDrawer: React.FC<ThreatDetailDrawerProps> = ({
                 <div className="flex justify-between py-2 border-b border-slate-800">
                   <span className="text-sm text-gray-400">Country</span>
                   <span className="text-sm text-white font-medium">
-                    {threat.countryFlag} {threat.country}
+                    {threat.countryFlag || '🌐'} {threat.country || 'Unknown'}
                   </span>
                 </div>
-                {threat.enrichment.isp && (
+                {threat.enrichment?.isp && (
                   <div className="flex justify-between py-2 border-b border-slate-800">
                     <span className="text-sm text-gray-400">ISP</span>
                     <span className="text-sm text-white font-medium">
@@ -111,7 +112,7 @@ export const ThreatDetailDrawer: React.FC<ThreatDetailDrawerProps> = ({
                     </span>
                   </div>
                 )}
-                {threat.enrichment.asn && (
+                {threat.enrichment?.asn && (
                   <div className="flex justify-between py-2 border-b border-slate-800">
                     <span className="text-sm text-gray-400">ASN</span>
                     <span className="text-sm text-white font-medium">
@@ -119,7 +120,7 @@ export const ThreatDetailDrawer: React.FC<ThreatDetailDrawerProps> = ({
                     </span>
                   </div>
                 )}
-                {threat.enrichment.organization && (
+                {threat.enrichment?.organization && (
                   <div className="flex justify-between py-2 border-b border-slate-800">
                     <span className="text-sm text-gray-400">Organization</span>
                     <span className="text-sm text-white font-medium">
@@ -133,17 +134,17 @@ export const ThreatDetailDrawer: React.FC<ThreatDetailDrawerProps> = ({
                     <div className="w-24 bg-slate-900 rounded-full h-2">
                       <div
                         className={`h-2 rounded-full ${
-                          threat.confidence >= 80
+                          (threat.confidence || 0) >= 80
                             ? "bg-red-400"
-                            : threat.confidence >= 60
+                            : (threat.confidence || 0) >= 60
                               ? "bg-orange-400"
                               : "bg-yellow-400"
                         }`}
-                        style={{ width: `${threat.confidence}%` }}
+                        style={{ width: `${threat.confidence || 0}%` }}
                       />
                     </div>
                     <span className="text-sm text-white font-medium">
-                      {threat.confidence}%
+                      {threat.confidence || 0}%
                     </span>
                   </div>
                 </div>
@@ -151,7 +152,7 @@ export const ThreatDetailDrawer: React.FC<ThreatDetailDrawerProps> = ({
             </div>
 
             {/* Threat Intelligence */}
-            {threat.intelligence.length > 0 && (
+            {threat.intelligence && threat.intelligence.length > 0 && (
               <div>
                 <h4 className="text-sm font-semibold text-white mb-3">
                   Threat Intelligence
@@ -175,7 +176,7 @@ export const ThreatDetailDrawer: React.FC<ThreatDetailDrawerProps> = ({
             )}
 
             {/* Tags */}
-            {threat.enrichment.tags.length > 0 && (
+            {threat.enrichment?.tags && threat.enrichment.tags.length > 0 && (
               <div>
                 <h4 className="text-sm font-semibold text-white mb-3">Tags</h4>
                 <div className="flex flex-wrap gap-2">
@@ -192,7 +193,7 @@ export const ThreatDetailDrawer: React.FC<ThreatDetailDrawerProps> = ({
             )}
 
             {/* Related Indicators */}
-            {threat.relatedIndicators.length > 0 && (
+            {threat.relatedIndicators && threat.relatedIndicators.length > 0 && (
               <div>
                 <h4 className="text-sm font-semibold text-white mb-3">
                   Related Indicators ({threat.relatedIndicators.length})

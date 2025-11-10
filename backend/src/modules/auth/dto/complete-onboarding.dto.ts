@@ -22,10 +22,10 @@ export class CompleteOnboardingDto {
   @IsString()
   domainName?: string;
 
-  @ApiProperty({ example: 'linux', enum: ['linux', 'windows', 'docker'] })
-  @IsEnum(['linux', 'windows', 'docker'])
+  @ApiProperty({ example: 'windows', enum: ['windows'] })
+  @IsEnum(['windows'])
   @IsNotEmpty()
-  serverType: 'linux' | 'windows' | 'docker';
+  serverType: 'windows';
 
   @ApiProperty({ example: 'install-token-12345' })
   @IsString()

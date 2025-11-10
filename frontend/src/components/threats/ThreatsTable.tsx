@@ -114,27 +114,34 @@ export const ThreatsTable: React.FC<ThreatsTableProps> = ({
           <p className="text-sm text-gray-400">
             Showing {threats.length} of {totalCount.toLocaleString()} results
           </p>
-          <div className="flex items-center gap-2">
-            <button className="px-3 py-1 text-gray-400 hover:text-white border border-slate-800 rounded-lg hover:border-cyan-500 transition-colors">
-              <i className="fas fa-chevron-left" />
-            </button>
-            <button className="px-3 py-1 bg-cyan-500 text-white rounded-lg">
-              1
-            </button>
-            <button className="px-3 py-1 text-gray-400 hover:text-white border border-slate-800 rounded-lg hover:border-cyan-500 transition-colors">
-              2
-            </button>
-            <button className="px-3 py-1 text-gray-400 hover:text-white border border-slate-800 rounded-lg hover:border-cyan-500 transition-colors">
-              3
-            </button>
-            <span className="px-3 py-1 text-gray-400">...</span>
-            <button className="px-3 py-1 text-gray-400 hover:text-white border border-slate-800 rounded-lg hover:border-cyan-500 transition-colors">
-              {Math.ceil(totalCount / 10)}
-            </button>
-            <button className="px-3 py-1 text-gray-400 hover:text-white border border-slate-800 rounded-lg hover:border-cyan-500 transition-colors">
-              <i className="fas fa-chevron-right" />
-            </button>
-          </div>
+          {/* Only show pagination if there are more than 10 items */}
+          {totalCount > 10 && (
+            <div className="flex items-center gap-2">
+              <button className="px-3 py-1 text-gray-400 hover:text-white border border-slate-800 rounded-lg hover:border-cyan-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                <i className="fas fa-chevron-left" />
+              </button>
+              <button className="px-3 py-1 bg-cyan-500 text-white rounded-lg">
+                1
+              </button>
+              {totalCount > 20 && (
+                <>
+                  <button className="px-3 py-1 text-gray-400 hover:text-white border border-slate-800 rounded-lg hover:border-cyan-500 transition-colors">
+                    2
+                  </button>
+                  <button className="px-3 py-1 text-gray-400 hover:text-white border border-slate-800 rounded-lg hover:border-cyan-500 transition-colors">
+                    3
+                  </button>
+                  <span className="px-3 py-1 text-gray-400">...</span>
+                  <button className="px-3 py-1 text-gray-400 hover:text-white border border-slate-800 rounded-lg hover:border-cyan-500 transition-colors">
+                    {Math.ceil(totalCount / 10)}
+                  </button>
+                </>
+              )}
+              <button className="px-3 py-1 text-gray-400 hover:text-white border border-slate-800 rounded-lg hover:border-cyan-500 transition-colors">
+                <i className="fas fa-chevron-right" />
+              </button>
+            </div>
+          )}
         </div>
       )}
     </div>

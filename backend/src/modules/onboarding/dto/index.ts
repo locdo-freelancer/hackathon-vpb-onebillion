@@ -38,9 +38,9 @@ export class CompleteOnboardingDto {
   @IsString()
   domainName?: string;
 
-  @ApiProperty({ example: "linux" })
+  @ApiProperty({ example: "windows" })
   @IsString()
-  @IsIn(["linux", "windows", "docker", "macos"])
+  @IsIn(["windows"])
   serverType: string;
 
   @ApiProperty({ example: "sv_abc123def456", required: false })

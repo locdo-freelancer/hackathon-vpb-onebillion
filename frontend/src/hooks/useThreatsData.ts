@@ -57,22 +57,27 @@ export const useThreatsData = (): UseThreatsDataReturn => {
       setIsLoading(true);
       setError(null);
 
-      // Fetch threats from API - response already has indicators and stats
+      // Fetch threats from API - response format: { success, data: { indicators, stats }, timestamp }
       const response = await ThreatsService.getAllThreats().catch(() => ({
-        indicators: [],
-        stats: {
-          total: 0,
-          critical: 0,
-          high: 0,
-          medium: 0,
-          low: 0,
-          blocked: 0,
-          active: 0,
+        data: {
+          indicators: [],
+          stats: {
+            total: 0,
+            critical: 0,
+            high: 0,
+            medium: 0,
+            low: 0,
+            blocked: 0,
+            active: 0,
+          },
         },
       }));
 
-      // Helper to get icon based on threat type
-      const getIconForType = (type: string) => {
+      // Extract data from response wrapper
+      const responseData = response.data || response;
+
+      // Helper functions for icon mapping (Single Responsibility)
+      const getIconForType = (type: string): string => {
         const iconMap: Record<string, string> = {
           ip: "🌐",
           domain: "🔗",
@@ -84,7 +89,7 @@ export const useThreatsData = (): UseThreatsDataReturn => {
         return iconMap[type.toLowerCase()] || "⚠️";
       };
 
-      const getIconColor = (severity: string) => {
+      const getIconColor = (severity: string): string => {
         const colorMap: Record<string, string> = {
           critical: "#dc2626",
           high: "#f59e0b",
@@ -94,25 +99,46 @@ export const useThreatsData = (): UseThreatsDataReturn => {
         return colorMap[severity.toLowerCase()] || "#6b7280";
       };
 
+      // Transform API response to internal data structure
+      const transformThreatIndicator = (threat: {
+        id: string;
+        indicator: string;
+        type: string;
+        severity: string;
+        firstSeen?: string;
+        lastSeen?: string;
+        createdAt?: string;
+        updatedAt?: string;
+        status: string;
+        country?: string;
+        countryCode?: string;
+        description?: string;
+        tags?: string[];
+        confidence?: number;
+        malwareFamily?: string;
+        sources?: string[];
+      }): ThreatIndicator => ({
+        id: threat.id,
+        indicator: threat.indicator,
+        type: threat.type as ThreatIndicator["type"],
+        severity: threat.severity as ThreatIndicator["severity"],
+        firstSeen: threat.firstSeen || threat.createdAt || "Unknown",
+        lastSeen: threat.lastSeen || threat.updatedAt || "Unknown",
+        status: threat.status as ThreatIndicator["status"],
+        country: threat.country || "Unknown",
+        countryCode: threat.countryCode || "XX",
+        description: threat.description || "",
+        tags: threat.tags || [],
+        confidence: threat.confidence || 0.75,
+        icon: getIconForType(threat.type),
+        iconColor: getIconColor(threat.severity),
+        malwareFamily: threat.malwareFamily,
+        sources: threat.sources,
+      });
+
       const threatsData: ThreatsData = {
-        indicators: (response.indicators || []).map((threat: any) => ({
-          id: threat.id,
-          indicator: threat.indicator,
-          type: threat.type,
-          severity: threat.severity,
-          firstSeen: threat.firstSeen || threat.createdAt,
-          lastSeen: threat.lastSeen || threat.updatedAt,
-          occurrences: threat.occurrences || 1,
-          status: threat.status,
-          country: threat.country || "Unknown",
-          countryCode: threat.countryCode || "XX",
-          description: threat.description || "",
-          tags: threat.tags || [],
-          confidence: threat.confidence || 0.75,
-          icon: getIconForType(threat.type),
-          iconColor: getIconColor(threat.severity),
-        })),
-        stats: response.stats || {
+        indicators: (responseData.indicators || []).map(transformThreatIndicator),
+        stats: responseData.stats || {
           total: 0,
           critical: 0,
           high: 0,
@@ -164,14 +190,20 @@ export const useThreatsData = (): UseThreatsDataReturn => {
         return false;
       }
 
-      // Search query filter
+      // IP Range filter (if needed in future)
+      if (appliedFilter.ipRange) {
+        // IP range filtering logic could go here
+      }
+
+      // Search query filter (applies to all fields)
       if (appliedFilter.searchQuery) {
         const query = appliedFilter.searchQuery.toLowerCase();
-        return (
+        const matches =
           indicator.indicator.toLowerCase().includes(query) ||
           indicator.description.toLowerCase().includes(query) ||
-          indicator.country?.toLowerCase().includes(query)
-        );
+          indicator.country?.toLowerCase().includes(query);
+        
+        if (!matches) return false;
       }
 
       return true;

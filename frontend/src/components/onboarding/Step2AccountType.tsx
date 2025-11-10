@@ -10,7 +10,7 @@ interface Step2AccountTypeProps {
 }
 
 interface ServerTypeOption {
-  id: "linux" | "windows" | "docker" | "macos";
+  id: "windows";
   name: string;
   icon: string;
   description: string;
@@ -18,28 +18,10 @@ interface ServerTypeOption {
 
 const SERVER_TYPES: ServerTypeOption[] = [
   {
-    id: "linux",
-    name: "Linux Server",
-    icon: "fa-brands fa-linux",
-    description: "Ubuntu, CentOS, RHEL, Debian",
-  },
-  {
     id: "windows",
     name: "Windows Server",
     icon: "fa-brands fa-windows",
-    description: "Windows Server 2016, 2019, 2022",
-  },
-  {
-    id: "macos",
-    name: "macOS Server",
-    icon: "fa-brands fa-apple",
-    description: "macOS 10.15+ (Catalina or later)",
-  },
-  {
-    id: "docker",
-    name: "Docker Container",
-    icon: "fa-brands fa-docker",
-    description: "Containerized deployment",
+    description: "Windows Server 2016, 2019, 2022, Windows 10, Windows 11",
   },
 ];
 
@@ -84,10 +66,10 @@ export const Step2AccountType: React.FC<Step2AccountTypeProps> = ({
         <div className="flex items-start gap-3">
           <i className="fas fa-info-circle text-cyber-accent mt-1" />
           <div className="text-sm">
-            <p className="text-white font-medium mb-1">Server Compatibility</p>
+            <p className="text-white font-medium mb-1">Windows Server Support</p>
             <p className="text-gray-300">
-              Different server types require different monitoring approaches.
-              Our agents support most modern operating systems.
+              Our agent is optimized for Windows environments, supporting Windows Server 2016+ and Windows 10/11. 
+              The agent provides comprehensive monitoring and security features for Windows systems.
             </p>
           </div>
         </div>
