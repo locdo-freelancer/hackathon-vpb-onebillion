@@ -58,7 +58,7 @@ export const IncidentSummaryCard: React.FC<IncidentSummaryCardProps> = ({
           className="px-4 py-2 bg-cyan-500/20 text-cyan-400 text-sm font-medium rounded-lg hover:bg-cyan-500/30 transition-colors"
         >
           <i className="fas fa-download mr-2" />
-          Export
+          {t("export")}
         </button>
       </div>
 
