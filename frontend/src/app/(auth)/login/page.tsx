@@ -1,6 +1,7 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { AuthLayout } from "@/components/auth/AuthLayout";
 import { AuthHeader } from "@/components/auth/AuthHeader";
 import { LoginForm } from "@/components/auth/LoginForm";
@@ -8,6 +9,7 @@ import { MFAModal } from "@/components/auth/MFAModal";
 import { useLogin } from "@/hooks/useLogin";
 
 export default function LoginPage() {
+  const router = useRouter();
   const {
     showMFAModal,
     setShowMFAModal,
@@ -15,6 +17,14 @@ export default function LoginPage() {
     handleMFAVerify,
     handleToggleSignup,
   } = useLogin();
+
+  // Redirect to dashboard if already logged in
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      router.push("/dashboard");
+    }
+  }, [router]);
 
   return (
     <AuthLayout>

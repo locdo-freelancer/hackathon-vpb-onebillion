@@ -2,6 +2,7 @@
 
 import React from "react";
 import { useDashboardData } from "@/hooks/useDashboardData";
+import { useAuthProtection } from "@/hooks/useAuthProtection";
 import {
   DashboardSidebar,
   DashboardHeader,
@@ -23,6 +24,9 @@ import { getNavItems, getDefaultUser } from "@/config/navigation.config";
  * Reduced from 120 lines to ~60 lines by extracting state and layout components
  */
 export default function DashboardPage() {
+  // Auth protection - redirects to login if not authenticated
+  useAuthProtection();
+  
   const { data, isLoading, error } = useDashboardData();
 
   // Loading State (ISP - atomic component)
