@@ -67,12 +67,13 @@ export class AgentInstallService {
   ): Promise<InstallCommands> {
     try {
       const queryParam = token ? `?token=${token}` : "";
-      const response = (await apiClient.get(
+      const response = await apiClient.get(
         `/agent-install/commands/${platform}${queryParam}`
-      )) as AgentInstallApiResponse<GetInstallCommandsResponseData>;
+      );
 
-      // API returns: { success: true, data: { platform, commands, downloadUrl }, timestamp }
-      const commandData = response.data;
+      // Backend returns: { success: true, data: { platform, commands, downloadUrl } }
+      // apiClient unwraps to: { platform, commands, downloadUrl }
+      const commandData = response.data || response;
 
       return {
         platform: commandData.platform as Platform,

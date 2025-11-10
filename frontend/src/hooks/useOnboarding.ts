@@ -66,21 +66,26 @@ export const useOnboarding = () => {
         if (response.installToken) {
           console.log("✅ Site created with token:", response.installToken);
 
-          // Update formData immediately with the new token
-          const updatedData = {
-            ...formData,
-            installToken: response.installToken,
-          };
-          setFormData(updatedData);
+          // Update formData SYNCHRONOUSLY before moving to next step
+          setFormData((prev) => {
+            const updated = {
+              ...prev,
+              installToken: response.installToken!,
+            };
+            console.log("Updated formData with token:", updated.installToken);
+            
+            // Move to next step AFTER state update in next render
+            setTimeout(() => setCurrentStep(3), 0);
+            
+            return updated;
+          });
 
-          console.log("Updated formData with token:", updatedData.installToken);
+          return true;
         } else {
           console.warn("⚠️ No installToken in response:", response);
+          setError("No install token received from server");
+          return false;
         }
-
-        console.log("Onboarding completed:", response.site);
-        setCurrentStep(3);
-        return true;
       } else {
         setError(response.message || "Failed to complete onboarding");
         return false;

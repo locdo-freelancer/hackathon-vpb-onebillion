@@ -66,32 +66,36 @@ export class OnboardingService {
     siteId?: string;
   }> {
     try {
-      const response = (await apiClient.post("/onboarding/complete", {
+      const response = await apiClient.post("/onboarding/complete", {
         siteName: data.siteName,
         ipAddress: data.ipAddress,
         port: data.port,
         domainName: data.domainName || "",
         serverType: data.serverType,
         installToken: data.installToken || "",
-      })) as OnboardingApiResponse<CompleteOnboardingResponseData>;
+      });
 
-      // API returns: { success: true, data: { success, message, siteId, installToken }, timestamp }
-      const completionData = response.data as any;
+      console.log("Complete onboarding API response:", response);
 
-      if (response.success && completionData) {
+      // Backend returns: { success: true, data: { success, message, siteId, installToken } }
+      // apiClient unwraps to: { success, message, siteId, installToken }
+      
+      // Support both unwrapped and wrapped formats
+      const completionData = response.data || response;
+
+      if (completionData.success) {
         return {
           success: true,
-          message:
-            completionData.message || "Onboarding completed successfully",
+          message: completionData.message || "Onboarding completed successfully",
           site: completionData.site,
           siteId: completionData.siteId,
-          installToken: completionData.installToken, // Real token from backend
+          installToken: completionData.installToken,
         };
       }
 
       return {
         success: false,
-        message: completionData?.message || "Failed to complete onboarding",
+        message: completionData.message || "Failed to complete onboarding",
       };
     } catch (error) {
       console.error("Complete onboarding error:", error);
@@ -113,14 +117,15 @@ export class OnboardingService {
     ipAddress: string
   ): Promise<{ success: boolean; message?: string; isReachable?: boolean }> {
     try {
-      const response = (await apiClient.post("/onboarding/validate-ip", {
+      const response = await apiClient.post("/onboarding/validate-ip", {
         ipAddress,
-      })) as OnboardingApiResponse<ValidateIpResponseData>;
+      });
 
-      // API returns: { success: true, data: { success, isValid, message }, timestamp }
-      const validationData = response.data;
+      // Backend returns: { success: true, data: { success, isValid, message } }
+      // apiClient unwraps to: { success, isValid, message }
+      const validationData = response.data || response;
 
-      if (response.success && validationData) {
+      if (validationData.success) {
         return {
           success: validationData.success,
           message: validationData.message || "IP address is valid",
@@ -130,7 +135,7 @@ export class OnboardingService {
 
       return {
         success: false,
-        message: validationData?.message || "Invalid IP address",
+        message: validationData.message || "Invalid IP address",
         isReachable: false,
       };
     } catch (error) {
@@ -156,14 +161,13 @@ export class OnboardingService {
     initialDataSync: "success" | "failed" | "pending" | "validating";
   }> {
     try {
-      const response = (await apiClient.get(
-        "/onboarding/validate-connectivity"
-      )) as OnboardingApiResponse<ValidateConnectivityResponseData>;
+      const response = await apiClient.get("/onboarding/validate-connectivity");
 
-      // API returns: { success: true, data: { success, networkConnectivity, agentAuthentication, initialDataSync }, timestamp }
-      const validationData = response.data;
+      // Backend returns: { success: true, data: { success, networkConnectivity, agentAuthentication, initialDataSync } }
+      // apiClient unwraps to: { success, networkConnectivity, agentAuthentication, initialDataSync }
+      const validationData = response.data || response;
 
-      if (response.success && validationData) {
+      if (validationData.success !== false) {
         return {
           networkConnectivity: validationData.networkConnectivity
             ? "success"
@@ -199,8 +203,12 @@ export class OnboardingService {
     try {
       const response = await apiClient.get("/onboarding/progress");
 
-      if (response.success && response.data) {
-        return response.data;
+      // Backend returns: { success: true, data: { ... } }
+      // apiClient unwraps to: { ... }
+      const progressData = response.data || response;
+
+      if (progressData) {
+        return progressData;
       }
 
       return null;
