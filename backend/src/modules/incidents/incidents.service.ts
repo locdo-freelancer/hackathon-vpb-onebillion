@@ -9,12 +9,8 @@ import {
   User,
   Site,
 } from "../../../libs/entities";
-import {
-  CreateIncidentDto,
-  UpdateIncidentDto,
-  IncidentsFilterDto,
-  BulkActionDto,
-} from "./dto";
+import { CreateIncidentDto, IncidentsFilterDto, UpdateIncidentDto, BulkActionDto } from "apps/main/src/modules/incidents/dto";
+
 
 @Injectable()
 export class IncidentsService {

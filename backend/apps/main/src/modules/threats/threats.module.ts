@@ -5,7 +5,6 @@ import { ThreatsController } from "./threats.controller";
 import { ThreatIndicator, Site } from "@lib/entities";
 import { AwsModule } from "../../aws/aws.module";
 import { RedisModule } from "../redis/redis.module";
-import { ThreatIndicator, Site } from "../../../libs/entities";
 import { IncidentsModule } from "../incidents/incidents.module";
 
 @Module({

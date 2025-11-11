@@ -12,7 +12,7 @@ import {
 import { Repository } from "typeorm";
 import { ReportThreatDto } from "./dto/report-threat.dto";
 import { ThreatStatus } from "../../../libs/constant/src";
-import { AIService } from "../incidents/ai.service";
+import { AIService } from "apps/main/src/modules/incidents/ai.service";
 
 @Injectable()
 export class AgentCommService {

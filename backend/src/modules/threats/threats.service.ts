@@ -8,12 +8,9 @@ import {
   ThreatType,
   Site,
 } from "../../../libs/entities";
-import {
-  CreateThreatIndicatorDto,
-  UpdateThreatIndicatorDto,
-  ThreatsFilterDto,
-} from "./dto";
+
 import { IncidentsService } from "../incidents/incidents.service";
+import { CreateThreatIndicatorDto, ThreatsFilterDto, UpdateThreatIndicatorDto } from "apps/main/src/modules/threats/dto";
 
 @Injectable()
 export class ThreatsService {

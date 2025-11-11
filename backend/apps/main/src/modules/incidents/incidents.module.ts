@@ -6,7 +6,6 @@ import { Incident, User, Site } from "@lib/entities";
 import { AwsModule } from "../../aws/aws.module";
 import { RedisModule } from "../redis/redis.module";
 import { AIService } from "./ai.service";
-import { Incident, User, Site } from "../../../libs/entities";
 
 @Module({
   imports: [

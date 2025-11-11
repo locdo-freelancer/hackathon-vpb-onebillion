@@ -176,7 +176,7 @@ export class ThreatsService {
     return savedThreat;
   }
 
-  async findAll(filter: ThreatsFilterDto = {}) {
+  async findAll(filter: ThreatsFilterDto = {}, userId?: string) {
     const queryBuilder = this.threatIndicatorsRepository
       .createQueryBuilder("indicator")
       .leftJoinAndSelect("indicator.site", "site")
@@ -462,7 +462,7 @@ export class ThreatsService {
     return { message: `${ids.length} indicators deleted successfully` };
   }
 
-  async getStats() {
+  async getStats(userId?: string) {
     const stats = await this.threatIndicatorsRepository
       .createQueryBuilder("indicator")
       .select([
